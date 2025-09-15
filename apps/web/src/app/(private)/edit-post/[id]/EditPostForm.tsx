@@ -1,7 +1,7 @@
 // apps/web/src/app/(private)/edit-post/[id]/EditPostForm.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -10,7 +10,7 @@ import type { Category, Tag, PostStatus } from "@trevvos/types";
 import { ApiError, apiFetch } from "apps/web/src/lib/api";
 import { MarkdownView } from "apps/web/src/components/MarkdownView";
 
-// ✅ usar as variáveis públicas no client
+// variáveis públicas (client)
 const API = process.env.NEXT_PUBLIC_API_URL!;
 const APP = process.env.NEXT_PUBLIC_APP_SLUG || "portal";
 
@@ -54,24 +54,29 @@ export default function EditPostForm({
     },
   });
 
+  // refs e estados
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const hiddenContentFileRef = useRef<HTMLInputElement>(null);
+
   const [formError, setFormError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [tab, setTab] = useState<"edit" | "preview">("edit");
 
+  // valores assistidos
   const status = watch("status");
   const contentValue = watch("content") || "";
   const coverImage = watch("coverImage") || "";
 
   useEffect(() => {
+    // repõe os valores do server ao trocar de post
     reset({ ...initialValues, intent: "save" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
-  // ⬇️ helper para upload multipart (sem apiFetch pois ele seta JSON)
-  async function uploadCover(file: File) {
+  // ===== helpers de upload =====
+  async function uploadImage(file: File) {
     const fd = new FormData();
     fd.append("file", file);
-
     const res = await fetch(`${API}/uploads`, {
       method: "POST",
       headers: {
@@ -82,15 +87,43 @@ export default function EditPostForm({
       credentials: "include",
       cache: "no-store",
     });
-
     if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(text || `Falha no upload (${res.status})`);
+      const txt = await res.text().catch(() => "");
+      throw new Error(txt || `Falha no upload (${res.status})`);
     }
     const data = (await res.json()) as { url: string };
     return data.url;
   }
 
+  // insere um snippet na posição do cursor do textarea de conteúdo
+  function insertAtCursor(snippet: string) {
+    const el = contentRef.current;
+    if (!el) return;
+    const start = el.selectionStart ?? el.value.length;
+    const end = el.selectionEnd ?? el.value.length;
+
+    const before = el.value.slice(0, start);
+    const after = el.value.slice(end);
+    const next = before + snippet + after;
+
+    setValue("content", next, { shouldDirty: true });
+
+    requestAnimationFrame(() => {
+      const pos = start + snippet.length;
+      el.focus();
+      el.setSelectionRange(pos, pos);
+    });
+  }
+
+  async function handlePickContentImage(file?: File) {
+    if (!file) return;
+    const url = await uploadImage(file);
+    // insere markdown SEM trocar de aba
+    insertAtCursor(`\n![imagem](${url})\n`);
+    if (hiddenContentFileRef.current) hiddenContentFileRef.current.value = "";
+  }
+
+  // ===== submit/update/delete =====
   const onSubmit = async (values: PostEditInput) => {
     setFormError(null);
     setSuccess(null);
@@ -112,7 +145,7 @@ export default function EditPostForm({
           categoryIds: parsed.categoryIds,
           tagIds: parsed.tagIds,
           status: nextStatus,
-          coverImage: parsed.coverImage, // ⬅️ garantir que enviamos a capa
+          coverImage: parsed.coverImage,
         },
       });
 
@@ -152,6 +185,9 @@ export default function EditPostForm({
       setFormError(err.message || "Falha ao excluir.");
     }
   }
+
+  // registrar o content e encadear o ref (não-controlado)
+  const contentReg = register("content");
 
   return (
     <form
@@ -205,13 +241,12 @@ export default function EditPostForm({
         )}
       </div>
 
-      {/* capa (upload + preview) */}
+      {/* capa */}
       <div>
         <label className="mb-1 block text-sm font-medium">Capa</label>
 
         {coverImage && (
           <div className="mb-2">
-            {/* preview */}
             <img
               src={coverImage}
               alt="Capa"
@@ -220,7 +255,7 @@ export default function EditPostForm({
           </div>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <input
             type="file"
             accept="image/*"
@@ -228,7 +263,7 @@ export default function EditPostForm({
               const file = e.target.files?.[0];
               if (!file) return;
               try {
-                const url = await uploadCover(file);
+                const url = await uploadImage(file);
                 setValue("coverImage", url, { shouldDirty: true });
                 setSuccess("Imagem enviada!");
               } catch (err: any) {
@@ -237,7 +272,6 @@ export default function EditPostForm({
             }}
             className="rounded border border-slate-300 py-2 px-3 text-sm outline-none focus:border-slate-500"
           />
-          {/* permitir setar/remover manualmente */}
           <input
             {...register("coverImage")}
             placeholder="/uploads/arquivo.png ou https://..."
@@ -247,7 +281,7 @@ export default function EditPostForm({
             <button
               type="button"
               onClick={() => setValue("coverImage", "", { shouldDirty: true })}
-              className="bg-red-300 rounded border border-red-300 text-red-500 px-3 py-2 text-sm hover:bg-slate-50"
+              className="rounded border border-red-300 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
             >
               Remover
             </button>
@@ -256,7 +290,7 @@ export default function EditPostForm({
 
         {errors.coverImage && (
           <p className="mt-1 text-xs text-red-600">
-            {errors.coverImage.message as string}
+            {(errors.coverImage.message as string) || ""}
           </p>
         )}
       </div>
@@ -274,7 +308,7 @@ export default function EditPostForm({
         )}
       </div>
 
-      {/* editor/preview markdown */}
+      {/* tabs */}
       <div className="mb-2 flex gap-2 text-sm">
         <button
           type="button"
@@ -296,11 +330,50 @@ export default function EditPostForm({
         </button>
       </div>
 
+      {/* toolbar do editor (SOMENTE o que pedimos) */}
+      <div className="flex flex-wrap items-center gap-2 text-sm">
+        <button
+          type="button"
+          onClick={() => hiddenContentFileRef.current?.click()}
+          className="rounded border border-slate-300 px-3 py-1 hover:bg-slate-50"
+        >
+          Inserir imagem
+        </button>
+        <input
+          ref={hiddenContentFileRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) =>
+            void handlePickContentImage(e.target.files?.[0] ?? undefined)
+          }
+        />
+
+        <button
+          type="button"
+          onClick={() => {
+            const url = window.prompt("URL da imagem:");
+            if (!url) return;
+            insertAtCursor(`\n![imagem](${url})\n`);
+          }}
+          className="rounded border border-slate-300 px-3 py-1 hover:bg-slate-50"
+        >
+          Inserir por URL
+        </button>
+      </div>
+
+      {/* conteúdo */}
       <div>
         <label className="mb-1 block text-sm font-medium">Conteúdo</label>
+
         {tab === "edit" ? (
           <textarea
-            {...register("content")}
+            {...contentReg}
+            ref={(el) => {
+              // encadeia o ref do RHF com o nosso ref
+              contentReg.ref(el);
+              contentRef.current = el || null;
+            }}
             rows={10}
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
             placeholder="Markdown (aceita HTML básico, sanitizado)"
@@ -310,6 +383,7 @@ export default function EditPostForm({
             <MarkdownView markdown={contentValue} />
           </div>
         )}
+
         {errors.content && (
           <p className="mt-1 text-xs text-red-600">{errors.content.message}</p>
         )}
@@ -326,6 +400,7 @@ export default function EditPostForm({
                 value={c.id}
                 {...register("categoryIds")}
                 className="h-4 w-4"
+                defaultChecked={initialValues.categoryIds.includes(c.id)}
               />
               <span>{c.name}</span>
             </label>
@@ -352,6 +427,7 @@ export default function EditPostForm({
                 value={t.id}
                 {...register("tagIds")}
                 className="h-4 w-4"
+                defaultChecked={initialValues.tagIds.includes(t.id)}
               />
               <span>#{t.name}</span>
             </label>

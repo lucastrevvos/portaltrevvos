@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 
 import type { PostWithRelations, Category, Tag, AppRole } from "@trevvos/types";
 import { apiFetch } from "apps/web/src/lib/api";
+import { MarkdownView } from "apps/web/src/components/MarkdownView";
 
 type Props = { params: { slug: string } };
 
@@ -114,7 +115,7 @@ export default async function PostPage({ params }: Props) {
       )}
 
       <article className="prose prose-slate max-w-none">
-        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        <MarkdownView markdown={post.content || ""} />
       </article>
     </main>
   );
