@@ -4,7 +4,7 @@
 
 import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "../lib/api";
-import { getCategoryName, slugify } from "../lib/post-utils";
+import { getCategoryName, slugify, getTagNames } from "../lib/post-utils";
 import { PostHero } from "../components/site/PostHero";
 import { Trending } from "../components/site/Trending";
 import { NewsletterCard } from "../components/site/NewsLetterCard";
@@ -17,10 +17,15 @@ export default async function TrevvosHome() {
     `/posts?status=PUBLISHED&take=20`
   );
   const hasPosts = posts?.length > 0;
+
   const [hero, ...rest] = hasPosts ? posts : [];
+
   const categories = [
     ...new Set(posts.map(getCategoryName).filter(Boolean)),
   ].map((c) => ({ key: slugify(String(c)), label: String(c) }));
+
+  const rawTags = [...new Set(posts.flatMap(getTagNames))];
+  const tags = rawTags.map((t) => ({ key: slugify(t), label: t }));
 
   return (
     <div className="min-h-screen">
@@ -48,7 +53,7 @@ export default async function TrevvosHome() {
           {/* --- Espaço reservado para ADS (meio do feed) --- */}
           {/* <div className="sm:col-span-2 h-32 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </section>
-        <Sidebar categories={categories}>
+        <Sidebar categories={categories} tags={tags}>
           {/* --- Espaço reservado para ADS (sidebar principal) --- */}
           {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </Sidebar>

@@ -11,6 +11,16 @@ export function slugify(input?: string): string {
     .replace(/-+/g, "-");
   return s; // sempre string (pode ser "", mas nunca undefined)
 }
+
+export function getTagNames(p: any): string[] {
+  const arr = p?.tags ?? p?.postTags ?? [];
+  return arr
+    .map((t: any) => t?.tag?.name ?? t?.name)
+    .filter(
+      (x: any): x is string => typeof x === "string" && x.trim().length > 0
+    );
+}
+
 export function getCoverUrl(p?: any): string | undefined {
   if (!p) return undefined;
 

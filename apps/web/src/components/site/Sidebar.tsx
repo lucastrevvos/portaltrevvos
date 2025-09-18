@@ -1,10 +1,14 @@
 export function Sidebar({
   categories = [] as { key: string; label: string }[],
+  tags = [] as { key: string; label: string }[],
   children,
 }: {
   categories?: { key: string; label: string }[];
+  tags?: { key: string; label: string }[];
   children?: React.ReactNode;
 }) {
+  console.log(tags);
+
   return (
     <aside className="lg:col-span-4 space-y-6">
       <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
@@ -21,6 +25,24 @@ export function Sidebar({
           ))}
         </div>
       </div>
+
+      {tags.length > 0 && (
+        <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+          <h3 className="text-sm font-semibold">Tags</h3>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {tags.map((t) => (
+              <a
+                href={`/tag/${t.key}`}
+                key={t.key}
+                className="rounded-full bg-neutral-100 px-3 py-1 text-sm hover:bg-neutral-200"
+              >
+                #{t.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       {children}
       <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
         <h3 className="text-sm font-semibold">Apps do ecossistema</h3>
