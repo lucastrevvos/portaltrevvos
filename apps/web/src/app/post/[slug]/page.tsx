@@ -1,122 +1,229 @@
-// apps/web/src/app/post/[slug]/page.tsx
+import type { PostWithRelations } from "@trevvos/types";
+import { apiFetch } from "../../../lib/api";
+import type { Metadata } from "next";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import {
+  getCoverUrl,
+  getCategoryName,
+  getCategorySlug,
+  getAuthor,
+  formatDate,
+} from "../../../lib/post-utils";
+
 export const dynamic = "force-dynamic";
 
-import Link from "next/link";
-import { cookies } from "next/headers";
+type Params = { slug: string };
 
-import type { PostWithRelations, Category, Tag, AppRole } from "@trevvos/types";
-import { apiFetch } from "apps/web/src/lib/api";
-import { MarkdownView } from "apps/web/src/components/MarkdownView";
+// --- Data fetchers ---
+async function fetchPost(slug: string): Promise<PostWithRelations | undefined> {
+  try {
+    return await apiFetch<PostWithRelations>(
+      `/posts/${encodeURIComponent(slug)}`
+    );
+  } catch {}
+  try {
+    const list = await apiFetch<PostWithRelations[]>(
+      `/posts?slug=${encodeURIComponent(slug)}&status=PUBLISHED&take=1`
+    );
+    if (Array.isArray(list) && list[0]) return list[0];
+  } catch {}
+  try {
+    return await apiFetch<PostWithRelations>(
+      `/posts/by-slug/${encodeURIComponent(slug)}`
+    );
+  } catch {}
+  return undefined;
+}
 
-type Props = { params: { slug: string } };
+async function fetchRelated(
+  p: PostWithRelations
+): Promise<PostWithRelations[]> {
+  const cat = getCategorySlug(p);
+  if (!cat) return [];
+  try {
+    const rel = await apiFetch<PostWithRelations[]>(
+      `/posts?category=${encodeURIComponent(cat)}&status=PUBLISHED&take=6`
+    );
+    return (rel || [])
+      .filter(
+        (x: any) =>
+          (x?.slug ?? x?.id) !== (p as any)?.slug && x?.id !== (p as any)?.id
+      )
+      .slice(0, 6);
+  } catch {
+    return [];
+  }
+}
 
-type MeResponse = {
-  globalRole: { id: string; role: "ADMIN" | "EDITOR" | "USER" };
-  appsList: { slug: string; name: string; role: AppRole }[];
-};
+// --- Metadata ---
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const { slug } = await params; // Next App Router moderno
+  const post = await fetchPost(slug);
+  const title = (post as any)?.title ?? "Post";
+  const description = (post as any)?.excerpt ?? (post as any)?.subtitle ?? "";
+  const cover = getCoverUrl(post);
+  return {
+    title: `${title} — Trevvos`,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: cover ? [{ url: cover }] : undefined,
+      type: "article",
+    },
+    twitter: {
+      card: cover ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: cover ? [cover] : undefined,
+    },
+  };
+}
 
-export default async function PostPage({ params }: Props) {
-  const { slug } = await params;
-
-  // 1) Buscar post
-  const list = await apiFetch<PostWithRelations[]>(
-    `/posts?slug=${encodeURIComponent(slug)}`
-  );
-  const post = Array.isArray(list)
-    ? list[0]
-    : (list as unknown as PostWithRelations);
+// --- Page ---
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { slug } = await params; // evitar "sync dynamic apis"
+  const post = await fetchPost(slug);
 
   if (!post) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-16">
-        <h1 className="text-xl font-semibold">Post não encontrado</h1>
+        <h1 className="text-2xl font-bold">Post não encontrado</h1>
+        <p className="mt-2 text-neutral-600">
+          Tenta voltar para a{" "}
+          <a className="underline" href="/">
+            home
+          </a>
+          .
+        </p>
       </main>
     );
   }
 
-  // 2) Token + /auth/me (pode falhar silenciosamente)
-  const token = (await cookies()).get("accessToken")?.value;
-  let canEdit = false;
-
-  if (token) {
-    try {
-      const me = await apiFetch<MeResponse>("/auth/me", { accessToken: token });
-      console.log("me", me);
-
-      const appSlug = process.env.NEXT_PUBLIC_APP_SLUG || "portal";
-      const appRole = me?.appsList?.find((a: any) => a.slug === appSlug)?.role;
-
-      const isAdminGlobal = me.globalRole.role === "ADMIN";
-      const canByApp = appRole
-        ? ["OWNER", "ADMIN", "EDITOR"].includes(appRole)
-        : false;
-
-      // autor pode editar o próprio rascunho
-      const postAuthorId = (post as any).authorId ?? post.author?.id;
-      const isAuthor = !!postAuthorId && me.globalRole.id === postAuthorId;
-
-      canEdit = isAdminGlobal || canByApp || isAuthor;
-    } catch (err) {
-      console.log("erro", err);
-    }
-  }
-
-  // 3) Normalizar categorias/tags (sem any, com type guard)
-  const categories: Category[] = (post.categories ?? [])
-    .map((pc) => pc.category)
-    .filter((c): c is Category => Boolean(c));
-
-  const tags: Tag[] = (post.tags ?? [])
-    .map((pt) => pt.tag)
-    .filter((t): t is Tag => Boolean(t));
+  const cover = getCoverUrl(post);
+  const categoryName = getCategoryName(post);
+  const categorySlug = getCategorySlug(post);
+  const related = await fetchRelated(post);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-8">
-      <header className="mb-4 flex items-start justify-between gap-4">
-        <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
-        {canEdit && (
-          <Link
-            href={`/edit-post/${post.id}`}
-            className="rounded border border-slate-300 px-3 py-1 text-sm hover:bg-slate-50"
-          >
-            Editar
-          </Link>
-        )}
-      </header>
+    <div className="min-h-screen">
+      {/* Hero do Post */}
+      <section className="border-b border-neutral-200 bg-gradient-to-b from-white to-neutral-50">
+        <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          {categorySlug && (
+            <div className="mb-3 text-xs">
+              <a href="/" className="text-neutral-500 hover:text-neutral-800">
+                Início
+              </a>
+              <span className="mx-1">/</span>
+              <a
+                href={`/categoria/${categorySlug}`}
+                className="text-emerald-700 hover:underline"
+              >
+                {categoryName}
+              </a>
+            </div>
+          )}
 
-      <div className="mb-6 flex flex-wrap items-center gap-3 text-sm">
-        {categories.map((c) => (
-          <a
-            key={c.id}
-            href={`/categoria/${c.slug}`}
-            className="rounded bg-slate-100 px-2 py-1 hover:bg-slate-200"
-          >
-            {c.name}
-          </a>
-        ))}
+          <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+            {(post as any).title}
+          </h1>
+          {(post as any).excerpt && (
+            <p className="mt-3 text-neutral-600">{(post as any).excerpt}</p>
+          )}
 
-        {tags.map((t) => (
-          <a
-            key={t.id}
-            href={`/tag/${t.slug}`}
-            className="rounded border bg-slate-200 px-2 py-1 text-slate-700 hover:bg-slate-50"
-          >
-            #{t.name}
-          </a>
-        ))}
-      </div>
+          <div className="mt-4 flex items-center gap-3 text-xs text-neutral-500">
+            <span>{getAuthor(post)}</span>
+            <span>
+              •{" "}
+              {formatDate((post as any).publishedAt ?? (post as any).createdAt)}
+            </span>
+            {(post as any).read && <span>• {(post as any).read}</span>}
+          </div>
 
-      {post.coverImage && (
-        <img
-          src={post.coverImage}
-          alt=""
-          className="mb-6 w-full rounded-lg border border-slate-200"
-        />
-      )}
+          {cover && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={cover}
+              alt={(post as any).title}
+              className="mt-6 h-80 w-full rounded-2xl object-cover"
+            />
+          )}
+        </article>
+      </section>
 
-      <article className="prose prose-slate max-w-none">
-        <MarkdownView markdown={post.content || ""} />
-      </article>
-    </main>
+      {/* Conteúdo + Sidebar */}
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid gap-8 lg:grid-cols-12">
+        <article className="prose prose-neutral max-w-none lg:col-span-8">
+          {(post as any).contentHtml ? (
+            <div
+              dangerouslySetInnerHTML={{ __html: (post as any).contentHtml }}
+            />
+          ) : (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+              components={{
+                img: (props) => (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    {...props}
+                    className={`mt-6 w-full rounded-2xl object-contain ${
+                      props.className ?? ""
+                    }`}
+                  />
+                ),
+                a: (props) => (
+                  <a {...props} target="_blank" rel="noopener noreferrer" />
+                ),
+              }}
+            >
+              {(post as any).content ?? ""}
+            </ReactMarkdown>
+          )}
+        </article>
+
+        {/* Sidebar: relacionados */}
+        <aside className="lg:col-span-4 space-y-6">
+          {related.length > 0 && (
+            <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
+              <h3 className="text-sm font-semibold">Leia também</h3>
+              <ul className="mt-3 space-y-3 text-sm">
+                {related.slice(0, 6).map((p) => (
+                  <li key={(p as any).id} className="flex gap-3">
+                    {getCoverUrl(p) ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={getCoverUrl(p)!}
+                        alt={(p as any).title}
+                        className="h-12 w-16 rounded object-cover"
+                      />
+                    ) : (
+                      <div className="h-12 w-16 rounded bg-neutral-100" />
+                    )}
+                    <a
+                      className="line-clamp-2 hover:text-emerald-700"
+                      href={`/post/${(p as any).slug ?? (p as any).id}`}
+                    >
+                      {(p as any).title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </aside>
+      </main>
+    </div>
   );
 }

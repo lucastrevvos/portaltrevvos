@@ -1,12 +1,8 @@
+import { Footer } from "../components/site/Footer";
+import Header from "../components/site/Header";
 import "./globals.css";
-import type { Metadata } from "next";
-import { Toaster } from "sonner";
-import { SiteHeader } from "../components/site-header";
 
-export const metadata: Metadata = {
-  title: "Trevvos",
-  description: "Portal Trevvos",
-};
+export const dynamic = "force-dynamic";
 
 export default function RootLayout({
   children,
@@ -14,11 +10,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-br">
-      <body className="min-h-screen bg-white text-slate-900 antialiased">
-        <SiteHeader />
+    <html lang="pt-BR">
+      <body className="bg-neutral-50 text-neutral-900">
+        {/* Se quiser categorias dinâmicas aqui, dá pra tornar o layout async e buscar. */}
+        <Header categories={[]} />
         {children}
-        <Toaster richColors position="top-right" />
+        <Footer />
       </body>
     </html>
   );
