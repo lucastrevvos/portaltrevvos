@@ -1,3 +1,6 @@
+// =====================================================
+// apps/web/src/app/post/[slug]/page.tsx (Post com espaço p/ Ads)
+// =====================================================
 import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "../../../lib/api";
 import type { Metadata } from "next";
@@ -63,7 +66,7 @@ export async function generateMetadata({
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
-  const { slug } = await params; // Next App Router moderno
+  const { slug } = await params;
   const post = await fetchPost(slug);
   const title = (post as any)?.title ?? "Post";
   const description = (post as any)?.excerpt ?? (post as any)?.subtitle ?? "";
@@ -92,7 +95,7 @@ export default async function PostPage({
 }: {
   params: Promise<Params>;
 }) {
-  const { slug } = await params; // evitar "sync dynamic apis"
+  const { slug } = await params;
   const post = await fetchPost(slug);
 
   if (!post) {
@@ -191,10 +194,16 @@ export default async function PostPage({
               {(post as any).content ?? ""}
             </ReactMarkdown>
           )}
+
+          {/* --- Espaço reservado para ADS (final do conteúdo) --- */}
+          {/* <div className="my-8 h-40 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </article>
 
         {/* Sidebar: relacionados */}
         <aside className="lg:col-span-4 space-y-6">
+          {/* --- Espaço reservado para ADS (topo sidebar post) --- */}
+          {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
+
           {related.length > 0 && (
             <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
               <h3 className="text-sm font-semibold">Leia também</h3>
@@ -222,6 +231,9 @@ export default async function PostPage({
               </ul>
             </div>
           )}
+
+          {/* --- Espaço reservado para ADS (base sidebar post) --- */}
+          {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </aside>
       </main>
     </div>

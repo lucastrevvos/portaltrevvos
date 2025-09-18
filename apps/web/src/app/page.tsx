@@ -1,3 +1,7 @@
+// =====================================================
+// apps/web/src/app/page.tsx (Home com espaço p/ Ads)
+// =====================================================
+
 import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "../lib/api";
 import { getCategoryName, slugify } from "../lib/post-utils";
@@ -29,6 +33,8 @@ export default async function TrevvosHome() {
             <div className="lg:col-span-4 grid gap-4">
               <Trending posts={rest} />
               <NewsletterCard />
+              {/* --- Espaço reservado para ADS (sidebar hero) --- */}
+              {/* <div className="h-48 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
             </div>
           </div>
         </section>
@@ -39,9 +45,12 @@ export default async function TrevvosHome() {
           {rest.map((p: any) => (
             <PostHero key={p.id} post={p} />
           ))}
+          {/* --- Espaço reservado para ADS (meio do feed) --- */}
+          {/* <div className="sm:col-span-2 h-32 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </section>
         <Sidebar categories={categories}>
-          <NewsletterCard />
+          {/* --- Espaço reservado para ADS (sidebar principal) --- */}
+          {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </Sidebar>
       </main>
     </div>
