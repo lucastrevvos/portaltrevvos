@@ -1,5 +1,5 @@
 // =====================================================
-// apps/web/src/app/post/[slug]/page.tsx (Post com espaço p/ Ads)
+// apps/web/src/app/post/[slug]/page.tsx (com botão Editar se logado)
 // =====================================================
 import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "../../../lib/api";
@@ -60,6 +60,18 @@ async function fetchRelated(
   }
 }
 
+// 🔐 tenta descobrir o usuário logado (ajuste o endpoint se o seu for diferente)
+type Me = { id: string; name?: string; role?: string } | null;
+async function fetchMe(): Promise<Me> {
+  try {
+    // comum: /me, /auth/me, /users/me — ajuste se necessário
+    const me = await apiFetch<any>("/me");
+    return me ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // --- Metadata ---
 export async function generateMetadata({
   params,
@@ -97,6 +109,7 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
   const post = await fetchPost(slug);
+  const me = await fetchMe(); // 👈 checa login no server
 
   if (!post) {
     return (
@@ -116,6 +129,11 @@ export default async function PostPage({
   const cover = getCoverUrl(post);
   const categoryName = getCategoryName(post);
   const categorySlug = getCategorySlug(post);
+
+  // URL de edição: configure NEXT_PUBLIC_EDIT_BASE (ex.: "/admin/posts" ou "/studio/structure/posts")
+  const editBase = process.env.NEXT_PUBLIC_EDIT_BASE ?? "/edit-post";
+  const editHref = `${editBase}/${(post as any).id ?? (post as any).slug}`;
+
   const related = await fetchRelated(post);
 
   return (
@@ -138,20 +156,34 @@ export default async function PostPage({
             </div>
           )}
 
-          <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-            {(post as any).title}
-          </h1>
-          {(post as any).excerpt && (
-            <p className="mt-3 text-neutral-600">{(post as any).excerpt}</p>
-          )}
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+                {(post as any).title}
+              </h1>
+              {(post as any).excerpt && (
+                <p className="mt-3 text-neutral-600">{(post as any).excerpt}</p>
+              )}
+              <div className="mt-4 flex items-center gap-3 text-xs text-neutral-500">
+                <span>{getAuthor(post)}</span>
+                <span>
+                  •{" "}
+                  {formatDate(
+                    (post as any).publishedAt ?? (post as any).createdAt
+                  )}
+                </span>
+                {(post as any).read && <span>• {(post as any).read}</span>}
+              </div>
+            </div>
 
-          <div className="mt-4 flex items-center gap-3 text-xs text-neutral-500">
-            <span>{getAuthor(post)}</span>
-            <span>
-              •{" "}
-              {formatDate((post as any).publishedAt ?? (post as any).createdAt)}
-            </span>
-            {(post as any).read && <span>• {(post as any).read}</span>}
+            {/* ✅ Botão Editar (só aparece se logado) */}
+
+            <a
+              href={editHref}
+              className="shrink-0 rounded-xl border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
+            >
+              Editar post
+            </a>
           </div>
 
           {cover && (
@@ -195,13 +227,13 @@ export default async function PostPage({
             </ReactMarkdown>
           )}
 
-          {/* --- Espaço reservado para ADS (final do conteúdo) --- */}
+          {/* --- ADS: final do conteúdo --- */}
           {/* <div className="my-8 h-40 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </article>
 
         {/* Sidebar: relacionados */}
         <aside className="lg:col-span-4 space-y-6">
-          {/* --- Espaço reservado para ADS (topo sidebar post) --- */}
+          {/* --- ADS: topo sidebar post --- */}
           {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
 
           {related.length > 0 && (
@@ -232,7 +264,7 @@ export default async function PostPage({
             </div>
           )}
 
-          {/* --- Espaço reservado para ADS (base sidebar post) --- */}
+          {/* --- ADS: base sidebar post --- */}
           {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </aside>
       </main>

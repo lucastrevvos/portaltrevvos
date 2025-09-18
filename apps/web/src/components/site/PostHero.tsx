@@ -17,6 +17,7 @@ export function PostHero({ post }: { post: any }) {
           className="h-72 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
       )}
+
       <div className="p-6">
         {getCategoryName(post) && (
           <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">

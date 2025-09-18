@@ -12,13 +12,16 @@ export function slugify(input?: string): string {
 
 export function getCoverUrl(p?: any): string | undefined {
   if (!p) return undefined;
+
+  // 👇 cobre o campo real da tua API
+  if (typeof p.coverImage === "string") return p.coverImage;
+
   if (typeof p.cover === "string") return p.cover as string;
   if (p.cover?.url) return p.cover.url as string;
   if (Array.isArray(p.images) && p.images[0]?.url)
     return p.images[0].url as string;
   return undefined;
 }
-
 export function getCategoryName(p?: any): string | undefined {
   if (!p) return undefined;
   if (typeof p.category === "string") return p.category as string;
