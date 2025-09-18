@@ -1,7 +1,11 @@
+// apps/web/src/app/(private)/edit-post/[id]/page.tsx
+
 import EditPostForm from "./EditPostForm";
 import type { PostWithRelations, Category, Tag } from "@trevvos/types";
 import { apiFetch } from "apps/web/src/lib/api";
 import { cookies } from "next/headers";
+// 👇 importa (se quiser fallback mais esperto)
+import { getCoverUrl } from "apps/web/src/lib/post-utils";
 
 type PageProps = { params: { id: string } };
 
@@ -14,7 +18,6 @@ export default async function EditPostPage({ params }: PageProps) {
     apiFetch<Tag[]>(`/tags`),
   ]);
 
-  // => arrays de IDs (como string)
   const initialCategoryIds = (post.categories ?? [])
     .map((pc) => pc.categoryId ?? pc.category?.id)
     .filter(Boolean)
@@ -27,15 +30,20 @@ export default async function EditPostPage({ params }: PageProps) {
 
   const token = (await cookies()).get("accessToken")?.value;
 
+  // 👇 escolhe só a primeira (se houver)
+  const initialCategoryId = initialCategoryIds[0] ?? "";
+
   const initialValues = {
     slug: post.slug ?? "",
     title: post.title ?? "",
     excerpt: post.excerpt ?? "",
     content: post.content ?? "",
-    categoryIds: initialCategoryIds,
+    categoryIds: initialCategoryId ? [initialCategoryId] : [], // 👈 apenas 1
     tagIds: initialTagIds,
     status: (post.status as "DRAFT" | "PUBLISHED") ?? "DRAFT",
     intent: "save" as const,
+    // 👇 PRE-POPULA CAPA (prioriza post.coverImage; cai pro helper se teu backend usa outro campo)
+    coverImage: (post as any).coverImage ?? getCoverUrl(post) ?? "",
   };
 
   return (

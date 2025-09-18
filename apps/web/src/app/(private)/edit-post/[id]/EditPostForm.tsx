@@ -54,6 +54,8 @@ export default function EditPostForm({
     },
   });
 
+  const selectedCategoryId = (watch("categoryIds") ?? [])[0] ?? "";
+
   // refs e estados
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const hiddenContentFileRef = useRef<HTMLInputElement>(null);
@@ -392,19 +394,27 @@ export default function EditPostForm({
       {/* categorias */}
       <fieldset className="rounded-md border border-slate-200 p-3">
         <legend className="px-1 text-sm font-medium">Categorias</legend>
-        <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-3">
-          {categories.map((c) => (
-            <label key={c.id} className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                value={c.id}
-                {...register("categoryIds")}
-                className="h-4 w-4"
-                defaultChecked={initialValues.categoryIds.includes(c.id)}
-              />
-              <span>{c.name}</span>
-            </label>
-          ))}
+        <div>
+          <select
+            value={selectedCategoryId}
+            onChange={(e) => {
+              const v = e.target.value;
+              setValue("categoryIds", v ? [v] : [], { shouldDirty: true });
+            }}
+            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500"
+          >
+            <option value="">— selecione —</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          {errors.categoryIds && (
+            <p className="mt-1 text-xs text-red-600">
+              {(errors.categoryIds.message as string) || ""}
+            </p>
+          )}
         </div>
         {errors.categoryIds && (
           <p className="mt-1 text-xs text-red-600">

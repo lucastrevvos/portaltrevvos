@@ -1,15 +1,16 @@
 export type { PostWithRelations } from "@trevvos/types";
 
 export function slugify(input?: string): string {
-  const s = (input ?? "").toString();
-  return s
+  const s = (input ?? "")
     .toLowerCase()
+    .normalize("NFD") // separa acentos
+    .replace(/[\u0300-\u036f]/g, "") // remove acentos
     .trim()
-    .replace(/\s+/g, "-") // espaços -> hífen
-    .replace(/[^a-z0-9-]/g, "") // remove chars fora do slug
-    .replace(/-+/g, "-"); // hifens repetidos -> um
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-");
+  return s; // sempre string (pode ser "", mas nunca undefined)
 }
-
 export function getCoverUrl(p?: any): string | undefined {
   if (!p) return undefined;
 
