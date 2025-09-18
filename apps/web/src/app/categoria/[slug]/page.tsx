@@ -1,36 +1,171 @@
+// =====================================================
+// apps/web/src/app/categoria/[slug]/page.tsx
+// Categoria com "Carregar mais" (SSR) + slots de Ads
+// =====================================================
+import type { Metadata } from "next";
 import type { Category, PostWithRelations } from "@trevvos/types";
+import { apiFetch } from "apps/web/src/lib/api";
 import { PostCard } from "apps/web/src/components/PostCard";
 
-import { apiFetch } from "apps/web/src/lib/api";
+export const dynamic = "force-dynamic";
 
-export default async function CategoryPage({
+type Params = { slug: string };
+type Search = { page?: string; take?: string };
+
+async function fetchCategory(slug: string): Promise<Category | undefined> {
+  try {
+    return await apiFetch<Category>(`/categories/${encodeURIComponent(slug)}`);
+  } catch {
+    try {
+      const list = await apiFetch<Category[]>(
+        `/categories?slug=${encodeURIComponent(slug)}&take=1`
+      );
+      return Array.isArray(list) && list[0] ? list[0] : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+}
+
+async function fetchPosts(categoryId: string, skip: number, take: number) {
+  try {
+    return await apiFetch<PostWithRelations[]>(
+      `/posts?categoryId=${encodeURIComponent(
+        categoryId
+      )}&status=PUBLISHED&skip=${skip}&take=${take}`
+    );
+  } catch {
+    return [];
+  }
+}
+
+// --- Metadata ---
+export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const cat = await fetchCategory(slug);
+  const title = cat?.name
+    ? `Categoria: ${cat.name} — Trevvos`
+    : "Categoria — Trevvos";
+  return {
+    title,
+    description: cat?.name
+      ? `Artigos da categoria ${cat.name}`
+      : "Artigos por categoria",
+    openGraph: { title, type: "website" },
+    twitter: { card: "summary", title },
+  };
+}
+
+// --- Page ---
+export default async function CategoryPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<Params>;
+  searchParams?: Promise<Search>;
 }) {
   const { slug } = await params;
+  const sp = (await searchParams) ?? {};
+  const page = Math.max(1, Number(sp.page ?? 1));
+  const take = Math.min(24, Math.max(6, Number(sp.take ?? 12)));
+  const skip = (page - 1) * take;
 
-  // ✅ tipa o retorno
-  const cat = await apiFetch<Category>(`/categories/${slug}`);
+  const cat = await fetchCategory(slug);
+  if (!cat) {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-16">
+        <h1 className="text-2xl font-bold">Categoria não encontrada</h1>
+        <p className="mt-2 text-neutral-600">
+          Volte para a{" "}
+          <a className="underline" href="/">
+            home
+          </a>{" "}
+          ou escolha outra categoria.
+        </p>
+      </main>
+    );
+  }
 
-  // ✅ tipa o array de posts
-  const posts = await apiFetch<PostWithRelations[]>(
-    `/posts?categoryId=${encodeURIComponent(cat.id)}&status=PUBLISHED`
-  );
+  const posts = await fetchPosts(String(cat.id), skip, take);
+  const hasMore = posts.length === take; // heurística simples
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-semibold">Categoria: {cat.name}</h1>
+    <div className="min-h-screen">
+      {/* Hero da Categoria */}
+      <section className="border-b border-neutral-200 bg-gradient-to-b from-white to-neutral-50">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-xs text-neutral-500">
+                <a href="/" className="hover:text-neutral-800">
+                  Início
+                </a>
+                <span className="mx-1">/</span>
+                <span className="text-emerald-700">Categoria</span>
+              </div>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+                {cat.name}
+              </h1>
+              {/* Se quiser descrição futuramente:
+              {(cat as any).description && (
+                <p className="mt-2 max-w-2xl text-neutral-600">{(cat as any).description}</p>
+              )} */}
+            </div>
 
-      {posts.length === 0 ? (
-        <p className="text-slate-600">Nenhum post publicado nesta categoria.</p>
-      ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {posts.map((p) => (
-            <PostCard key={p.id} post={p} />
-          ))}
+            {/* --- ADS: header da categoria --- */}
+            {/* <div className="hidden md:flex h-24 w-64 items-center justify-center rounded-xl bg-neutral-100 text-neutral-500">Ad Space</div> */}
+          </div>
         </div>
-      )}
-    </main>
+      </section>
+
+      {/* Grid + Sidebar */}
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid gap-8 lg:grid-cols-12">
+        <section className="lg:col-span-8">
+          {posts.length === 0 ? (
+            <p className="text-neutral-600">
+              Nenhum post publicado nesta categoria.
+            </p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {posts.map((p) => (
+                  <PostCard key={p.id} post={p} />
+                ))}
+
+                {/* --- ADS: meio do grid --- */}
+                {/* <div className="sm:col-span-2 h-32 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
+              </div>
+
+              {/* Carregar mais (SSR via querystring) */}
+              {hasMore && (
+                <div className="mt-8 flex justify-center">
+                  <a
+                    href={`?page=${page + 1}&take=${take}`}
+                    className="rounded-xl border border-neutral-200 px-4 py-2 text-sm hover:bg-neutral-50"
+                  >
+                    Carregar mais
+                  </a>
+                </div>
+              )}
+            </>
+          )}
+        </section>
+
+        <aside className="lg:col-span-4 space-y-6">
+          {/* --- ADS: topo sidebar --- */}
+          {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
+
+          {/* Widgets extras: newsletter/tags/etc */}
+          {/* <YourSidebarWidgetsHere /> */}
+
+          {/* --- ADS: base sidebar --- */}
+          {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
+        </aside>
+      </main>
+    </div>
   );
 }
