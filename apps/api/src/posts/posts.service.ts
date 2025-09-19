@@ -48,13 +48,12 @@ export class PostsService {
       (appRole &&
         (['EDITOR', 'ADMIN', 'OWNER'] as AppRole[]).includes(appRole));
 
-    // --- Monte os filtros de visibilidade passo a passo (evita inferência ruim) ---
+    // visibilidade
     let baseWhere: Prisma.PostWhereInput = {};
     if (!canSeeDrafts) {
-      const visibility: Prisma.PostWhereInput[] = [];
-      // público sempre vê publicados
-      visibility.push({ status: PostStatus.PUBLISHED });
-      // autor logado também vê seus rascunhos
+      const visibility: Prisma.PostWhereInput[] = [
+        { status: PostStatus.PUBLISHED },
+      ];
       if (user?.sub) {
         visibility.push({
           AND: [{ status: PostStatus.DRAFT }, { authorId: user.sub }],
@@ -63,12 +62,11 @@ export class PostsService {
       baseWhere = { OR: visibility };
     }
 
-    // --- Aplique filtros do DTO sem perder a visibilidade ---
+    // filtros “diretos”
     const where: Prisma.PostWhereInput = {
       ...baseWhere,
       ...(filter.authorId ? { authorId: filter.authorId } : {}),
       ...(filter.slug ? { slug: filter.slug } : {}),
-      // status só é respeitado se pode ver rascunhos
       ...(canSeeDrafts && filter.status ? { status: filter.status } : {}),
       ...(filter.categoryId
         ? { categories: { some: { categoryId: filter.categoryId } } }
@@ -76,13 +74,40 @@ export class PostsService {
       ...(filter.tagId ? { tags: { some: { tagId: filter.tagId } } } : {}),
     };
 
-    // Paginação
+    // 🔎 bloco de busca (case-insensitive) — título, resumo, conteúdo, categoria, tag, autor
+    let finalWhere: Prisma.PostWhereInput = where;
+    if (filter.q && filter.q.trim()) {
+      const term = filter.q.trim();
+      const searchOr: Prisma.PostWhereInput[] = [
+        { title: { contains: term, mode: 'insensitive' } },
+        { excerpt: { contains: term, mode: 'insensitive' } },
+        { content: { contains: term, mode: 'insensitive' } },
+        {
+          categories: {
+            some: {
+              category: { name: { contains: term, mode: 'insensitive' } },
+            },
+          },
+        },
+        {
+          tags: {
+            some: { tag: { name: { contains: term, mode: 'insensitive' } } },
+          },
+        },
+        { author: { name: { contains: term, mode: 'insensitive' } } },
+      ];
+
+      // ✅ combina SEM quebrar a visibilidade (AND entre where atual e OR da busca)
+      finalWhere = { AND: [where, { OR: searchOr }] };
+    }
+
+    // paginação
     const take =
       filter.take && filter.take > 0 && filter.take <= 100 ? filter.take : 50;
     const skip = filter.skip && filter.skip >= 0 ? filter.skip : 0;
 
     return this.prisma.post.findMany({
-      where,
+      where: finalWhere,
       include: {
         categories: { include: { category: true } },
         tags: { include: { tag: true } },

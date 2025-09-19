@@ -1,4 +1,22 @@
+import { Me } from "@trevvos/types";
+import { cookies } from "next/headers";
+import { apiFetch } from "./api";
+const APP = process.env.NEXT_PUBLIC_APP_SLUG || "portal";
+
 export type { PostWithRelations } from "@trevvos/types";
+
+export async function fetchMe(): Promise<Me> {
+  try {
+    const token = (await cookies()).get("accessToken")?.value;
+    if (!token) return null;
+
+    const me = await apiFetch<any>("/auth/me", { accessToken: token });
+
+    return me ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export function slugify(input?: string): string {
   const s = (input ?? "")
@@ -10,6 +28,14 @@ export function slugify(input?: string): string {
     .replace(/[^a-z0-9-]/g, "")
     .replace(/-+/g, "-");
   return s; // sempre string (pode ser "", mas nunca undefined)
+}
+
+export function canDoIt(me: NonNullable<Me>) {
+  if (!me) return false;
+  if (me.globalRole === "ADMIN") return true;
+  const role = me.apps?.[APP];
+
+  return ["OWNER", "ADMIN", "EDITOR"].includes(role || "");
 }
 
 export function getTagNames(p: any): string[] {

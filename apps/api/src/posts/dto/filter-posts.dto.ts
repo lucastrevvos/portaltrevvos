@@ -1,5 +1,5 @@
 import { PostStatus } from '@prisma/client';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
@@ -33,17 +33,19 @@ export class FilterPostsDto {
   @IsString()
   tagId?: string; // Tag.id é cuid()
 
+  // 🔎 termo de busca
+  @IsOptional() @IsString() q?: string;
+
   // Paginação
   @IsOptional()
-  @Type(() => Number)
+  @Transform(({ value }) => parseInt(value, 10))
   @IsInt()
   @Min(0)
   skip?: number = 0;
 
   @IsOptional()
-  @Type(() => Number)
+  @Transform(({ value }) => parseInt(value, 10))
   @IsInt()
   @Min(1)
-  @Max(100)
-  take?: number = 50;
+  take?: number = 20;
 }

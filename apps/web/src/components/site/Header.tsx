@@ -1,6 +1,10 @@
-export default function Header({
+import { fetchMe } from "../../lib/post-utils";
+
+export default async function Header({
   categories = [] as { key: string; label: string }[],
 }) {
+  const me = await fetchMe();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -31,22 +35,40 @@ export default function Header({
             </nav>
           </div>
           <div className="flex items-center gap-2">
-            <input
-              placeholder="Buscar..."
-              className="hidden sm:block h-9 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
-            />
-            <a
-              href="/login"
-              className="h-9 rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
-            >
-              Login
-            </a>
-            <a
-              href="/cadastro"
-              className="h-9 rounded-xl bg-emerald-600 px-3 text-sm font-medium text-white hover:bg-emerald-700"
-            >
-              Cadastrar
-            </a>
+            <form action="/buscar" method="get" className="hidden sm:block">
+              <input
+                name="q"
+                placeholder="Buscar..."
+                className="h-9 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              <button className="h-10 shrink-0 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700">
+                Buscar
+              </button>
+            </form>
+            {!me ? (
+              <a
+                href="/login"
+                className="h-9 rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
+              >
+                Login
+              </a>
+            ) : (
+              <a
+                href="/auth/logout"
+                className="h-9 rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
+              >
+                Sair
+              </a>
+            )}
+
+            {me && (
+              <a
+                href="/new-post"
+                className="h-9 rounded-xl bg-emerald-600 px-3 text-sm font-medium text-white hover:bg-emerald-700"
+              >
+                Novo Post
+              </a>
+            )}
           </div>
         </div>
       </div>

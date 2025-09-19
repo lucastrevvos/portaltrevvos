@@ -1,7 +1,7 @@
 // =====================================================
 // apps/web/src/app/post/[slug]/page.tsx (com botão Editar se logado)
 // =====================================================
-import type { PostWithRelations } from "@trevvos/types";
+import type { Me, PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "../../../lib/api";
 import type { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
@@ -13,7 +13,10 @@ import {
   getCategorySlug,
   getAuthor,
   formatDate,
+  canDoIt,
+  fetchMe,
 } from "../../../lib/post-utils";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -57,18 +60,6 @@ async function fetchRelated(
       .slice(0, 6);
   } catch {
     return [];
-  }
-}
-
-// 🔐 tenta descobrir o usuário logado (ajuste o endpoint se o seu for diferente)
-type Me = { id: string; name?: string; role?: string } | null;
-async function fetchMe(): Promise<Me> {
-  try {
-    // comum: /me, /auth/me, /users/me — ajuste se necessário
-    const me = await apiFetch<any>("/me");
-    return me ?? null;
-  } catch {
-    return null;
   }
 }
 
@@ -176,14 +167,14 @@ export default async function PostPage({
               </div>
             </div>
 
-            {/* ✅ Botão Editar (só aparece se logado) */}
-
-            <a
-              href={editHref}
-              className="shrink-0 rounded-xl border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
-            >
-              Editar post
-            </a>
+            {me && canDoIt(me) && (
+              <a
+                href={editHref}
+                className="shrink-0 rounded-xl border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
+              >
+                Editar post
+              </a>
+            )}
           </div>
 
           {cover && (

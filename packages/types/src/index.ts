@@ -6,6 +6,14 @@ export type AppRole = "OWNER" | "ADMIN" | "EDITOR" | "AUTHOR" | "READER";
 
 export type PostStatus = "DRAFT" | "PUBLISHED";
 
+export type Me = {
+  id: string;
+  name?: string;
+  role?: string;
+  globalRole?: string;
+  apps?: Record<string, string>;
+} | null;
+
 export type UserLite = {
   id: string;
   name: string | null;
