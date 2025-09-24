@@ -34,17 +34,19 @@ export default async function Header({
               ))}
             </nav>
           </div>
-          <div className="flex items-center gap-2">
-            <form action="/buscar" method="get" className="hidden sm:block">
-              <input
-                name="q"
-                placeholder="Buscar..."
-                className="h-9 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <button className="h-10 shrink-0 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700">
-                Buscar
-              </button>
-            </form>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <form action="/buscar" method="get" className="flex gap-2">
+                <input
+                  name="q"
+                  placeholder="Buscar..."
+                  className="h-9 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <button className="h-10 shrink-0 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700">
+                  Buscar
+                </button>
+              </form>
+            </div>
             {!me ? (
               <a
                 href="/login"
@@ -53,12 +55,14 @@ export default async function Header({
                 Login
               </a>
             ) : (
-              <a
-                href="/auth/logout"
-                className="h-9 rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
-              >
-                Sair
-              </a>
+              <form action="/auth/logout" method="post">
+                <button
+                  type="submit"
+                  className="h-9 rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
+                >
+                  Sair
+                </button>
+              </form>
             )}
 
             {me && (
