@@ -74,20 +74,29 @@ export async function generateMetadata({
   const title = (post as any)?.title ?? "Post";
   const description = (post as any)?.excerpt ?? (post as any)?.subtitle ?? "";
   const cover = getCoverUrl(post);
+
+  const SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const og = `${SITE}/og?title=${encodeURIComponent(
+    title
+  )}&subtitle=${encodeURIComponent(description)}&cover=${encodeURIComponent(
+    cover ?? ""
+  )}`;
+
   return {
     title: `${title} — Trevvos`,
     description,
     openGraph: {
       title,
       description,
-      images: cover ? [{ url: cover }] : undefined,
+      images: [{ url: og }],
       type: "article",
     },
     twitter: {
       card: cover ? "summary_large_image" : "summary",
       title,
       description,
-      images: cover ? [cover] : undefined,
+      images: [og],
     },
   };
 }
