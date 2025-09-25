@@ -17,6 +17,7 @@ import {
   fetchMe,
 } from "../../../lib/post-utils";
 import { cookies } from "next/headers";
+import MarkdownView from "apps/web/src/components/MarkdownView";
 
 export const dynamic = "force-dynamic";
 
@@ -205,26 +206,12 @@ export default async function PostPage({
               dangerouslySetInnerHTML={{ __html: (post as any).contentHtml }}
             />
           ) : (
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw]}
-              components={{
-                img: (props) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    {...props}
-                    className={`mt-6 w-full rounded-2xl object-contain ${
-                      props.className ?? ""
-                    }`}
-                  />
-                ),
-                a: (props) => (
-                  <a {...props} target="_blank" rel="noopener noreferrer" />
-                ),
-              }}
-            >
-              {(post as any).content ?? ""}
-            </ReactMarkdown>
+            <MarkdownView
+              markdown={String(
+                (post as any).content ?? (post as any).contentHtml ?? ""
+              )}
+              showToc
+            />
           )}
 
           {/* --- ADS: final do conteúdo --- */}
