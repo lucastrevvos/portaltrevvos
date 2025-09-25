@@ -17,6 +17,7 @@ import { readingTime } from "apps/web/src/lib/reading-time";
 import { articleJsonLd } from "apps/web/src/lib/jsonld";
 import MarkdownView from "apps/web/src/components/MarkdownView";
 import ShareBar from "apps/web/src/components/site/ShareBar";
+import AuthorBox from "apps/web/src/components/site/AuthorBox";
 
 export const dynamic = "force-dynamic";
 
@@ -216,6 +217,8 @@ export default async function PostPage({
 
           {/* Share */}
           <ShareBar url={url} title={(post as any).title ?? "Trevvos"} />
+
+          <AuthorBox post={post} />
 
           {/* Prev/Next */}
           {(siblings.prev || siblings.next) && (

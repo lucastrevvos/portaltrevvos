@@ -5,6 +5,22 @@ const APP = process.env.NEXT_PUBLIC_APP_SLUG || "portal";
 
 export type { PostWithRelations } from "@trevvos/types";
 
+export function getAuthorAvatar(p?: any): string | undefined {
+  return (
+    p?.author?.avatarUrl ||
+    p?.authorAvatar ||
+    p?.author?.image ||
+    p?.author?.photo ||
+    undefined
+  );
+}
+
+export function getAuthorBio(p?: any): string | undefined {
+  return (
+    p?.author?.bio || p?.authorBio || p?.contentMeta?.authorBio || undefined
+  );
+}
+
 export async function fetchMe(): Promise<Me> {
   try {
     const token = (await cookies()).get("accessToken")?.value;
