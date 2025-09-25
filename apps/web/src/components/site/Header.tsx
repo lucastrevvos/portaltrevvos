@@ -10,11 +10,13 @@ export default async function Header({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <a
-              href="/"
-              className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-600 text-white font-bold"
-            >
-              T
+            <a href="/" className="flex items-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/trevvos/logo.png"
+                alt="Trevvos"
+                className="h-9 w-auto  rounded"
+              />
             </a>
             <a href="/" className="font-semibold tracking-tight">
               Trevvos
@@ -32,6 +34,12 @@ export default async function Header({
                   {c.label}
                 </a>
               ))}
+              <a className="hover:text-neutral-900" href="/sobre">
+                Sobre
+              </a>
+              <a className="hover:text-neutral-900" href="/contato">
+                Contato
+              </a>
             </nav>
           </div>
           <div className="flex items-center gap-3">
