@@ -1,29 +1,27 @@
-// =====================================================
-// apps/web/src/app/post/[slug]/page.tsx (com botão Editar se logado)
-// =====================================================
-import type { Me, PostWithRelations } from "@trevvos/types";
-import { apiFetch } from "../../../lib/api";
+// apps/web/src/app/post/[slug]/page.tsx
 import type { Metadata } from "next";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
+
+import type { PostWithRelations } from "@trevvos/types";
+import { apiFetch } from "apps/web/src/lib/api";
 import {
-  getCoverUrl,
-  getCategoryName,
-  getCategorySlug,
-  getAuthor,
-  formatDate,
   canDoIt,
   fetchMe,
-} from "../../../lib/post-utils";
-import { cookies } from "next/headers";
+  formatDate,
+  getAuthor,
+  getCategoryName,
+  getCategorySlug,
+  getCoverUrl,
+} from "apps/web/src/lib/post-utils";
+import { fetchSiblings } from "apps/web/src/lib/siblings";
+import { readingTime } from "apps/web/src/lib/reading-time";
+import { articleJsonLd } from "apps/web/src/lib/jsonld";
 import MarkdownView from "apps/web/src/components/MarkdownView";
+import ShareBar from "apps/web/src/components/site/ShareBar";
 
 export const dynamic = "force-dynamic";
 
 type Params = { slug: string };
 
-// --- Data fetchers ---
 async function fetchPost(slug: string): Promise<PostWithRelations | undefined> {
   try {
     return await apiFetch<PostWithRelations>(
@@ -64,7 +62,7 @@ async function fetchRelated(
   }
 }
 
-// --- Metadata ---
+// --- Metadata (mantém como você já tinha, só lembrando do og) ---
 export async function generateMetadata({
   params,
 }: {
@@ -77,7 +75,6 @@ export async function generateMetadata({
   const cover = getCoverUrl(post);
 
   const SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
   const og = `${SITE}/og?title=${encodeURIComponent(
     title
   )}&subtitle=${encodeURIComponent(description)}&cover=${encodeURIComponent(
@@ -87,18 +84,8 @@ export async function generateMetadata({
   return {
     title: `${title} — Trevvos`,
     description,
-    openGraph: {
-      title,
-      description,
-      images: [{ url: og }],
-      type: "article",
-    },
-    twitter: {
-      card: cover ? "summary_large_image" : "summary",
-      title,
-      description,
-      images: [og],
-    },
+    openGraph: { title, description, images: [{ url: og }], type: "article" },
+    twitter: { card: "summary_large_image", title, description, images: [og] },
   };
 }
 
@@ -110,7 +97,7 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
   const post = await fetchPost(slug);
-  const me = await fetchMe(); // 👈 checa login no server
+  const me = await fetchMe();
 
   if (!post) {
     return (
@@ -127,18 +114,42 @@ export default async function PostPage({
     );
   }
 
+  const SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const url = `${SITE}/post/${(post as any).slug ?? (post as any).id}`;
+
   const cover = getCoverUrl(post);
   const categoryName = getCategoryName(post);
   const categorySlug = getCategorySlug(post);
+  const related = await fetchRelated(post);
+  const siblings = await fetchSiblings(post);
+  const rawContent = String(
+    (post as any).content ?? (post as any).contentHtml ?? ""
+  );
+  const readTime = (post as any).read || readingTime(rawContent);
 
-  // URL de edição: configure NEXT_PUBLIC_EDIT_BASE (ex.: "/admin/posts" ou "/studio/structure/posts")
   const editBase = process.env.NEXT_PUBLIC_EDIT_BASE ?? "/edit-post";
   const editHref = `${editBase}/${(post as any).id ?? (post as any).slug}`;
 
-  const related = await fetchRelated(post);
+  // JSON-LD
+  const jsonLd = articleJsonLd({
+    url,
+    title: (post as any).title ?? "Post",
+    description: (post as any).excerpt ?? "",
+    image: cover,
+    datePublished: (post as any).publishedAt,
+    dateModified: (post as any).updatedAt,
+    authorName: (post as any).author?.name ?? "Equipe Trevvos",
+    siteName: "Trevvos",
+  });
 
   return (
     <div className="min-h-screen">
+      {/* JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd }}
+      />
+
       {/* Hero do Post */}
       <section className="border-b border-neutral-200 bg-gradient-to-b from-white to-neutral-50">
         <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -173,7 +184,7 @@ export default async function PostPage({
                     (post as any).publishedAt ?? (post as any).createdAt
                   )}
                 </span>
-                {(post as any).read && <span>• {(post as any).read}</span>}
+                {readTime && <span>• {readTime}</span>}
               </div>
             </div>
 
@@ -201,17 +212,41 @@ export default async function PostPage({
       {/* Conteúdo + Sidebar */}
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid gap-8 lg:grid-cols-12">
         <article className="prose prose-neutral max-w-none lg:col-span-8">
-          {(post as any).contentHtml ? (
-            <div
-              dangerouslySetInnerHTML={{ __html: (post as any).contentHtml }}
-            />
-          ) : (
-            <MarkdownView
-              markdown={String(
-                (post as any).content ?? (post as any).contentHtml ?? ""
+          <MarkdownView markdown={rawContent} showToc />
+
+          {/* Share */}
+          <ShareBar url={url} title={(post as any).title ?? "Trevvos"} />
+
+          {/* Prev/Next */}
+          {(siblings.prev || siblings.next) && (
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              {siblings.prev && (
+                <a
+                  href={`/post/${
+                    (siblings.prev as any).slug ?? (siblings.prev as any).id
+                  }`}
+                  className="rounded-xl border border-neutral-200 p-4 hover:bg-neutral-50"
+                >
+                  <div className="text-xs text-neutral-500">Anterior</div>
+                  <div className="mt-1 line-clamp-2 font-medium">
+                    {(siblings.prev as any).title}
+                  </div>
+                </a>
               )}
-              showToc
-            />
+              {siblings.next && (
+                <a
+                  href={`/post/${
+                    (siblings.next as any).slug ?? (siblings.next as any).id
+                  }`}
+                  className="rounded-xl border border-neutral-200 p-4 hover:bg-neutral-50 text-right sm:text-left"
+                >
+                  <div className="text-xs text-neutral-500">Próximo</div>
+                  <div className="mt-1 line-clamp-2 font-medium">
+                    {(siblings.next as any).title}
+                  </div>
+                </a>
+              )}
+            </div>
           )}
 
           {/* --- ADS: final do conteúdo --- */}
