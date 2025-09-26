@@ -6,7 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
-import { slugify } from 'src/common/utils/slugify';
+import { slugify } from '../common/utils/slugify';
 
 @Injectable()
 export class TagsService {

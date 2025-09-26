@@ -11,12 +11,12 @@ import {
   Req,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { JwtAuthGuard } from '../auth/jwt.guard';
 import { CreatePostDto } from './dto/create-post.dto';
-import { CurrentUser } from 'src/auth/current-user.decorator';
+import { CurrentUser } from '../auth/current-user.decorator';
 import { FilterPostsDto } from './dto/filter-posts.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import type { JwtPayload } from 'src/auth/jwt-payload';
+import type { JwtPayload } from '../auth/jwt-payload';
 
 @Controller('posts')
 export class PostsController {

@@ -11,7 +11,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { JwtAuthGuard } from '../auth/jwt.guard';
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);

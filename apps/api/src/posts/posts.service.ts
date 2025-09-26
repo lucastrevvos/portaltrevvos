@@ -3,11 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { FilterPostsDto } from './dto/filter-posts.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import type { JwtPayload } from 'src/auth/jwt-payload';
+import type { JwtPayload } from '../auth/jwt-payload';
 import { PostStatus, type AppRole, type Prisma } from '@prisma/client';
 
 @Injectable()

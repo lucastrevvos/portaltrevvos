@@ -4,7 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
 import { CategoriesModule } from './categories/categories.module';
-import { UploadsModule } from 'uploads/uploads.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
