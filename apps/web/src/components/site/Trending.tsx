@@ -1,6 +1,6 @@
-import { getSlug } from "../../lib/post-utils";
+import { getSlug, MaybePost } from "../../lib/post-utils";
 
-export function Trending({ posts = [] as any[] }) {
+export function Trending({ posts = [] as MaybePost[] }) {
   return (
     <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
       <h3 className="text-sm font-semibold">Trending agora</h3>

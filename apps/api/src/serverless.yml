@@ -1,0 +1,52 @@
+service: trevvos-api
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  architecture: arm64
+  region: us-east-1
+  memorySize: 512
+  timeout: 20
+  environment:
+    NODE_ENV: lambda
+    APP_SLUG: portal
+    JWT_SECRET: ${env:JWT_SECRET}
+    COOKIE_NAME: accessToken
+    COOKIE_SECURE: true
+    COOKIE_SAMESITE: lax
+    SITE_URL: https://trevvos.com.br
+    CORS_ORIGINS: https://trevvos.com.br,https://*.amplifyapp.com,http://localhost:3000
+    DATABASE_URL: ${env:DATABASE_URL} # Neon com ?sslmode=require&pgbouncer=true
+    S3_BUCKET: ${env:S3_BUCKET}
+    S3_REGION: ${env:S3_REGION}
+    USE_LOCAL_UPLOADS: 'false'
+
+  httpApi:
+    cors:
+      allowedOrigins:
+        - https://trevvos.com.br
+        - https://*.amplifyapp.com
+        - http://localhost:3000
+      allowedHeaders:
+        - content-type
+        - authorization
+        - x-app-slug
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allowCredentials: true
+
+functions:
+  api:
+    handler: dist/lambda.handler
+    events:
+      - httpApi: '*'
+
+package:
+  patterns:
+    - '!**/*.map'
+    - '!**/*.md'

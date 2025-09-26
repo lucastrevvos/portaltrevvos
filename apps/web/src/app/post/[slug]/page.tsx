@@ -18,6 +18,7 @@ import { articleJsonLd } from "apps/web/src/lib/jsonld";
 import MarkdownView from "apps/web/src/components/MarkdownView";
 import ShareBar from "apps/web/src/components/site/ShareBar";
 import AuthorBox from "apps/web/src/components/site/AuthorBox";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -106,9 +107,9 @@ export default async function PostPage({
         <h1 className="text-2xl font-bold">Post não encontrado</h1>
         <p className="mt-2 text-neutral-600">
           Tenta voltar para a{" "}
-          <a className="underline" href="/">
+          <Link className="underline" href="/">
             home
-          </a>
+          </Link>
           .
         </p>
       </main>
@@ -156,16 +157,19 @@ export default async function PostPage({
         <article className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
           {categorySlug && (
             <div className="mb-3 text-xs">
-              <a href="/" className="text-neutral-500 hover:text-neutral-800">
+              <Link
+                href="/"
+                className="text-neutral-500 hover:text-neutral-800"
+              >
                 Início
-              </a>
+              </Link>
               <span className="mx-1">/</span>
-              <a
+              <Link
                 href={`/categoria/${categorySlug}`}
                 className="text-emerald-700 hover:underline"
               >
                 {categoryName}
-              </a>
+              </Link>
             </div>
           )}
 
@@ -190,12 +194,12 @@ export default async function PostPage({
             </div>
 
             {me && canDoIt(me) && (
-              <a
+              <Link
                 href={editHref}
                 className="shrink-0 rounded-xl border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-50"
               >
                 Editar post
-              </a>
+              </Link>
             )}
           </div>
 
@@ -224,7 +228,7 @@ export default async function PostPage({
           {(siblings.prev || siblings.next) && (
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {siblings.prev && (
-                <a
+                <Link
                   href={`/post/${
                     (siblings.prev as any).slug ?? (siblings.prev as any).id
                   }`}
@@ -234,10 +238,10 @@ export default async function PostPage({
                   <div className="mt-1 line-clamp-2 font-medium">
                     {(siblings.prev as any).title}
                   </div>
-                </a>
+                </Link>
               )}
               {siblings.next && (
-                <a
+                <Link
                   href={`/post/${
                     (siblings.next as any).slug ?? (siblings.next as any).id
                   }`}
@@ -247,7 +251,7 @@ export default async function PostPage({
                   <div className="mt-1 line-clamp-2 font-medium">
                     {(siblings.next as any).title}
                   </div>
-                </a>
+                </Link>
               )}
             </div>
           )}
@@ -277,12 +281,12 @@ export default async function PostPage({
                     ) : (
                       <div className="h-12 w-16 rounded bg-neutral-100" />
                     )}
-                    <a
+                    <Link
                       className="line-clamp-2 hover:text-emerald-700"
                       href={`/post/${(p as any).slug ?? (p as any).id}`}
                     >
                       {(p as any).title}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

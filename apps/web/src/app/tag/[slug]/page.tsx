@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import type { Tag, PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "apps/web/src/lib/api";
 import { PostCard } from "apps/web/src/components/PostCard";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -109,9 +110,9 @@ export default async function TagPage({
         <h1 className="text-2xl font-bold">Tag não encontrada</h1>
         <p className="mt-2 text-neutral-600">
           Volte para a{" "}
-          <a className="underline" href="/">
+          <Link className="underline" href="/">
             home
-          </a>{" "}
+          </Link>{" "}
           ou escolha outra tag.
         </p>
       </main>
@@ -128,9 +129,9 @@ export default async function TagPage({
           <div className="flex items-center justify-between">
             <div>
               <div className="text-xs text-neutral-500">
-                <a href="/" className="hover:text-neutral-800">
+                <Link href="/" className="hover:text-neutral-800">
                   Início
-                </a>
+                </Link>
                 <span className="mx-1">/</span>
                 <span className="text-emerald-700">Tag</span>
               </div>
@@ -162,12 +163,12 @@ export default async function TagPage({
             {/* Carregar mais */}
             {hasMore && (
               <div className="mt-8 flex justify-center">
-                <a
+                <Link
                   href={`?page=${page + 1}&take=${take}`}
                   className="rounded-xl border border-neutral-200 px-4 py-2 text-sm hover:bg-neutral-50"
                 >
                   Carregar mais
-                </a>
+                </Link>
               </div>
             )}
 

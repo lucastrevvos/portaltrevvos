@@ -1,19 +1,23 @@
+// apps/web/src/components/site/PostHero.tsx
 import {
   getCoverUrl,
   getCategoryName,
   getSlug,
   formatDate,
   getAuthor,
+  MaybePost,
 } from "../../lib/post-utils";
-export function PostHero({ post }: { post: any }) {
+
+export function PostHero({ post }: { post: MaybePost }) {
   const cover = getCoverUrl(post);
+
   return (
     <article className="group relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
       {cover && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={cover}
-          alt={post?.title}
+          alt={post?.title ?? ""}
           className="h-72 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
       )}

@@ -95,6 +95,7 @@ export function MarkdownView({
           img: (props) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
+              alt={props.alt ?? ""}
               {...props}
               className={`mt-6 w-full rounded-2xl object-contain ${
                 props.className ?? ""

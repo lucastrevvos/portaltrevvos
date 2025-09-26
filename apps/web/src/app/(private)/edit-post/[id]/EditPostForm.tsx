@@ -1,5 +1,6 @@
 // apps/web/src/app/(private)/edit-post/[id]/EditPostForm.tsx
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";

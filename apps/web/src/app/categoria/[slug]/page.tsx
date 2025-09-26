@@ -6,12 +6,11 @@ import type { Metadata } from "next";
 import type { Category, PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "apps/web/src/lib/api";
 import { PostCard } from "apps/web/src/components/PostCard";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-type Params = { slug: string };
-type Search = { page?: string; take?: string };
-
+// helpers
 async function fetchCategory(slug: string): Promise<Category | undefined> {
   try {
     return await apiFetch<Category>(`/categories/${encodeURIComponent(slug)}`);
@@ -26,7 +25,6 @@ async function fetchCategory(slug: string): Promise<Category | undefined> {
     }
   }
 }
-
 async function fetchPosts(categoryId: string, skip: number, take: number) {
   try {
     return await apiFetch<PostWithRelations[]>(
@@ -38,18 +36,22 @@ async function fetchPosts(categoryId: string, skip: number, take: number) {
     return [];
   }
 }
+// unwrap (params/searchParams podem vir como Promise)
+async function unwrap<T>(maybe: T | Promise<T>): Promise<T> {
+  return (maybe as any)?.then ? await (maybe as any) : (maybe as T);
+}
 
 // --- Metadata ---
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<Params>;
-}): Promise<Metadata> {
-  const { slug } = await params;
+export async function generateMetadata(props: any): Promise<Metadata> {
+  const { params } = props ?? {};
+  const p = await unwrap(params);
+  const slug: string = p?.slug;
+
   const cat = await fetchCategory(slug);
   const title = cat?.name
     ? `Categoria: ${cat.name} — Trevvos`
     : "Categoria — Trevvos";
+
   return {
     title,
     description: cat?.name
@@ -61,15 +63,12 @@ export async function generateMetadata({
 }
 
 // --- Page ---
-export default async function CategoryPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<Params>;
-  searchParams?: Promise<Search>;
-}) {
-  const { slug } = await params;
-  const sp = (await searchParams) ?? {};
+export default async function CategoryPage(props: any) {
+  const { params, searchParams } = props ?? {};
+  const p = await unwrap(params);
+  const sp = (await unwrap(searchParams)) ?? {};
+
+  const slug: string = p?.slug;
   const page = Math.max(1, Number(sp.page ?? 1));
   const take = Math.min(24, Math.max(6, Number(sp.take ?? 12)));
   const skip = (page - 1) * take;
@@ -81,9 +80,9 @@ export default async function CategoryPage({
         <h1 className="text-2xl font-bold">Categoria não encontrada</h1>
         <p className="mt-2 text-neutral-600">
           Volte para a{" "}
-          <a className="underline" href="/">
+          <Link className="underline" href="/">
             home
-          </a>{" "}
+          </Link>{" "}
           ou escolha outra categoria.
         </p>
       </main>
@@ -91,7 +90,7 @@ export default async function CategoryPage({
   }
 
   const posts = await fetchPosts(String(cat.id), skip, take);
-  const hasMore = posts.length === take; // heurística simples
+  const hasMore = posts.length === take;
 
   return (
     <div className="min-h-screen">
@@ -101,22 +100,16 @@ export default async function CategoryPage({
           <div className="flex items-center justify-between">
             <div>
               <div className="text-xs text-neutral-500">
-                <a href="/" className="hover:text-neutral-800">
+                <Link href="/" className="hover:text-neutral-800">
                   Início
-                </a>
+                </Link>
                 <span className="mx-1">/</span>
                 <span className="text-emerald-700">Categoria</span>
               </div>
               <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
                 {cat.name}
               </h1>
-              {/* Se quiser descrição futuramente:
-              {(cat as any).description && (
-                <p className="mt-2 max-w-2xl text-neutral-600">{(cat as any).description}</p>
-              )} */}
             </div>
-
-            {/* --- ADS: header da categoria --- */}
             {/* <div className="hidden md:flex h-24 w-64 items-center justify-center rounded-xl bg-neutral-100 text-neutral-500">Ad Space</div> */}
           </div>
         </div>
@@ -135,12 +128,9 @@ export default async function CategoryPage({
                 {posts.map((p) => (
                   <PostCard key={p.id} post={p} />
                 ))}
-
-                {/* --- ADS: meio do grid --- */}
                 {/* <div className="sm:col-span-2 h-32 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
               </div>
 
-              {/* Carregar mais (SSR via querystring) */}
               {hasMore && (
                 <div className="mt-8 flex justify-center">
                   <a
@@ -156,13 +146,8 @@ export default async function CategoryPage({
         </section>
 
         <aside className="lg:col-span-4 space-y-6">
-          {/* --- ADS: topo sidebar --- */}
           {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
-
-          {/* Widgets extras: newsletter/tags/etc */}
-          {/* <YourSidebarWidgetsHere /> */}
-
-          {/* --- ADS: base sidebar --- */}
+          {/* widgets extras */}
           {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </aside>
       </main>

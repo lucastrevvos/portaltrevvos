@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { fetchMe } from "../../lib/post-utils";
 
 export default async function Header({
@@ -10,36 +11,36 @@ export default async function Header({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/trevvos/logo.png"
                 alt="Trevvos"
                 className="h-9 w-auto  rounded"
               />
-            </a>
-            <a href="/" className="font-semibold tracking-tight">
+            </Link>
+            <Link href="/" className="font-semibold tracking-tight">
               Trevvos
-            </a>
+            </Link>
             <nav className="hidden md:flex items-center gap-6 ml-8 text-sm text-neutral-600">
-              <a className="hover:text-neutral-900" href="/">
+              <Link className="hover:text-neutral-900" href="/">
                 Início
-              </a>
+              </Link>
               {categories.map((c) => (
-                <a
+                <Link
                   key={c.key}
                   className="hover:text-neutral-900"
                   href={`/categoria/${c.key}`}
                 >
                   {c.label}
-                </a>
+                </Link>
               ))}
-              <a className="hover:text-neutral-900" href="/sobre">
+              <Link className="hover:text-neutral-900" href="/sobre">
                 Sobre
-              </a>
-              <a className="hover:text-neutral-900" href="/contato">
+              </Link>
+              <Link className="hover:text-neutral-900" href="/contato">
                 Contato
-              </a>
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-3">

@@ -1,10 +1,12 @@
-// =====================================================
-// apps/web/src/app/page.tsx (Home com espaço p/ Ads)
-// =====================================================
-
+// apps/web/src/app/page.tsx
 import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "../lib/api";
-import { getCategoryName, slugify, getTagNames } from "../lib/post-utils";
+import {
+  getCategoryName,
+  slugify,
+  getTagNames,
+  type MaybePost,
+} from "../lib/post-utils";
 import { PostHero } from "../components/site/PostHero";
 import { Trending } from "../components/site/Trending";
 import { NewsletterCard } from "../components/site/NewsLetterCard";
@@ -12,20 +14,35 @@ import { Sidebar } from "../components/site/Sidebar";
 
 export const dynamic = "force-dynamic";
 
+// type guard pra strings não vazias
+const onlyStr = (v: unknown): v is string =>
+  typeof v === "string" && v.trim().length > 0;
+
 export default async function TrevvosHome() {
   const posts = await apiFetch<PostWithRelations[]>(
     `/posts?status=PUBLISHED&take=20`
   );
-  const hasPosts = posts?.length > 0;
 
+  const hasPosts = posts?.length > 0;
   const [hero, ...rest] = hasPosts ? posts : [];
 
-  const categories = [
-    ...new Set(posts.map(getCategoryName).filter(Boolean)),
-  ].map((c) => ({ key: slugify(String(c)), label: String(c) }));
+  // categorias únicas
+  const categories: { key: string; label: string }[] = Array.from(
+    new Set(
+      posts
+        .map((p) => getCategoryName(p as unknown as MaybePost))
+        .filter(onlyStr)
+    )
+  ).map((c) => ({ key: slugify(c), label: c }));
 
-  const rawTags = [...new Set(posts.flatMap(getTagNames))];
-  const tags = rawTags.map((t) => ({ key: slugify(t), label: t }));
+  // tags únicas
+  const rawTags = Array.from(
+    new Set(posts.flatMap((p) => getTagNames(p as unknown as MaybePost)))
+  );
+  const tags: { key: string; label: string }[] = rawTags.map((t) => ({
+    key: slugify(t),
+    label: t,
+  }));
 
   return (
     <div className="min-h-screen">
@@ -33,13 +50,11 @@ export default async function TrevvosHome() {
         <section className="border-b border-neutral-200 bg-gradient-to-b from-white to-neutral-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid gap-6 lg:grid-cols-12">
             <div className="lg:col-span-8">
-              <PostHero post={hero} />
+              <PostHero post={hero as unknown as MaybePost} />
             </div>
             <div className="lg:col-span-4 grid gap-4">
-              <Trending posts={rest} />
+              <Trending posts={rest as unknown as MaybePost[]} />
               <NewsletterCard />
-              {/* --- Espaço reservado para ADS (sidebar hero) --- */}
-              {/* <div className="h-48 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
             </div>
           </div>
         </section>
@@ -47,16 +62,11 @@ export default async function TrevvosHome() {
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid gap-8 lg:grid-cols-12">
         <section className="lg:col-span-8 grid gap-6 sm:grid-cols-2">
-          {rest.map((p: any) => (
-            <PostHero key={p.id} post={p} />
+          {rest.map((p) => (
+            <PostHero key={(p as any).id} post={p as unknown as MaybePost} />
           ))}
-          {/* --- Espaço reservado para ADS (meio do feed) --- */}
-          {/* <div className="sm:col-span-2 h-32 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </section>
-        <Sidebar categories={categories} tags={tags}>
-          {/* --- Espaço reservado para ADS (sidebar principal) --- */}
-          {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
-        </Sidebar>
+        <Sidebar categories={categories} tags={tags} />
       </main>
     </div>
   );
