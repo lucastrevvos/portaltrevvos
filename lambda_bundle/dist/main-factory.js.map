@@ -1,0 +1,1 @@
+{"version":3,"file":"main-factory.js","sourceRoot":"","sources":["../src/main-factory.ts"],"names":[],"mappings":";;AAIA,8BAIC;AARD,sBAAsB;AACtB,uCAA2C;AAC3C,6CAAyC;AAElC,KAAK,UAAU,SAAS;IAC7B,MAAM,GAAG,GAAG,MAAM,kBAAW,CAAC,MAAM,CAAC,sBAAS,CAAC,CAAC;IAChD,GAAG,CAAC,eAAe,CAAC,KAAK,CAAC,CAAC;IAC3B,OAAO,GAAG,CAAC;AACb,CAAC"}
