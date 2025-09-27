@@ -24,7 +24,8 @@
     "prisma:status": "prisma migrate status --schema=prisma/schema.prisma",
     "prisma:deploy:prod": "dotenv -e .env.production -- prisma migrate deploy --schema=prisma/schema.prisma",
     "prisma:status:prod": "dotenv -e .env.production -- prisma migrate status --schema=prisma/schema.prisma",
-    "prisma:gen:prod": "dotenv -e .env.production -- prisma generate --schema=prisma/schema.prisma"
+    "prisma:gen:prod": "dotenv -e .env.production -- prisma generate --schema=prisma/schema.prisma",
+    "prisma:seed": "ts-node --transpile-only prisma/seed.ts"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"
