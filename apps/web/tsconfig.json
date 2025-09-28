@@ -22,7 +22,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/types/app/og/route.tsx"
+    ".next/types/app/og/route.tsx",
+    "next.config.mjs"
   ],
   "exclude": ["node_modules"]
 }
