@@ -7,20 +7,19 @@ applications:
           commands:
             - corepack enable
             - pnpm --version || npm i -g pnpm@9
-            # instala a partir de apps/web (o appRoot já é apps/web)
             - pnpm install --frozen-lockfile
         build:
           commands:
             - pnpm build
       artifacts:
-        # importante: Amplify precisa do node_modules do app no pacote
-        baseDirectory: .
+        # 👇 O Amplify procura o required-server-files.json dentro de .next
+        baseDirectory: .next
         files:
-          - .next/**/*
-          - public/**/*
-          - package.json
-          - next.config.* # .js/.ts/.mjs
-          - node_modules/**/* # ← garante que o runtime SSR ache "next"
+          - required-server-files.json
+          - static/**/*
+          - standalone/**/*
+          - server/**/* # (Next < 13 pode gerar pasta server)
+          - public/**/* # (opcional)
       cache:
         paths:
           - node_modules/**/*

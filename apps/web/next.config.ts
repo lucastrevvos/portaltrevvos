@@ -1,38 +1,33 @@
 import type { NextConfig } from "next";
+import type { RemotePattern } from "next/dist/shared/lib/image-config";
 
-// pega hostname da API do Render a partir da env
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
-let apiHostname: string | undefined;
-try {
-  apiHostname = apiUrl ? new URL(apiUrl).hostname : undefined;
-} catch {
-  apiHostname = undefined;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+let apiPattern: RemotePattern[] = [];
+
+if (apiUrl) {
+  try {
+    const parsed = new URL(apiUrl);
+    apiPattern.push({
+      protocol: parsed.protocol.startsWith("https") ? "https" : "http",
+      hostname: parsed.hostname,
+    });
+  } catch {
+    // ignora se a URL estiver mal formada
+  }
 }
 
 const nextConfig: NextConfig = {
-  // não travar build por lint
   eslint: { ignoreDuringBuilds: true },
-
   images: {
-    // permite imagens do S3 e da API (se servir /uploads)
     remotePatterns: [
-      // S3 (ajuste bucket/região)
       {
         protocol: "https",
         hostname: "trevvos-uploads.s3.sa-east-1.amazonaws.com",
       },
-      // Qualquer *.amazonaws.com (opcional; comente a linha de cima se usar esta)
-      // { protocol: "https", hostname: "**.amazonaws.com" },
-
-      // API Render (ex.: trevvos-api.onrender.com)
-      ...(apiHostname
-        ? ([{ protocol: "https", hostname: apiHostname }] as const)
-        : []),
+      ...apiPattern,
     ],
   },
-
-  // (opcional) otimiza páginas estáticas incrementais, se usar
-  // experimental: { incrementalCacheHandlerPath: undefined },
+  output: "standalone",
 };
 
 export default nextConfig;
