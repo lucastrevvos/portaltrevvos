@@ -11,10 +11,18 @@ applications:
         build:
           commands:
             - pnpm build
+            # 👇 Copia os arquivos que o Amplify espera para dentro do standalone
+            - cp .next/required-server-files.json .next/standalone/required-server-files.json
+            - mkdir -p .next/standalone/.next
+            - rm -rf .next/standalone/.next/static
+            - cp -r .next/static .next/standalone/.next/static
+            # (opcional) se existir .next/server, ajuda em algumas versões
+            - if [ -d ".next/server" ]; then mkdir -p .next/standalone/.next && cp -r .next/server .next/standalone/.next/server; fi
       artifacts:
-        baseDirectory: .next
+        # 👇 Agora o runtime do Amplify enxerga node_modules/next
+        baseDirectory: .next/standalone
         files:
-          - "**/*" # 👈 pega tudo que está em .next (inclui required-server-files.json)
+          - "**/*"
       cache:
         paths:
           - node_modules/**/*
