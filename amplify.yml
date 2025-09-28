@@ -7,11 +7,10 @@ applications:
           commands:
             - corepack enable
             - pnpm --version || npm i -g pnpm@9
-            # instala na raiz do monorepo (pnpm encontra o workspace mesmo rodando do subdir)
             - pnpm install --frozen-lockfile
         build:
           commands:
-            - pnpm --filter @trevvos/web build
+            - pnpm build
       artifacts:
         baseDirectory: .next
         files:
