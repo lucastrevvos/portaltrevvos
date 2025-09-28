@@ -51,7 +51,7 @@ export default async function Header({
                   placeholder="Buscar..."
                   className="h-9 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
                 />
-                <button className="h-10 shrink-0 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700">
+                <button className="h-10 shrink-0 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700 cursor-pointer">
                   Buscar
                 </button>
               </form>
@@ -59,7 +59,7 @@ export default async function Header({
             {!me ? (
               <a
                 href="/login"
-                className="h-9 rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
+                className="h-10 flex items-center rounded-xl border border-neutral-200 px-4 text-sm hover:bg-neutral-100"
               >
                 Login
               </a>
@@ -67,7 +67,7 @@ export default async function Header({
               <form action="/auth/logout" method="post">
                 <button
                   type="submit"
-                  className="h-9 rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
+                  className="h-10 flex items-center rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100 cursor-pointer"
                 >
                   Sair
                 </button>
@@ -77,7 +77,7 @@ export default async function Header({
             {me && (
               <a
                 href="/new-post"
-                className="h-9 rounded-xl bg-emerald-600 px-3 text-sm font-medium text-white hover:bg-emerald-700"
+                className="h-10 flex items-center rounded-xl bg-emerald-600 px-3 text-sm font-medium text-white hover:bg-emerald-700"
               >
                 Novo Post
               </a>
