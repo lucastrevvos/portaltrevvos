@@ -13,12 +13,10 @@ applications:
             - pnpm build
       artifacts:
         # 👇 O Amplify procura o required-server-files.json dentro de .next
-        baseDirectory: .next
+        baseDirectory: .next/standalone
         files:
-          - required-server-files.json
-          - static/**/*
-          - standalone/**/*
-          - server/**/* # (Next < 13 pode gerar pasta server)
+          - "**/*"
+          - ../.next/static/**/*
           - public/**/* # (opcional)
       cache:
         paths:
