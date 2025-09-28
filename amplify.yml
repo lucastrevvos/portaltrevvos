@@ -12,12 +12,13 @@ applications:
           commands:
             - pnpm build
       artifacts:
-        # 👇 O Amplify procura o required-server-files.json dentro de .next
-        baseDirectory: .next/standalone
+        baseDirectory: .next
         files:
-          - "**/*"
-          - ../.next/static/**/*
-          - public/**/* # (opcional)
+          - required-server-files.json
+          - static/**/*
+          - standalone/**/*
+          - server/**/*
+          - public/**/*
       cache:
         paths:
           - node_modules/**/*
