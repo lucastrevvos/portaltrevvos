@@ -7,26 +7,25 @@ applications:
           commands:
             - corepack enable
             - pnpm --version || npm i -g pnpm@9
-            # instala na RAIZ do monorepo (usa o lockfile certo)
-            - cd .. && pnpm install --frozen-lockfile && cd -
-            # garante node_modules DENTRO de apps/web também (para o runtime do Amplify)
             - pnpm install --frozen-lockfile
         build:
           commands:
+            # só pra ver a versão do Next de runtime
+            - node -e "console.log('Next version:', require('next/package.json').version)"
             - pnpm build
+            # 👇 debug: mostra o que foi gerado
+            - echo "--- ls -la .next ---"
+            - ls -la .next || true
+            - echo "--- ls -la .next/server ---"
+            - ls -la .next/server || true
+            - echo "--- ls -la .next/standalone ---"
+            - ls -la .next/standalone || true
+            - echo "--- cat .next/required-server-files.json ---"
+            - cat .next/required-server-files.json || true
       artifacts:
-        # publicamos a partir de apps/web (.)
-        baseDirectory: .
+        baseDirectory: .next
         files:
-          # next standalone + estáticos
-          - .next/required-server-files.json
-          - .next/standalone/**/*
-          - .next/static/**/*
-          - public/**/*
-
-          # 👇 inclui runtime deps pro Amplify (ele olha node_modules do appRoot)
-          - package.json
-          - node_modules/**/*
+          - "**/*"
       cache:
         paths:
           - node_modules/**/*
