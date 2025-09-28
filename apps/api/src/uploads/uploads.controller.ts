@@ -1,3 +1,4 @@
+// uploads.controller.ts
 import {
   BadRequestException,
   Controller,
@@ -13,16 +14,10 @@ import { extname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import { JwtAuthGuard } from '../auth/jwt.guard';
-
-// AWS S3 (SDK v3)
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-// ===== Config =====
-const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_SIZE = 5 * 1024 * 1024;
 const ALLOWED = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
-
-// true -> usa DISCO LOCAL (/uploads)
-// false -> usa S3 (produção/Lambda)
 const USE_LOCAL =
   (process.env.USE_LOCAL_UPLOADS ?? 'true').toLowerCase() !== 'false';
 
@@ -32,16 +27,12 @@ const ensureUploadsDir = () => {
   return dir;
 };
 
-// Monta as opções do Multer com base no modo escolhido
 const multerOptions = USE_LOCAL
   ? {
       storage: diskStorage({
         destination: () => ensureUploadsDir(),
-        filename: (_req, file, cb) => {
-          const ext = extname(file.originalname).toLowerCase();
-          const name = randomUUID() + ext;
-          cb(null, name);
-        },
+        filename: (_req, file, cb) =>
+          cb(null, randomUUID() + extname(file.originalname).toLowerCase()),
       }),
       limits: { fileSize: MAX_SIZE },
       fileFilter: (_req: any, file: Express.Multer.File, cb: Function) => {
@@ -52,7 +43,6 @@ const multerOptions = USE_LOCAL
       },
     }
   : {
-      // S3 -> usa memória
       storage: memoryStorage(),
       limits: { fileSize: MAX_SIZE },
       fileFilter: (_req: any, file: Express.Multer.File, cb: Function) => {
@@ -63,21 +53,14 @@ const multerOptions = USE_LOCAL
       },
     };
 
-// Helper para montar a URL pública do arquivo local
 function publicLocalUrl(filename: string, req: any) {
-  // Prioriza env PUBLIC_API_URL (ex.: https://api.trevvos.com.br)
   const base =
-    process.env.PUBLIC_API_URL ?? `${req.protocol}://${req.get('host')}`; // fallback dev
-
+    process.env.PUBLIC_API_URL ?? `${req.protocol}://${req.get('host')}`;
   return new URL(`/uploads/${filename}`, base).toString();
 }
 
-// Helper para montar URL pública S3
 function publicS3Url(bucket: string, region: string, key: string) {
-  // Virtual-hosted–style URL
-  return `https://${bucket}.s3.${region}.amazonaws.com/${encodeURIComponent(
-    key,
-  )}`;
+  return `https://${bucket}.s3.${region}.amazonaws.com/${encodeURIComponent(key)}`;
 }
 
 @Controller('uploads')
@@ -88,28 +71,19 @@ export class UploadsController {
   async upload(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
     if (!file) throw new BadRequestException('Arquivo ausente');
 
-    // ===== Modo LOCAL: já está salvo em /uploads pelo diskStorage
+    // Local
     if (USE_LOCAL) {
-      // filename foi definido no diskStorage
       const filename = (file as any).filename as string | undefined;
       if (!filename) throw new BadRequestException('Falha ao salvar arquivo');
-
       const url = publicLocalUrl(filename, req);
-      return { url };
+      return { url, key: filename, storage: 'local' };
     }
 
-    // ===== Modo S3 (Lambda/produção)
-    const bucket = process.env.S3_BUCKET;
-    const region = process.env.S3_REGION;
-
-    if (!bucket || !region) {
-      throw new BadRequestException(
-        'Config S3 ausente (S3_BUCKET/S3_REGION não definidos)',
-      );
-    }
-
+    // S3
+    const bucket = process.env.S3_BUCKET!;
+    const region = process.env.AWS_REGION!;
     const ext = extname(file.originalname).toLowerCase();
-    const key = `${randomUUID()}${ext}`;
+    const key = `public/posts/${new Date().toISOString().slice(0, 10)}/${randomUUID()}${ext}`;
 
     const s3 = new S3Client({ region });
 
@@ -119,11 +93,13 @@ export class UploadsController {
         Key: key,
         Body: file.buffer,
         ContentType: file.mimetype || 'application/octet-stream',
-        ACL: 'public-read', // deixe público; ou remova e sirva via CloudFront/assinado
+        // NÃO usar ACL se o bucket está com Block Public Access ligado
+        // ACL: 'private'
+        CacheControl: 'public, max-age=31536000, immutable',
       }),
     );
 
     const url = publicS3Url(bucket, region, key);
-    return { url };
+    return { url, key, storage: 's3' };
   }
 }
