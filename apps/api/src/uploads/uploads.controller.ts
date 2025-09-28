@@ -60,7 +60,7 @@ function publicLocalUrl(filename: string, req: any) {
 }
 
 function publicS3Url(bucket: string, region: string, key: string) {
-  return `https://${bucket}.s3.${region}.amazonaws.com/${encodeURIComponent(key)}`;
+  return `https://${bucket}.s3.${region}.amazonaws.com/${key}`;
 }
 
 @Controller('uploads')
