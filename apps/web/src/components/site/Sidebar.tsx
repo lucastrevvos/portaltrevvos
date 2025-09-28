@@ -1,3 +1,5 @@
+import { Car, PiggyBank, Volleyball } from "lucide-react";
+
 export function Sidebar({
   categories = [] as { key: string; label: string }[],
   tags = [] as { key: string; label: string }[],
@@ -46,9 +48,11 @@ export function Sidebar({
       {children}
       <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">
         <h3 className="text-sm font-semibold">Apps do ecossistema</h3>
-        <ul className="mt-3 space-y-3 text-sm">
+        <ul className="space-y-4">
           <li className="flex items-start gap-3">
-            <div className="mt-0.5 h-6 w-6 rounded-lg bg-neutral-100" />
+            <div className="mt-0.5 h-6 w-6 rounded-lg bg-blue-100 flex items-center justify-center">
+              <Car className="h-4 w-4 text-blue-600" />
+            </div>
             <div>
               <div className="font-medium">KM One</div>
               <div className="text-neutral-600">
@@ -56,8 +60,11 @@ export function Sidebar({
               </div>
             </div>
           </li>
+
           <li className="flex items-start gap-3">
-            <div className="mt-0.5 h-6 w-6 rounded-lg bg-neutral-100" />
+            <div className="mt-0.5 h-6 w-6 rounded-lg bg-green-100 flex items-center justify-center">
+              <PiggyBank className="h-4 w-4 text-green-600" />
+            </div>
             <div>
               <div className="font-medium">ControlLar</div>
               <div className="text-neutral-600">
@@ -65,8 +72,11 @@ export function Sidebar({
               </div>
             </div>
           </li>
+
           <li className="flex items-start gap-3">
-            <div className="mt-0.5 h-6 w-6 rounded-lg bg-neutral-100" />
+            <div className="mt-0.5 h-6 w-6 rounded-lg bg-orange-100 flex items-center justify-center">
+              <Volleyball className="h-4 w-4 text-orange-600" />
+            </div>
             <div>
               <div className="font-medium">SportsConnect</div>
               <div className="text-neutral-600">

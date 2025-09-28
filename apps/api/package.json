@@ -7,10 +7,10 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "prisma generate --schema=prisma/schema.prisma",
-    "dev": "nest start --watch",
+    "dev": "dotenv -e .env -- nest start --watch",
     "build": "nest build",
     "start": "node dist/main.js",
-    "start:dev": "nest start --watch",
+    "start:dev": "dotenv -e .env -- nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
