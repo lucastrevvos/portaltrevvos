@@ -10,22 +10,11 @@ applications:
             - pnpm install --frozen-lockfile
         build:
           commands:
-            # só pra ver a versão do Next de runtime
-            - node -e "console.log('Next version:', require('next/package.json').version)"
             - pnpm build
-            # 👇 debug: mostra o que foi gerado
-            - echo "--- ls -la .next ---"
-            - ls -la .next || true
-            - echo "--- ls -la .next/server ---"
-            - ls -la .next/server || true
-            - echo "--- ls -la .next/standalone ---"
-            - ls -la .next/standalone || true
-            - echo "--- cat .next/required-server-files.json ---"
-            - cat .next/required-server-files.json || true
       artifacts:
         baseDirectory: .next
         files:
-          - "**/*"
+          - "**/*" # 👈 pega tudo que está em .next (inclui required-server-files.json)
       cache:
         paths:
           - node_modules/**/*
