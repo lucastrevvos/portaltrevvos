@@ -6,12 +6,16 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "pnpm -r --parallel dev",
-    "build": "pnpm -r build",
-    "lint": "pnpm -r lint"
+    "db:status": "pnpm --filter @trevvos/api run prisma:status",
+    "db:migrate": "pnpm --filter @trevvos/api run prisma:migrate",
+    "db:gen": "pnpm --filter @trevvos/api run prisma:gen",
+    "db:studio": "pnpm --filter @trevvos/api run prisma:studio",
+    "dev": "pnpm -r --parallel dev"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "cross-env": "^10.0.0",
+    "dotenv-cli": "^10.0.0",
     "prisma": "^6.16.2"
   },
   "dependencies": {

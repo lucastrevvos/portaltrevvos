@@ -162,3 +162,10 @@ model PostTag {
   tagId String
   @@id([postId, tagId])
 }
+
+model NewsletterSubscriber {
+  id String @id @default(uuid())
+  email String @unique
+  createdAt DateTime @default(now())
+  verified Boolean @default(false)
+}
