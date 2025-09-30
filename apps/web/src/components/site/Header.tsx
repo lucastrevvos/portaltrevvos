@@ -49,7 +49,7 @@ export default async function Header({
                 <input
                   name="q"
                   placeholder="Buscar..."
-                  className="h-9 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="h-10 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
                 />
                 <button className="h-10 shrink-0 rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700 cursor-pointer">
                   Buscar
