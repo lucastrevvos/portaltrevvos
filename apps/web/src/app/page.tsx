@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 const onlyStr = (v: unknown): v is string =>
   typeof v === "string" && v.trim().length > 0;
 
-const TAKE = 20;
+const TAKE = 2;
 
 export default async function TrevvosHome() {
   const posts = await apiFetch<PostWithRelations[]>(

@@ -105,7 +105,7 @@ export function LoadMoreFeed({
           <button
             onClick={loadMore}
             disabled={loading}
-            className="px-4 py-2 rounded-xl border border-neutral-300 hover:border-neutral-400 disabled:opacity-60"
+            className="px-4 font-medium cursor-pointer bg-emerald-50 text-green-700  py-2 rounded-xl border border-neutral-300 hover:border-neutral-400 disabled:opacity-60"
           >
             {loading ? "Carregando..." : "Carregar mais"}
           </button>
