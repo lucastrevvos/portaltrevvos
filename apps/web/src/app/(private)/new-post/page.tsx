@@ -2,8 +2,9 @@ import { apiFetch } from "apps/web/src/lib/api";
 import NewPostForm from "./NewPostForm";
 import type { Category, Tag } from "@trevvos/types";
 import { getAccessToken } from "apps/web/src/lib/auth";
-import { fetchMe } from "apps/web/src/lib/post-utils";
+
 import { redirect } from "next/navigation";
+import { fetchMe } from "apps/web/src/lib/auth.server";
 
 export const dynamic = "force-dynamic";
 
