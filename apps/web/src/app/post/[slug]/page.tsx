@@ -6,7 +6,6 @@ import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "apps/web/src/lib/api";
 import {
   canDoIt,
-  fetchMe,
   formatDate,
   getAuthor,
   getCategoryName,
@@ -20,6 +19,7 @@ import MarkdownView from "apps/web/src/components/MarkdownView";
 import ShareBar from "apps/web/src/components/site/ShareBar";
 import AuthorBox from "apps/web/src/components/site/AuthorBox";
 import { Sidebar } from "apps/web/src/components/site/Sidebar";
+import { fetchMe } from "apps/web/src/lib/auth.server";
 
 export const dynamic = "force-dynamic";
 
