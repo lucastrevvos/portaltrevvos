@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fetchMe } from "../../lib/post-utils";
+import { fetchMe } from "../../lib/auth.server";
 
 export default async function Header({
   categories = [] as { key: string; label: string }[],

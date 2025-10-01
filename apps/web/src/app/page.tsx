@@ -1,4 +1,3 @@
-// apps/web/src/app/page.tsx
 import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "../lib/api";
 import {
@@ -11,22 +10,23 @@ import { PostHero } from "../components/site/PostHero";
 import { Trending } from "../components/site/Trending";
 import { NewsletterCard } from "../components/site/NewsLetterCard";
 import { Sidebar } from "../components/site/Sidebar";
+import { LoadMoreFeed } from "../components/site/LoadMoreFeed";
 
 export const dynamic = "force-dynamic";
 
-// type guard pra strings não vazias
 const onlyStr = (v: unknown): v is string =>
   typeof v === "string" && v.trim().length > 0;
 
+const TAKE = 20;
+
 export default async function TrevvosHome() {
   const posts = await apiFetch<PostWithRelations[]>(
-    `/posts?status=PUBLISHED&take=20`
+    `/posts?status=PUBLISHED&take=${TAKE}&skip=0`
   );
 
   const hasPosts = posts?.length > 0;
   const [hero, ...rest] = hasPosts ? posts : [];
 
-  // categorias únicas
   const categories: { key: string; label: string }[] = Array.from(
     new Set(
       posts
@@ -35,7 +35,6 @@ export default async function TrevvosHome() {
     )
   ).map((c) => ({ key: slugify(c), label: c }));
 
-  // tags únicas
   const rawTags = Array.from(
     new Set(posts.flatMap((p) => getTagNames(p as unknown as MaybePost)))
   );
@@ -61,10 +60,13 @@ export default async function TrevvosHome() {
       )}
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid gap-8 lg:grid-cols-12">
-        <section className="lg:col-span-8 grid gap-6 sm:grid-cols-2">
-          {rest.map((p) => (
-            <PostHero key={(p as any).id} post={p as unknown as MaybePost} />
-          ))}
+        <section className="lg:col-span-8">
+          <LoadMoreFeed
+            initialPosts={rest as unknown as MaybePost[]}
+            take={TAKE}
+            initialSkip={hero ? 1 : 0} // já pulou o hero
+            queryBase={`/posts?status=PUBLISHED`}
+          />
         </section>
         <Sidebar categories={categories} tags={tags} />
       </main>

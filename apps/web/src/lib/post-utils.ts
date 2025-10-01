@@ -1,5 +1,4 @@
 import { Me } from "@trevvos/types";
-import { cookies } from "next/headers";
 import { apiFetch } from "./api";
 
 // apps/web/src/lib/post-utils.ts
@@ -52,18 +51,6 @@ export type MaybePost = {
   read?: string | null;
 };
 
-// === Auth helpers (server-side) ===
-export async function fetchMe(): Promise<Me> {
-  try {
-    const token = (await cookies()).get(ACCESS_COOKIE)?.value;
-    if (!token) return null;
-    const me = await apiFetch<any>("/auth/me", { accessToken: token });
-    return me ?? null;
-  } catch {
-    return null;
-  }
-}
-
 export function canDoIt(me: Me): boolean {
   if (!me) return false;
   if (me?.globalRole === "ADMIN") return true;
@@ -102,8 +89,8 @@ export function getCategoryName(p?: MaybePost | null): string | undefined {
     typeof p.category === "string"
       ? p.category
       : p.category && typeof p.category === "object"
-      ? (p.category as any).name ?? (p.category as any).category?.name
-      : undefined;
+        ? ((p.category as any).name ?? (p.category as any).category?.name)
+        : undefined;
 
   if (fromSingle && typeof fromSingle === "string" && fromSingle.trim())
     return fromSingle;
@@ -127,8 +114,10 @@ export function getCategorySlug(p?: MaybePost | null): string | undefined {
     typeof p.category === "string"
       ? slugify(p.category)
       : p.category && typeof p.category === "object"
-      ? slugify((p.category as any).slug ?? (p.category as any).category?.slug)
-      : undefined;
+        ? slugify(
+            (p.category as any).slug ?? (p.category as any).category?.slug
+          )
+        : undefined;
 
   if (fromSingle && fromSingle.trim()) return fromSingle;
 
