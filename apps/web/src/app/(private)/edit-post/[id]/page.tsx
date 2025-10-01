@@ -1,9 +1,10 @@
 import type { Category, Tag, PostWithRelations } from "@trevvos/types";
 import { redirect } from "next/navigation";
 import EditPostForm from "./EditPostForm";
-import { canDoIt, fetchMe } from "apps/web/src/lib/post-utils";
+import { canDoIt } from "apps/web/src/lib/post-utils";
 import { getAccessToken } from "apps/web/src/lib/auth";
 import { apiFetch } from "apps/web/src/lib/api";
+import { fetchMe } from "apps/web/src/lib/auth.server";
 
 export const dynamic = "force-dynamic";
 
