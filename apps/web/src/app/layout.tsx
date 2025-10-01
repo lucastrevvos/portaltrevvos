@@ -6,14 +6,14 @@ import Header from "../components/site/Header";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "Trevvos", template: "%s — Trevvos" },
   description: "Conteúdo + Apps que fazem sentido.",
   alternates: { canonical: "/" },
-  openGraph: { siteName: "Trevvos" },
+  openGraph: { siteName: "Trevvos", url: siteUrl },
   twitter: { card: "summary_large_image" },
 };
 
@@ -25,19 +25,23 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        {/* Google tag (gtag.js) */}
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="ga4-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_ID}');
-          `}
-        </Script>
+        {/* Google tag (gtag.js) - só carrega se houver GA_ID */}
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}');
+              `}
+            </Script>
+          </>
+        )}
 
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -54,9 +58,13 @@ export default function RootLayout({
           href="/icon-512.png"
         />
       </head>
-      <body className="bg-neutral-50 text-neutral-900">
+
+      {/* Sticky footer em todo o site */}
+      <body className="flex min-h-screen flex-col bg-neutral-50 text-neutral-900">
         <Header categories={[]} />
-        {children}
+
+        <main className="flex-grow">{children}</main>
+
         <Footer />
       </body>
     </html>

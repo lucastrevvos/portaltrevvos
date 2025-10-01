@@ -1,5 +1,6 @@
 // apps/web/src/app/post/[slug]/page.tsx
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import type { PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "apps/web/src/lib/api";
@@ -18,12 +19,21 @@ import { articleJsonLd } from "apps/web/src/lib/jsonld";
 import MarkdownView from "apps/web/src/components/MarkdownView";
 import ShareBar from "apps/web/src/components/site/ShareBar";
 import AuthorBox from "apps/web/src/components/site/AuthorBox";
-import Link from "next/link";
+import { Sidebar } from "apps/web/src/components/site/Sidebar";
 
 export const dynamic = "force-dynamic";
 
 type Params = { slug: string };
 
+// -------------------------
+// Tipos utilitários
+// -------------------------
+type CategoryLite = { id: string | number; name: string; slug: string };
+type SidebarItem = { key: string; label: string };
+
+// -------------------------
+// Fetchers
+// -------------------------
 async function fetchPost(slug: string): Promise<PostWithRelations | undefined> {
   try {
     return await apiFetch<PostWithRelations>(
@@ -64,7 +74,23 @@ async function fetchRelated(
   }
 }
 
-// --- Metadata (mantém como você já tinha, só lembrando do og) ---
+async function fetchCategoriesForSidebar(): Promise<SidebarItem[]> {
+  try {
+    const list = await apiFetch<CategoryLite[]>(
+      `/categories?status=ACTIVE&take=100`
+    );
+    return (list ?? []).map((c) => ({
+      key: String(c.slug ?? c.id),
+      label: c.name,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// -------------------------
+// Metadata
+// -------------------------
 export async function generateMetadata({
   params,
 }: {
@@ -91,7 +117,9 @@ export async function generateMetadata({
   };
 }
 
-// --- Page ---
+// -------------------------
+// Page
+// -------------------------
 export default async function PostPage({
   params,
 }: {
@@ -99,7 +127,6 @@ export default async function PostPage({
 }) {
   const { slug } = await params;
   const post = await fetchPost(slug);
-  const me = await fetchMe();
 
   if (!post) {
     return (
@@ -122,8 +149,14 @@ export default async function PostPage({
   const cover = getCoverUrl(post);
   const categoryName = getCategoryName(post);
   const categorySlug = getCategorySlug(post);
-  const related = await fetchRelated(post);
-  const siblings = await fetchSiblings(post);
+
+  const [me, related, siblings, sidebarCategories] = await Promise.all([
+    fetchMe(),
+    fetchRelated(post),
+    fetchSiblings(post),
+    fetchCategoriesForSidebar(),
+  ]);
+
   const rawContent = String(
     (post as any).content ?? (post as any).contentHtml ?? ""
   );
@@ -260,10 +293,9 @@ export default async function PostPage({
           {/* <div className="my-8 h-40 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </article>
 
-        {/* Sidebar: relacionados */}
+        {/* Sidebar */}
         <aside className="lg:col-span-4 space-y-6">
-          {/* --- ADS: topo sidebar post --- */}
-          {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
+          <Sidebar categories={sidebarCategories} />
 
           {related.length > 0 && (
             <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm">

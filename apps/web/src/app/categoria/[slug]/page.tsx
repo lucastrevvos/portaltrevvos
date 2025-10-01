@@ -1,16 +1,26 @@
 // =====================================================
 // apps/web/src/app/categoria/[slug]/page.tsx
-// Categoria com "Carregar mais" (SSR) + slots de Ads
+// Categoria com "Carregar mais" (SSR) + Sidebar (categories)
 // =====================================================
 import type { Metadata } from "next";
+import Link from "next/link";
+
 import type { Category, PostWithRelations } from "@trevvos/types";
 import { apiFetch } from "apps/web/src/lib/api";
 import { PostCard } from "apps/web/src/components/PostCard";
-import Link from "next/link";
+import { Sidebar } from "apps/web/src/components/site/Sidebar";
 
 export const dynamic = "force-dynamic";
 
-// helpers
+// -------------------------
+// Tipos utilitários
+// -------------------------
+type CategoryLite = { id: string | number; name: string; slug: string };
+type SidebarItem = { key: string; label: string };
+
+// -------------------------
+// Helpers / Fetchers
+// -------------------------
 async function fetchCategory(slug: string): Promise<Category | undefined> {
   try {
     return await apiFetch<Category>(`/categories/${encodeURIComponent(slug)}`);
@@ -25,6 +35,7 @@ async function fetchCategory(slug: string): Promise<Category | undefined> {
     }
   }
 }
+
 async function fetchPosts(categoryId: string, skip: number, take: number) {
   try {
     return await apiFetch<PostWithRelations[]>(
@@ -36,12 +47,29 @@ async function fetchPosts(categoryId: string, skip: number, take: number) {
     return [];
   }
 }
+
+async function fetchCategoriesForSidebar(): Promise<SidebarItem[]> {
+  try {
+    const list = await apiFetch<CategoryLite[]>(
+      `/categories?status=ACTIVE&take=100`
+    );
+    return (list ?? []).map((c) => ({
+      key: String(c.slug ?? c.id),
+      label: c.name,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 // unwrap (params/searchParams podem vir como Promise)
 async function unwrap<T>(maybe: T | Promise<T>): Promise<T> {
   return (maybe as any)?.then ? await (maybe as any) : (maybe as T);
 }
 
-// --- Metadata ---
+// -------------------------
+// Metadata
+// -------------------------
 export async function generateMetadata(props: any): Promise<Metadata> {
   const { params } = props ?? {};
   const p = await unwrap(params);
@@ -62,7 +90,9 @@ export async function generateMetadata(props: any): Promise<Metadata> {
   };
 }
 
-// --- Page ---
+// -------------------------
+// Page
+// -------------------------
 export default async function CategoryPage(props: any) {
   const { params, searchParams } = props ?? {};
   const p = await unwrap(params);
@@ -89,7 +119,11 @@ export default async function CategoryPage(props: any) {
     );
   }
 
-  const posts = await fetchPosts(String(cat.id), skip, take);
+  // Buscar posts e categorias de Sidebar em paralelo
+  const [posts, sidebarCategories] = await Promise.all([
+    fetchPosts(String(cat.id), skip, take),
+    fetchCategoriesForSidebar(),
+  ]);
   const hasMore = posts.length === take;
 
   return (
@@ -146,8 +180,11 @@ export default async function CategoryPage(props: any) {
         </section>
 
         <aside className="lg:col-span-4 space-y-6">
+          {/* Sidebar (categories) */}
+          <Sidebar categories={sidebarCategories} />
+
+          {/* Espaços para Ads / outros widgets */}
           {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
-          {/* widgets extras */}
           {/* <div className="h-60 w-full rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-500">Ad Space</div> */}
         </aside>
       </main>

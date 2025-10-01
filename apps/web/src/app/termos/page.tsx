@@ -23,64 +23,127 @@ function formatDate(d = new Date()) {
 
 export default function TermosPage() {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12 prose prose-neutral">
-      <h1 className="text-emerald-700">📜 Termos de Uso</h1>
-      <p className="text-sm text-neutral-500">
-        Última atualização: {formatDate()}
-      </p>
+    <main className="mx-auto max-w-3xl px-4 py-12">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-emerald-700">
+          Termos de Uso
+        </h1>
+        <p className="mt-2 text-sm text-neutral-500">
+          Última atualização: {formatDate()}
+        </p>
+      </header>
 
-      <p>
-        Ao usar o portal e os apps do <strong>Trevvos</strong>, você concorda
-        com estes Termos.
-      </p>
+      <section className="space-y-8 text-neutral-700 leading-relaxed">
+        <p>
+          Ao acessar ou utilizar o portal e os aplicativos do{" "}
+          <strong>Trevvos</strong>, você declara estar de acordo com os termos e
+          condições estabelecidos neste documento.
+        </p>
 
-      <h2 className="text-emerald-700">✅ 1. Uso aceitável</h2>
-      <ul>
-        <li>Não viole leis ou direitos de terceiros.</li>
-        <li>Não faça spam, scraping abusivo ou invasão.</li>
-        <li>Respeite a comunidade.</li>
-      </ul>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">
+            1. Uso aceitável
+          </h2>
+          <ul className="mt-2 list-disc list-inside space-y-1 text-sm">
+            <li>Não viole leis ou direitos de terceiros.</li>
+            <li>
+              Não utilize os serviços para spam, scraping abusivo ou invasão.
+            </li>
+            <li>Respeite os demais usuários e a comunidade.</li>
+          </ul>
+        </div>
 
-      <h2 className="text-emerald-700">🔐 2. Conta e segurança</h2>
-      <p>Você é responsável por suas credenciais e atividades.</p>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">
+            2. Conta e segurança
+          </h2>
+          <p className="mt-2 text-sm">
+            O usuário é responsável por manter a confidencialidade de suas
+            credenciais e por todas as atividades realizadas em sua conta.
+          </p>
+        </div>
 
-      <h2 className="text-emerald-700">📝 3. Conteúdo</h2>
-      <ul>
-        <li>
-          <strong>Nosso</strong>: protegido por direitos autorais.
-        </li>
-        <li>
-          <strong>Seu</strong>: você mantém direitos; nos concede licença.
-        </li>
-      </ul>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">
+            3. Conteúdo
+          </h2>
+          <ul className="mt-2 list-disc list-inside space-y-1 text-sm">
+            <li>
+              <strong>Conteúdo do Trevvos</strong>: protegido por direitos
+              autorais e outras legislações aplicáveis.
+            </li>
+            <li>
+              <strong>Conteúdo do usuário</strong>: os direitos permanecem com o
+              autor, mas ao publicar concede licença de uso ao Trevvos para
+              exibição e distribuição.
+            </li>
+          </ul>
+        </div>
 
-      <h2 className="text-emerald-700">📱 4. Apps</h2>
-      <p>São ferramentas informativas; uso é por sua conta e risco.</p>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">4. Apps</h2>
+          <p className="mt-2 text-sm">
+            Os aplicativos disponibilizados são ferramentas informativas e de
+            apoio. O uso é de responsabilidade exclusiva do usuário.
+          </p>
+        </div>
 
-      <h2 className="text-emerald-700">⚠️ 5. Limitação</h2>
-      <p>Sem responsabilidade por danos indiretos ou lucros cessantes.</p>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">
+            5. Limitação de responsabilidade
+          </h2>
+          <p className="mt-2 text-sm">
+            O Trevvos não se responsabiliza por danos indiretos, perda de dados
+            ou lucros cessantes decorrentes do uso dos serviços.
+          </p>
+        </div>
 
-      <h2 className="text-emerald-700">🔄 6. Modificações</h2>
-      <p>Podemos alterar políticas, Termos e funcionalidades.</p>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">
+            6. Alterações
+          </h2>
+          <p className="mt-2 text-sm">
+            Estes Termos podem ser modificados a qualquer momento. As mudanças
+            passam a valer a partir da publicação no portal.
+          </p>
+        </div>
 
-      <h2 className="text-emerald-700">🚪 7. Encerramento</h2>
-      <p>Contas que violarem os Termos podem ser suspensas.</p>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">
+            7. Encerramento
+          </h2>
+          <p className="mt-2 text-sm">
+            O Trevvos se reserva o direito de suspender ou encerrar contas que
+            violem estes Termos.
+          </p>
+        </div>
 
-      <h2 className="text-emerald-700">⚖️ 8. Legislação</h2>
-      <p>Aplicam-se leis brasileiras. Foro: São Paulo/SP.</p>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">
+            8. Legislação aplicável
+          </h2>
+          <p className="mt-2 text-sm">
+            Estes Termos são regidos pelas leis brasileiras. O foro eleito para
+            resolução de conflitos é o da comarca de São Paulo/SP.
+          </p>
+        </div>
 
-      <h2 className="text-emerald-700">📩 9. Contato</h2>
-      <p>
-        Dúvidas?{" "}
-        <a
-          href={`mailto:${EMAIL}`}
-          className="text-emerald-600 hover:underline"
-        >
-          {EMAIL}
-        </a>
-      </p>
+        <div>
+          <h2 className="text-xl font-semibold text-emerald-700">9. Contato</h2>
+          <p className="mt-2 text-sm">
+            Em caso de dúvidas, entre em contato pelo e-mail{" "}
+            <a
+              href={`mailto:${EMAIL}`}
+              className="text-emerald-600 hover:underline"
+            >
+              {EMAIL}
+            </a>
+            .
+          </p>
+        </div>
+      </section>
 
-      <hr />
+      <hr className="mt-12 border-neutral-200" />
     </main>
   );
 }
