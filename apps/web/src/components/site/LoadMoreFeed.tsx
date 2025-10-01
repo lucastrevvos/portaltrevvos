@@ -20,7 +20,7 @@ type Props = {
 export function LoadMoreFeed({
   initialPosts,
   queryBase,
-  take = 2,
+  take = 20,
   initialSkip = 0,
   paramName = "skip",
 }: Props) {
