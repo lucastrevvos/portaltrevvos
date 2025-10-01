@@ -2,7 +2,7 @@ import "server-only";
 import { NextRequest, NextResponse } from "next/server";
 
 const API_BASE =
-  process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "";
+  process.env.NEXT_API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
 function badEnv(msg: string) {
   return NextResponse.json({ error: msg }, { status: 500 });
