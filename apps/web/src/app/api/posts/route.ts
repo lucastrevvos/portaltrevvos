@@ -11,11 +11,11 @@ function badEnv(msg: string) {
 export async function GET(req: NextRequest) {
   try {
     if (!API_BASE) {
-      return badEnv("API_BASE_URL não definido no ambiente do web.");
+      return badEnv("NEXT_API_BASE_URL não definido no ambiente do web.");
     }
     // Evita usar localhost em produção
     if (process.env.NODE_ENV === "production" && /localhost/.test(API_BASE)) {
-      return badEnv("API_BASE_URL aponta para localhost em produção.");
+      return badEnv("NEXT_API_BASE_URL aponta para localhost em produção.");
     }
 
     const qs = req.nextUrl.searchParams.toString();
