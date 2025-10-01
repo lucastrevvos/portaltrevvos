@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 const onlyStr = (v: unknown): v is string =>
   typeof v === "string" && v.trim().length > 0;
 
-const TAKE = 20;
+const TAKE = 2;
 
 export default async function TrevvosHome() {
   const posts = await apiFetch<PostWithRelations[]>(
@@ -62,10 +62,11 @@ export default async function TrevvosHome() {
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid gap-8 lg:grid-cols-12">
         <section className="lg:col-span-8">
           <LoadMoreFeed
-            initialPosts={rest as unknown as MaybePost[]}
+            initialPosts={rest}
             take={TAKE}
-            initialSkip={hero ? 1 : 0} // já pulou o hero
-            queryBase={`/posts?status=PUBLISHED`}
+            initialSkip={hero ? 1 : 0}
+            queryBase={`api/posts?status=PUBLISHED`}
+            // paramName="offset" // use se sua API for offset
           />
         </section>
         <Sidebar categories={categories} tags={tags} />

@@ -15,7 +15,8 @@
     "jsx": "preserve",
     "incremental": true,
     "outDir": "./dist",
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+    "types": ["node"]
   },
   "include": [
     "next-env.d.ts",
