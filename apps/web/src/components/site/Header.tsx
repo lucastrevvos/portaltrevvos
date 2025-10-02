@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { fetchMe } from "../../lib/auth.server";
-import { Menu, Search } from "lucide-react";
+import { Menu } from "lucide-react";
 
 export default async function Header({
   categories = [] as { key: string; label: string }[],
@@ -50,39 +50,27 @@ export default async function Header({
 
           {/* DIREITA: Ações */}
           <div className="flex items-center gap-3">
-            {/* BUSCA: ícone no mobile, form completo no desktop */}
-            <div className="flex items-center gap-2">
-              {/* Desktop search */}
-              <form
-                action="/buscar"
-                method="get"
-                className="hidden items-center gap-2 md:flex"
-              >
-                <input
-                  name="q"
-                  placeholder="Buscar..."
-                  className="h-10 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-                <button className="h-10 shrink-0 cursor-pointer rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700">
-                  Buscar
-                </button>
-              </form>
+            {/* BUSCA: form no desktop; no mobile só no menu suspenso */}
+            <form
+              action="/buscar"
+              method="get"
+              className="hidden items-center gap-2 md:flex"
+            >
+              <input
+                name="q"
+                placeholder="Buscar..."
+                className="h-10 w-56 rounded-xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+              <button className="h-10 shrink-0 cursor-pointer rounded-xl bg-emerald-600 px-4 text-sm font-medium text-white hover:bg-emerald-700">
+                Buscar
+              </button>
+            </form>
 
-              {/* Mobile search (sempre visível) */}
-              <Link
-                href="/buscar"
-                aria-label="Ir para busca"
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 md:hidden"
-              >
-                <Search className="h-5 w-5 text-neutral-700" />
-              </Link>
-            </div>
-
-            {/* AUTH: sempre visível (mobile e desktop) */}
+            {/* AUTH: Login escondido no mobile; Sair/Novo Post como estavam */}
             {!me ? (
               <a
                 href="/login"
-                className="flex h-10 items-center rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100"
+                className="hidden h-10 items-center rounded-xl border border-neutral-200 px-3 text-sm hover:bg-neutral-100 md:flex"
               >
                 Login
               </a>
@@ -154,7 +142,17 @@ export default async function Header({
                     Contato
                   </Link>
 
-                  {/* Busca inline opcional dentro do menu */}
+                  {/* Login aparece AQUI no mobile */}
+                  {!me && (
+                    <a
+                      href="/login"
+                      className="mt-1 rounded-md px-2 py-2 hover:bg-neutral-50"
+                    >
+                      Login
+                    </a>
+                  )}
+
+                  {/* Busca no mobile (apenas no menu) */}
                   <form
                     action="/buscar"
                     method="get"
