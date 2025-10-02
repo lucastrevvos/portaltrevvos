@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { FooterTestChannelBar } from "./FooterTestChannelBar";
 
 export function Footer() {
+  const WHATSAPP_URL =
+    process.env.NEXT_PUBLIC_WHATSAPP_TESTS_URL ||
+    "https://chat.whatsapp.com/K1cepLtEEoY6pScVRTNvg9";
+
   return (
     <footer className="border-t border-neutral-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -14,6 +19,7 @@ export function Footer() {
             sentido.
           </p>
         </div>
+
         <nav className="text-sm text-neutral-600 flex gap-4">
           <Link href="/politica" className="hover:text-neutral-900">
             Política
@@ -25,6 +31,7 @@ export function Footer() {
             Contato
           </Link>
         </nav>
+        <FooterTestChannelBar whatsappUrl={WHATSAPP_URL} />
       </div>
     </footer>
   );

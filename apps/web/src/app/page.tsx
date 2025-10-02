@@ -8,11 +8,15 @@ import {
 } from "../lib/post-utils";
 import { PostHero } from "../components/site/PostHero";
 import { Trending } from "../components/site/Trending";
-import { NewsletterCard } from "../components/site/NewsLetterCard";
 import { Sidebar } from "../components/site/Sidebar";
 import { LoadMoreFeed } from "../components/site/LoadMoreFeed";
+import { TestChannelCard } from "../components/site/TestChannelCard";
 
 export const dynamic = "force-dynamic";
+
+const WHATSAPP_URL =
+  process.env.NEXT_PUBLIC_WHATSAPP_TESTS_URL ||
+  "https://chat.whatsapp.com/K1cepLtEEoY6pScVRTNvg9";
 
 const onlyStr = (v: unknown): v is string =>
   typeof v === "string" && v.trim().length > 0;
@@ -53,7 +57,9 @@ export default async function TrevvosHome() {
             </div>
             <div className="lg:col-span-4 grid gap-4">
               <Trending posts={rest as unknown as MaybePost[]} />
-              <NewsletterCard />
+              <aside className="md:col-span-1 space-y-6">
+                <TestChannelCard whatsappUrl={WHATSAPP_URL} />
+              </aside>
             </div>
           </div>
         </section>
