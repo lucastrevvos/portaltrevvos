@@ -106,7 +106,15 @@ export default async function Header({
               </a>
             )}
 
-            {/* MENU MOBILE: NÃO some. Usa <details> (zero JS) */}
+            {/* BOTÃO DESTACADO: Nossos Apps */}
+            <a
+              href="/apps"
+              className="flex h-10 items-center rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 text-sm font-semibold text-white shadow hover:from-emerald-700 hover:to-emerald-600"
+            >
+              🚀 Nossos Apps
+            </a>
+
+            {/* MENU MOBILE */}
             <details className="relative md:hidden">
               <summary
                 className="list-none flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 hover:bg-neutral-100 cursor-pointer"
