@@ -1,7 +1,7 @@
 // apps/web/src/app/contato/page.tsx
 export const dynamic = "force-dynamic";
 
-const EMAIL = "contato@trevvos.com.br";
+const EMAIL = "ceo@trevvos.com.br";
 const WHATS = "5511945043408";
 
 export default function ContatoPage() {
@@ -17,7 +17,7 @@ export default function ContatoPage() {
 
       <div className="mt-6 flex flex-wrap gap-3">
         <a
-          href={`mailto:contato@trevvos.com.br`}
+          href={`mailto:ceo@trevvos.com.br`}
           className="rounded-xl border border-neutral-200 px-4 py-2 hover:bg-neutral-50"
         >
           Mandar email

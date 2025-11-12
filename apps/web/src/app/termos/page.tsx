@@ -7,7 +7,7 @@ export const metadata = {
   alternates: { canonical: "/termos" },
 };
 
-const EMAIL = "contato@trevvos.com.br";
+const EMAIL = "ceo@trevvos.com.br";
 
 function formatDate(d = new Date()) {
   try {
