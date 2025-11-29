@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/infra/prisma-controllar/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_CONTROLLAR")
+}
+
+/* ===== Enums ===== */
+enum AccountType {
+  WALLET
+  BANK
+  CREDIT_CARD
+  INTEGRATION
+}
+
+enum TxType {
+  income
+  expense
+  transfer
+}
+
+enum Source {
+  MANUAL
+  KMONE
+}
+
+/* ===== Models ===== */
+model Account {
+  id           String        @id @default(cuid())
+  userId       String
+  type         AccountType
+  name         String
+  currency     String        @default("BRL")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id          String    @id @default(cuid())
+  userId      String
+  accountId   String
+  type        TxType
+  amountMinor Int
+  date        DateTime
+  categoryId  String?
+  description String?
+  source      Source    @default(MANUAL)
+  externalRef String?   @unique
+  createdAt   DateTime  @default(now())
+
+  account Account @relation(fields: [accountId], references: [id])
+
+  @@index([userId])
+  @@index([date])
+}
+
+model BudgetMonth {
+  id        String       @id @default(cuid())
+  userId    String
+  month     String
+  currency  String       @default("BRL")
+  items     BudgetItem[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@unique([userId, month])
+  @@index([month])
+  @@index([userId])
+}
+
+model BudgetItem {
+  id            String      @id @default(cuid())
+  budgetMonthId String
+  categoryId    String
+  limitMinor    Int
+
+  budgetMonth BudgetMonth @relation(fields: [budgetMonthId], references: [id])
+
+  @@unique([budgetMonthId, categoryId])
+}

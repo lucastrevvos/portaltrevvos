@@ -55,7 +55,7 @@ export class NewsletterService {
       throw new Error('RESEND_API_KEY não definido');
     }
 
-    const from = process.env.NOREPLY_EMAIL || 'contato@trevvos.com.br';
+    const from = process.env.NOREPLY_EMAIL || 'ceo@trevvos.com.br';
 
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
