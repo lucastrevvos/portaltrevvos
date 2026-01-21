@@ -67,6 +67,6 @@ async function bootstrap() {
   const app = await createApp();
   const port = Number(process.env.PORT) || 3333;
   await app.listen(port, '0.0.0.0');
-  // console.log(`API on http://localhost:${port}`);
+  console.log(`API on http://localhost:${port}`);
 }
 bootstrap();
