@@ -22,7 +22,7 @@ export class RolesGuard implements CanActivate {
     if (!required || required.length === 0) return true;
 
     const req = context.switchToHttp().getRequest();
-    const user = req.user as any;
+    const user = req.user;
     const slug = (req.headers['x-app-slug'] as string) || 'portal';
     const role = user?.apps?.[slug] as PowerRole;
 

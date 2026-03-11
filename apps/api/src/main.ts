@@ -64,6 +64,7 @@ export async function createApp() {
 }
 
 async function bootstrap() {
+  console.log('DATABASE_URL em uso:', process.env.DATABASE_URL);
   const app = await createApp();
   const port = Number(process.env.PORT) || 3333;
   await app.listen(port, '0.0.0.0');

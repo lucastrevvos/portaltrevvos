@@ -62,7 +62,7 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
-      globalRole: user.role as GlobalRole,
+      globalRole: user.role,
       apps: appsMap, // { portal: 'EDITOR', ... }
       iss: 'trevvos-auth',
     };

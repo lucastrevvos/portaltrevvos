@@ -5,7 +5,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  
+
+  schemas = ["public", "trevvos_todo"]
 }
 
 // ===============
@@ -13,45 +14,53 @@ datasource db {
 // ===============
 
 model User {
-  id  String @id @default(cuid())
-  email String @unique
-  password String?
-  name String?
-  role GlobalRole @default(USER)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime @updatedAt
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String?
+  name      String?
+  role      GlobalRole @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   accounts Account[]
   sessions Session[]
-  apiKeys ApiKey[]
+  apiKeys  ApiKey[]
   appRoles UserAppRole[]
-  posts Post[] @relation("AuthorPosts") 
+  posts    Post[]        @relation("AuthorPosts")
+
+  @@schema("public")
 }
 
-enum GlobalRole { 
-  ADMIN 
-  EDITOR 
+enum GlobalRole {
+  ADMIN
+  EDITOR
   USER
+
+  @@schema("public")
 }
 
 model App {
-  id  String  @id @default(cuid())
-  slug String @unique
-  name String
-  createdAt DateTime  @default(now())
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  roles UserAppRole[]
+  roles   UserAppRole[]
   apiKeys ApiKey[]
+
+  @@schema("public")
 }
 
 model UserAppRole {
-  user User @relation(fields: [userId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
   userId String
-  app App @relation(fields: [appId], references: [id])
-  appId String
-  role AppRole
+  app    App     @relation(fields: [appId], references: [id])
+  appId  String
+  role   AppRole
+
   @@id([userId, appId])
+  @@schema("public")
 }
 
 enum AppRole {
@@ -60,31 +69,37 @@ enum AppRole {
   EDITOR
   AUTHOR
   READER
+
+  @@schema("public")
 }
 
 model Account {
-  id String @id @default(cuid())
-  user  User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  provider String
+  id                String  @id @default(cuid())
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId            String
+  provider          String
   providerAccountId String
-  type String
-  access_token String?
-  refresh_token String?
-  expires_at Int?
-  token_type  String?
-  scope String?
-  id_token String?
+  type              String
+  access_token      String?
+  refresh_token     String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+
   @@unique([provider, providerAccountId])
+  @@schema("public")
 }
 
 model Session {
-  id String @id @default(cuid())
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  refreshToken String @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  refreshToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@schema("public")
 }
 
 model VerificationToken {
@@ -92,19 +107,23 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+
   @@unique([identifier, token])
+  @@schema("public")
 }
 
 model ApiKey {
-  id String @id @default(cuid())
-  label String
-  hashedKey String @unique
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  app App @relation(fields: [appId], references: [id], onDelete: Cascade)
-  appId String
+  id         String    @id @default(cuid())
+  label      String
+  hashedKey  String    @unique
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  app        App       @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId      String
   lastUsedAt DateTime?
-  createdAt DateTime @default(now())
+  createdAt  DateTime  @default(now())
+
+  @@schema("public")
 }
 
 // ===============
@@ -112,60 +131,175 @@ model ApiKey {
 // ===============
 
 model Post {
-  id String @id @default(cuid())
-  slug String @unique
-  title String
-  excerpt String?
-  content String
-  coverImage String?
-  status PostStatus @default(DRAFT)
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  title       String
+  excerpt     String?
+  content     String
+  coverImage  String?
+  status      PostStatus     @default(DRAFT)
   publishedAt DateTime?
-  updatedAt DateTime  @updatedAt
-  createdAt DateTime  @default(now())
-  author  User @relation("AuthorPosts", fields: [authorId], references: [id])
-  authorId String
-  categories PostCategory[]
-  tags PostTag[]
+  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime       @default(now())
+  author      User           @relation("AuthorPosts", fields: [authorId], references: [id])
+  authorId    String
+  categories  PostCategory[]
+  tags        PostTag[]
+
+  @@schema("public")
 }
 
 enum PostStatus {
   DRAFT
   PUBLISHED
+
+  @@schema("public")
 }
 
 model Category {
-  id String @id @default(uuid())
-  name String
-  slug String @unique
+  id    String         @id @default(uuid())
+  name  String
+  slug  String         @unique
   posts PostCategory[]
+
+  @@schema("public")
 }
 
 model Tag {
-  id String @id @default(cuid())
-  name String
-  slug String @unique
+  id    String    @id @default(cuid())
+  name  String
+  slug  String    @unique
   posts PostTag[]
+
+  @@schema("public")
 }
 
 model PostCategory {
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId String
-  category Category @relation(fields: [categoryId], references: [id])
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId     String
+  category   Category @relation(fields: [categoryId], references: [id])
   categoryId String
+
   @@id([postId, categoryId])
+  @@schema("public")
 }
 
 model PostTag {
-  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId String
-  tag Tag @relation(fields: [tagId], references: [id])
-  tagId String
+  tag    Tag    @relation(fields: [tagId], references: [id])
+  tagId  String
+
   @@id([postId, tagId])
+  @@schema("public")
 }
 
 model NewsletterSubscriber {
-  id String @id @default(uuid())
-  email String @unique
+  id        String   @id @default(uuid())
+  email     String   @unique
   createdAt DateTime @default(now())
-  verified Boolean @default(false)
+  verified  Boolean  @default(false)
+
+  @@schema("public")
+}
+
+// ===============
+// TODO LIST (COLAB) — schema isolado
+// ===============
+
+enum TodoMemberRole {
+  OWNER
+  EDITOR
+  VIEWER
+
+  @@schema("trevvos_todo")
+}
+
+enum TodoInviteRole {
+  EDITOR
+  VIEWER
+
+  @@schema("trevvos_todo")
+}
+
+model TodoGuest {
+  id         String    @id @db.Uuid
+  createdAt  DateTime  @default(now()) @map("created_at")
+  lastSeenAt DateTime? @map("last_seen_at")
+
+  listsOwned     TodoList[]       @relation("TodoListOwner")
+  memberships    TodoListMember[]
+  updatedItems   TodoItem[]       @relation("TodoItemUpdatedBy")
+  invitesCreated TodoInvite[]     @relation("TodoInviteCreatedBy")
+
+  @@map("guests")
+  @@schema("trevvos_todo")
+}
+
+model TodoList {
+  id           String   @id @default(uuid()) @db.Uuid
+  title        String
+  ownerGuestId String   @map("owner_guest_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  owner   TodoGuest        @relation("TodoListOwner", fields: [ownerGuestId], references: [id])
+  members TodoListMember[]
+  items   TodoItem[]
+  invites TodoInvite[]
+
+  @@map("lists")
+  @@schema("trevvos_todo")
+}
+
+model TodoListMember {
+  listId   String         @map("list_id") @db.Uuid
+  guestId  String         @map("guest_id") @db.Uuid
+  role     TodoMemberRole
+  joinedAt DateTime       @default(now()) @map("joined_at")
+
+  list  TodoList  @relation(fields: [listId], references: [id], onDelete: Cascade)
+  guest TodoGuest @relation(fields: [guestId], references: [id], onDelete: Cascade)
+
+  @@id([listId, guestId])
+  @@map("list_members")
+  @@schema("trevvos_todo")
+}
+
+model TodoItem {
+  id               String   @id @default(uuid()) @db.Uuid
+  listId           String   @map("list_id") @db.Uuid
+  text             String
+  isDone           Boolean  @default(false) @map("is_done")
+  position         Int      @default(0)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @map("updated_at")
+  updatedByGuestId String?  @map("updated_by_guest_id") @db.Uuid
+  version          Int      @default(1)
+
+  list      TodoList   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  updatedBy TodoGuest? @relation("TodoItemUpdatedBy", fields: [updatedByGuestId], references: [id])
+
+  @@index([listId])
+  @@map("todo_items")
+  @@schema("trevvos_todo")
+}
+
+model TodoInvite {
+  id               String         @id @default(uuid()) @db.Uuid
+  listId           String         @map("list_id") @db.Uuid
+  token            String         @unique
+  role             TodoInviteRole @default(EDITOR)
+  expiresAt        DateTime       @map("expires_at")
+  maxUses          Int            @default(50) @map("max_uses")
+  uses             Int            @default(0)
+  revoked          Boolean        @default(false)
+  createdByGuestId String         @map("created_by_guest_id") @db.Uuid
+  createdAt        DateTime       @default(now()) @map("created_at")
+
+  list      TodoList  @relation(fields: [listId], references: [id], onDelete: Cascade)
+  createdBy TodoGuest @relation("TodoInviteCreatedBy", fields: [createdByGuestId], references: [id])
+
+  @@map("invites")
+  @@schema("trevvos_todo")
 }
