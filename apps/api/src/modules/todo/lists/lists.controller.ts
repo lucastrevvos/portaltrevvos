@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { Request } from 'express';
 import { TodoListsService } from './lists.service';
 
@@ -16,5 +25,23 @@ export class TodoListsController {
   async list(@Req() req: Request) {
     const guestId = (req as Request & { todoGuestId: string }).todoGuestId;
     return this.service.listMySharedLists(guestId);
+  }
+
+  @Post(':listId/leave')
+  async leave(
+    @Req() req: Request,
+    @Param('listId', new ParseUUIDPipe({ version: '4' })) listId: string,
+  ) {
+    const guestId = (req as Request & { todoGuestId: string }).todoGuestId;
+    return this.service.leaveList(guestId, listId);
+  }
+
+  @Delete(':listId')
+  async remove(
+    @Req() req: Request,
+    @Param('listId', new ParseUUIDPipe({ version: '4' })) listId: string,
+  ) {
+    const guestId = (req as Request & { todoGuestId: string }).todoGuestId;
+    return this.service.deleteList(guestId, listId);
   }
 }
