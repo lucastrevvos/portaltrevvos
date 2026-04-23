@@ -3,73 +3,82 @@ export const dynamic = "force-dynamic";
 export default function SobrePage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-12">
-      <h1 className="text-3xl font-bold tracking-tight">Sobre a Trevvos</h1>
+      <h1 className="text-3xl font-bold tracking-tight">
+        Sobre a Trevvos Soluções em IA
+      </h1>
 
-      <p className="mt-4 text-neutral-700 leading-relaxed">
-        A <strong>Trevvos</strong> nasceu como um estúdio de produto e conteúdo
-        digital. Nosso propósito é simples: transformar conhecimento em
-        ferramentas úteis, e ferramentas em experiências que melhoram o dia a
-        dia das pessoas.
+      <p className="mt-4 leading-relaxed text-neutral-700">
+        A <strong>Trevvos</strong> entra em uma nova fase como{" "}
+        <strong>Trevvos Soluções em IA</strong>. Seguimos com nossa frente
+        editorial, agora com um posicionamento mais claro: transformar
+        conhecimento sobre inteligência artificial em conteúdo útil, produto e
+        soluções aplicadas ao mundo real.
       </p>
 
-      <p className="mt-4 text-neutral-700 leading-relaxed">
-        Começamos escrevendo sobre tecnologia, finanças e saúde, sempre com viés
-        prático e zero enrolação. Aos poucos, esse conteúdo se tornou um terreno
-        fértil para criar aplicativos próprios — soluções reais para problemas
-        que identificamos na vida cotidiana.
+      <p className="mt-4 leading-relaxed text-neutral-700">
+        O site continua sendo um espaço de posts, mas com uma direção mais
+        definida. Nosso conteúdo agora orbita IA aplicada, automação, produto,
+        operação, negócio e tudo o que sustenta a construção de experiências e
+        apps mais inteligentes.
       </p>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2">
         <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
           <h2 className="text-lg font-semibold">O que publicamos</h2>
           <p className="mt-2 text-sm text-neutral-600">
-            Notícias, análises e artigos que ajudam você a entender e aplicar o
-            que importa em tecnologia, finanças pessoais e saúde. Conteúdo
-            direto, sem ruído.
+            Publicamos conteúdos sobre IA com foco prático: implementação,
+            casos de uso, análise de ferramentas, operação, produtividade e os
+            impactos reais da tecnologia no dia a dia de pessoas e negócios.
           </p>
         </div>
+
         <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-semibold">Nosso ecossistema</h2>
+          <h2 className="text-lg font-semibold">Como construímos</h2>
           <p className="mt-2 text-sm text-neutral-600">
-            <strong>KM One</strong>, para motoristas de app controlarem ganhos e
-            despesas; <strong>ControlLar</strong>, um gestor de finanças
-            pessoais; e <strong>SportsConnect</strong>, que conecta pessoas
-            através do esporte. Produtos que crescem lado a lado com o portal.
+            Atuamos em duas frentes complementares:{" "}
+            <strong>IA aplicada</strong>, com soluções voltadas a problemas
+            concretos, e <strong>produtos com IA</strong>, com apps e
+            experiências digitais que nascem com inteligência no centro.
           </p>
         </div>
+
         <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm sm:col-span-2">
           <h2 className="text-lg font-semibold">Nossa visão</h2>
           <p className="mt-2 text-sm text-neutral-600">
-            Acreditamos que conteúdo e tecnologia se complementam. O conteúdo
-            educa, inspira e direciona. A tecnologia executa, simplifica e
-            amplia o impacto. Unindo os dois, queremos criar soluções acessíveis
-            e sustentáveis que empoderem pessoas no Brasil e no mundo.
+            Acreditamos que conteúdo e produto devem caminhar juntos. O
+            conteúdo organiza o pensamento, compartilha contexto e acelera
+            aprendizados. O produto leva isso para a prática. E a IA amplia a
+            capacidade de criar, testar, evoluir e escalar os dois.
           </p>
         </div>
+
         <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm sm:col-span-2">
           <h2 className="text-lg font-semibold">Nossos valores</h2>
-          <ul className="mt-2 list-disc list-inside text-sm text-neutral-600 space-y-1">
+          <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-neutral-600">
             <li>
-              <strong>Praticidade</strong>: o que fazemos precisa ser útil.
+              <strong>Utilidade</strong>: IA só faz sentido quando gera valor de
+              verdade.
             </li>
             <li>
-              <strong>Transparência</strong>: falamos sem rodeios.
+              <strong>Clareza</strong>: comunicamos com objetividade, sem teatro
+              e sem jargão desnecessário.
             </li>
             <li>
-              <strong>Inovação</strong>: exploramos novas ideias sem medo.
+              <strong>Execução</strong>: preferimos lançar, medir, aprender e
+              evoluir.
             </li>
             <li>
-              <strong>Comunidade</strong>: crescemos junto com quem usa e apoia
-              nossos projetos.
+              <strong>Coerência</strong>: o que publicamos conversa com o que
+              construímos.
             </li>
           </ul>
         </div>
       </div>
 
-      <p className="mt-10 text-neutral-700 leading-relaxed">
-        A Trevvos é, acima de tudo, um espaço vivo. Um portal de conteúdos e
-        aplicativos que se transformam com o tempo — assim como as pessoas que
-        fazem parte dele.
+      <p className="mt-10 leading-relaxed text-neutral-700">
+        A Trevvos Soluções em IA é um espaço vivo de conteúdo, produtos e
+        experimentação contínua. Um ecossistema em evolução, guiado por
+        tecnologia aplicada, visão de produto e valor real.
       </p>
     </main>
   );

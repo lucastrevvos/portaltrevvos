@@ -1,17 +1,17 @@
-// apps/web/src/app/feed.xml/route.ts
-import { NextResponse } from "next/server";
 import type { PostWithRelations } from "@trevvos/types";
+import { NextResponse } from "next/server";
 import { apiFetch } from "../../lib/api";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const TITLE = "Trevvos";
-  const DESC = "Conteúdo + Apps que fazem sentido.";
+  const TITLE = "Trevvos Soluções em IA";
+  const DESC =
+    "Posts, produtos e Soluções de IA para aplicacao pratica em negocios e no dia a dia.";
 
   const posts = await apiFetch<PostWithRelations[]>(
-    "/posts?status=PUBLISHED&take=50"
+    "/posts?status=PUBLISHED&take=50",
   );
 
   const items = posts
@@ -23,7 +23,7 @@ export async function GET() {
         (p as any).subtitle ??
         ((p as any).content || "").slice(0, 180);
       const pub = new Date(
-        (p as any).publishedAt ?? (p as any).createdAt ?? Date.now()
+        (p as any).publishedAt ?? (p as any).createdAt ?? Date.now(),
       ).toUTCString();
 
       return `

@@ -16,7 +16,7 @@ export function articleJsonLd(opts: {
     datePublished,
     dateModified,
     authorName = "Equipe Trevvos",
-    siteName = "Trevvos",
+    siteName = "Trevvos Soluções em IA",
   } = opts;
 
   const data = {
@@ -40,5 +40,6 @@ export function articleJsonLd(opts: {
     datePublished,
     dateModified: dateModified || datePublished,
   };
+
   return JSON.stringify(data);
 }

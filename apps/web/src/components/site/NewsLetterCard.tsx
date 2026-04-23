@@ -29,9 +29,10 @@ export function NewsletterCard() {
 
   return (
     <div className="rounded-2xl border border-neutral-200 bg-gradient-to-br from-emerald-600 to-emerald-700 p-5 text-white shadow-sm">
-      <h3 className="text-sm font-semibold">Assine a newsletter</h3>
+      <h3 className="text-sm font-semibold">Receba o radar da Trevvos</h3>
       <p className="mt-1 text-sm/5 text-emerald-50">
-        Receba 1 email semanal com notícias e apps novos.
+        Um resumo com posts sobre IA, testes em andamento e novos produtos do
+        ecossistema.
       </p>
       <form onSubmit={handleSubmit} className="mt-3 flex gap-2">
         <input
@@ -53,12 +54,12 @@ export function NewsletterCard() {
       </form>
       {status === "success" && (
         <p className="mt-2 text-xs text-emerald-100">
-          ✅ Inscrição feita com sucesso!
+          Inscricao feita com sucesso.
         </p>
       )}
       {status === "error" && (
         <p className="mt-2 text-xs text-red-200">
-          ❌ Erro ao se inscrever, tente novamente.
+          Erro ao se inscrever, tente novamente.
         </p>
       )}
     </div>

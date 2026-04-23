@@ -1,15 +1,17 @@
-// apps/web/src/app/og/route.tsx
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge"; // ok export
-export const dynamic = "force-dynamic"; // ok export
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
 
-  const title = (searchParams.get("title") ?? "Trevvos").slice(0, 120);
+  const title = (searchParams.get("title") ?? "Trevvos Soluções em IA").slice(
+    0,
+    120,
+  );
   const subtitle = (searchParams.get("subtitle") ?? "").slice(0, 160);
-  const cover = searchParams.get("cover") ?? ""; // pode ser vazio
+  const cover = searchParams.get("cover") ?? "";
 
   return new ImageResponse(
     (
@@ -25,7 +27,6 @@ export async function GET(req: Request) {
           color: "white",
         }}
       >
-        {/* cover opcional */}
         {cover ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -65,7 +66,7 @@ export async function GET(req: Request) {
               fontSize: 24,
             }}
           >
-            Trevvos
+            Trevvos Soluções em IA
           </div>
 
           <div style={{ fontSize: 60, fontWeight: 800, lineHeight: 1.1 }}>
@@ -91,6 +92,6 @@ export async function GET(req: Request) {
     {
       width: 1200,
       height: 630,
-    }
+    },
   );
 }

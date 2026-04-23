@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { fetchMe } from "../../lib/auth.server";
 import { Menu } from "lucide-react";
+import { fetchMe } from "../../lib/auth.server";
 
 export default async function Header({
   categories = [] as { key: string; label: string }[],
@@ -11,24 +11,22 @@ export default async function Header({
     <header className="sticky top-0 z-50 w-full border-b border-neutral-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* ESQUERDA: Logo + Marca */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/trevvos/logo.png"
-                alt="Trevvos"
+                alt="Trevvos Soluções em IA"
                 className="h-9 w-auto rounded"
               />
             </Link>
             <Link href="/" className="font-semibold tracking-tight">
-              Trevvos
+              Trevvos Soluções em IA
             </Link>
 
-            {/* NAV DESKTOP */}
             <nav className="ml-8 hidden items-center gap-6 text-sm text-neutral-600 md:flex">
               <Link className="hover:text-neutral-900" href="/">
-                Início
+                Inicio
               </Link>
               {categories.map((c) => (
                 <Link
@@ -48,9 +46,7 @@ export default async function Header({
             </nav>
           </div>
 
-          {/* DIREITA: Ações */}
           <div className="flex items-center gap-3">
-            {/* BUSCA: form no desktop; no mobile só no menu suspenso */}
             <form
               action="/buscar"
               method="get"
@@ -66,7 +62,6 @@ export default async function Header({
               </button>
             </form>
 
-            {/* AUTH: Login escondido no mobile; Sair/Novo Post como estavam */}
             {!me ? (
               <a
                 href="/login"
@@ -94,31 +89,28 @@ export default async function Header({
               </a>
             )}
 
-            {/* BOTÃO DESTACADO: Nossos Apps */}
             <a
               href="/apps"
               className="flex h-10 items-center rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 px-4 text-sm font-semibold text-white shadow hover:from-emerald-700 hover:to-emerald-600"
             >
-              🚀 Nossos Apps
+              Soluções e Apps
             </a>
 
-            {/* MENU MOBILE */}
             <details className="relative md:hidden">
               <summary
-                className="list-none flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 hover:bg-neutral-100 cursor-pointer"
+                className="list-none flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-neutral-200 hover:bg-neutral-100"
                 aria-label="Abrir menu"
               >
                 <Menu className="h-5 w-5 text-neutral-700" />
               </summary>
 
-              {/* Dropdown */}
               <div className="absolute right-0 mt-2 w-64 rounded-xl border border-neutral-200 bg-white p-3 shadow-lg">
                 <nav className="flex flex-col gap-2 text-sm text-neutral-700">
                   <Link
                     className="rounded-md px-2 py-2 hover:bg-neutral-50"
                     href="/"
                   >
-                    Início
+                    Inicio
                   </Link>
                   {categories.map((c) => (
                     <Link
@@ -142,7 +134,6 @@ export default async function Header({
                     Contato
                   </Link>
 
-                  {/* Login aparece AQUI no mobile */}
                   {!me && (
                     <a
                       href="/login"
@@ -152,7 +143,6 @@ export default async function Header({
                     </a>
                   )}
 
-                  {/* Busca no mobile (apenas no menu) */}
                   <form
                     action="/buscar"
                     method="get"

@@ -10,10 +10,14 @@ const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Trevvos", template: "%s — Trevvos" },
-  description: "Conteúdo + Apps que fazem sentido.",
+  title: {
+    default: "Trevvos Soluções em IA",
+    template: "%s - Trevvos Soluções em IA",
+  },
+  description:
+    "Posts, produtos e Soluções de IA para aplicacao pratica em negocios e no dia a dia.",
   alternates: { canonical: "/" },
-  openGraph: { siteName: "Trevvos", url: siteUrl },
+  openGraph: { siteName: "Trevvos Soluções em IA", url: siteUrl },
   twitter: { card: "summary_large_image" },
 };
 
@@ -25,7 +29,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        {/* Google tag (gtag.js) - só carrega se houver GA_ID */}
         {GA_ID && (
           <>
             <Script
@@ -59,12 +62,9 @@ export default function RootLayout({
         />
       </head>
 
-      {/* Sticky footer em todo o site */}
       <body className="flex min-h-screen flex-col bg-neutral-50 text-neutral-900">
         <Header categories={[]} />
-
         <main className="flex-grow">{children}</main>
-
         <Footer />
       </body>
     </html>
