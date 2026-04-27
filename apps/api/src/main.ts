@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import helmet from 'helmet';
 import compression from 'compression';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 function parseOrigins(): string[] {
   const list = [
@@ -16,6 +17,13 @@ function parseOrigins(): string[] {
     .map((s) => s.trim())
     .filter(Boolean);
   return Array.from(new Set(list));
+}
+
+function shouldEnableSwagger(): boolean {
+  return (
+    process.env.NODE_ENV !== 'production' ||
+    process.env.ENABLE_SWAGGER === 'true'
+  );
 }
 
 export async function createApp() {
@@ -56,6 +64,34 @@ export async function createApp() {
 
   // erros de prisma
   app.useGlobalFilters(new PrismaExceptionFilter());
+
+  if (shouldEnableSwagger()) {
+    const config = new DocumentBuilder()
+      .setTitle('Trevvos API')
+      .setDescription(
+        'API principal da Trevvos para autenticação, portal, conteúdo, uploads, newsletter e apps do ecossistema.',
+      )
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          in: 'header',
+          name: 'Authorization',
+          description: 'Informe o token JWT no formato Bearer <token>',
+        },
+        'bearer',
+      )
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('docs', app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    });
+  }
 
   // opcional: prefixo global
   // app.setGlobalPrefix('api');
