@@ -15,6 +15,10 @@ class Settings(BaseSettings):
         default="trevvos-auth",
         validation_alias="TREVVOS_AUTH_ISSUER",
     )
+    trevvos_auth_jwt_secret: str = Field(
+        default="",
+        validation_alias="TREVVOS_AUTH_JWT_SECRET",
+    )
     trevvos_auth_app_slug: str = Field(
         default="maia",
         validation_alias="TREVVOS_AUTH_APP_SLUG",
@@ -24,6 +28,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_prefix="MAIA_",
         extra="ignore",
+        populate_by_name=True,
     )
 
 
