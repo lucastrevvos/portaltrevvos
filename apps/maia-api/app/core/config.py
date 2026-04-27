@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     api_version: str = "0.1.0"
     api_port: int = 3340
     db_schema: str = "maia"
+    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/trevvos"
     trevvos_auth_issuer: str = Field(
         default="trevvos-auth",
         validation_alias="TREVVOS_AUTH_ISSUER",
