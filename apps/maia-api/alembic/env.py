@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 from app.core.config import get_settings
+from app.domain.couples.model import Couple  # noqa: F401
 from app.infra.db.base import Base
 from app.infra.db.schema import create_schema_sql
 

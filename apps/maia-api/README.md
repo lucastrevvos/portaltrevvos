@@ -2,7 +2,7 @@
 
 Backend FastAPI do produto Ma.ia.
 
-Este scaffold inicial cria a base da aplicacao, health checks, infraestrutura de banco PostgreSQL com SQLAlchemy async/Alembic e pontos de extensao para autenticacao Trevvos, dominios do produto e futura integracao com IA. JWT real, tabelas de dominio e filas ainda nao foram implementados.
+Este scaffold inicial cria a base da aplicacao, health checks, infraestrutura de banco PostgreSQL com SQLAlchemy async/Alembic, o dominio inicial de casais e pontos de extensao para autenticacao Trevvos e futura integracao com IA. JWT real, endpoints de dominio e filas ainda nao foram implementados.
 
 ## Objetivo
 
@@ -60,7 +60,7 @@ cd apps\maia-api
 uv run alembic revision --autogenerate -m "describe change"
 ```
 
-A migration inicial apenas garante a existencia do schema da Ma.ia. Ela nao cria tabelas de dominio.
+As migrations atuais garantem a existencia do schema da Ma.ia e criam a tabela `couples`.
 
 ## Rodar testes
 
