@@ -1,132 +1,208 @@
+import Link from "next/link";
+import { ArrowRight, Building2, FolderKanban, Layers3 } from "lucide-react";
+
+import { DashboardShell } from "../../components/dashboard-shell";
 import {
-  ArrowUpRight,
-  CreditCard,
-  Lightbulb,
-  PanelLeft,
-  PenSquare,
-  ScanSearch,
-} from "lucide-react";
+  EmptyState,
+  ErrorState,
+  MetricCard,
+  PageShell,
+  StatusBadge,
+  SurfaceCard,
+  formatDate,
+} from "../../components/studio-ui";
+import { ContentRequest, getContentRequests, getTenants } from "../../lib/studio-api";
 
-const cards = [
-  {
-    title: "Onboarding",
-    description:
-      "Estruture posicionamento, nicho, tom, ativos e referencias da marca.",
-    icon: ScanSearch,
-  },
-  {
-    title: "Ideias de conteudo",
-    description:
-      "Espaco preparado para pilares, backlog editorial e futuras sugestoes por IA.",
-    icon: Lightbulb,
-  },
-  {
-    title: "Pedidos",
-    description:
-      "Central de solicitacoes, aprovacao textual e acompanhamento de producao.",
-    icon: PenSquare,
-  },
-  {
-    title: "Creditos",
-    description:
-      "Arquitetura pronta para wallet, consumo por acao e recargas futuras.",
-    icon: CreditCard,
-  },
-];
+export const dynamic = "force-dynamic";
 
-export default function StudioAppPage() {
-  return (
-    <main className="min-h-screen px-4 py-4 sm:px-6 lg:px-8">
-      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl gap-4 lg:grid-cols-[280px_1fr]">
-        <aside className="rounded-[2rem] border border-[color:var(--border)] bg-[color:var(--card-strong)] p-6 shadow-[0_24px_64px_rgba(24,24,27,0.08)] backdrop-blur">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[color:var(--foreground)] text-white">
-              <PanelLeft className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                Dashboard
-              </p>
-              <h1 className="font-[family-name:var(--font-display)] text-2xl">
-                Trevvos Studio
-              </h1>
-            </div>
-          </div>
-
-          <nav className="mt-10 space-y-3">
-            {["Visao geral", "Onboarding", "Pedidos", "Entregas", "Creditos"].map(
-              (item, index) => (
-                <div
-                  key={item}
-                  className={`rounded-2xl px-4 py-3 text-sm ${
-                    index === 0
-                      ? "bg-[color:var(--foreground)] text-white"
-                      : "border border-[color:var(--border)] bg-white/60 text-[color:var(--ink-soft)]"
-                  }`}
-                >
-                  {item}
-                </div>
-              ),
-            )}
-          </nav>
-
-          <div className="mt-10 rounded-[1.75rem] bg-[#201a17] p-5 text-white">
-            <p className="text-xs uppercase tracking-[0.16em] text-white/50">
-              Status do MVP
-            </p>
-            <p className="mt-3 text-lg font-semibold">
-              Operacao concierge com aprovacao em duas etapas.
-            </p>
-            <p className="mt-3 text-sm leading-6 text-white/70">
-              O fluxo inicial separa texto e visual para manter qualidade,
-              previsibilidade e espaco para automacao futura.
-            </p>
-          </div>
-        </aside>
-
-        <section className="rounded-[2rem] border border-[color:var(--border)] bg-[color:var(--card-strong)] p-6 shadow-[0_24px_64px_rgba(24,24,27,0.08)] backdrop-blur sm:p-8">
-          <header className="flex flex-col gap-4 border-b border-[color:var(--border)] pb-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm uppercase tracking-[0.16em] text-[color:var(--muted)]">
-                Area logada
-              </p>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-4xl leading-tight">
-                Base inicial do dashboard
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[color:var(--muted)]">
-                Placeholder funcional para validar navegacao, linguagem visual e
-                organizacao dos modulos principais do Studio.
-              </p>
-            </div>
-
-            <div className="rounded-full border border-[color:var(--border)] bg-white/70 px-4 py-2 text-sm text-[color:var(--ink-soft)]">
-              Fase 1: Concierge MVP
-            </div>
-          </header>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {cards.map(({ title, description, icon: Icon }) => (
-              <article
-                key={title}
-                className="group rounded-[1.75rem] border border-[color:var(--border)] bg-white/75 p-5 transition hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(24,24,27,0.08)]"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[color:var(--foreground)] text-white">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <ArrowUpRight className="h-5 w-5 text-[color:var(--muted)] transition group-hover:text-[color:var(--accent)]" />
-                </div>
-                <h3 className="mt-6 text-2xl font-semibold text-[color:var(--foreground)]">
-                  {title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 text-[color:var(--muted)]">
-                  {description}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-      </div>
-    </main>
+async function loadDashboardData() {
+  const tenants = await getTenants();
+  const requestGroups = await Promise.all(
+    tenants.map(async (tenant) => ({
+      tenant,
+      requests: await getContentRequests(tenant.id),
+    })),
   );
+
+  const requests = requestGroups.flatMap((item) => item.requests);
+  return {
+    tenants,
+    requests,
+    recentItems: requestGroups
+      .flatMap(({ tenant, requests }) =>
+        requests.map((request) => ({
+          tenant,
+          request,
+        })),
+      )
+      .sort(
+        (left, right) =>
+          new Date(right.request.updated_at).getTime() -
+          new Date(left.request.updated_at).getTime(),
+      )
+      .slice(0, 6),
+  };
+}
+
+function countRequests(requests: ContentRequest[], statuses: string[]) {
+  return requests.filter((request) => statuses.includes(request.status)).length;
+}
+
+export default async function StudioDashboardPage() {
+  try {
+    const { tenants, requests, recentItems } = await loadDashboardData();
+
+    return (
+      <DashboardShell currentPath="/app">
+        <PageShell
+          eyebrow="Concierge MVP"
+          title="Dashboard de preview visual"
+          description="Visão operacional do fluxo validado no backend: tenants, pedidos, texto aprovado, render specs e assets PNG já gerados."
+          actions={
+            <Link
+              href="/app/tenants"
+              className="rounded-full border border-[color:var(--border)] bg-white/80 px-4 py-2 text-sm font-semibold text-[color:var(--foreground)] transition hover:-translate-y-0.5"
+            >
+              Abrir tenants
+            </Link>
+          }
+        >
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <MetricCard
+              label="Tenants"
+              value={tenants.length}
+              hint="Clientes disponíveis no ambiente atual."
+            />
+            <MetricCard
+              label="Pedidos"
+              value={requests.length}
+              hint="Requests já cadastrados no Studio."
+            />
+            <MetricCard
+              label="Aguardando texto"
+              value={countRequests(requests, [
+                "awaiting_text_approval",
+                "text_revision_requested",
+              ])}
+              hint="Pedidos ainda no trecho textual do fluxo."
+            />
+            <MetricCard
+              label="Com render pronto"
+              value={countRequests(requests, [
+                "in_manual_production",
+                "awaiting_final_approval",
+                "delivered",
+              ])}
+              hint="Pedidos que já avançaram para assets visuais."
+            />
+          </div>
+
+          <div className="mt-8 grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+            <SurfaceCard>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted)]">
+                    Atividade recente
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold">
+                    Requests com atualização mais recente
+                  </h2>
+                </div>
+                <FolderKanban className="h-5 w-5 text-[color:var(--muted)]" />
+              </div>
+
+              <div className="mt-6 space-y-3">
+                {recentItems.length ? (
+                  recentItems.map(({ tenant, request }) => (
+                    <Link
+                      key={request.id}
+                      href={`/app/tenants/${tenant.id}/requests/${request.id}`}
+                      className="flex flex-col gap-3 rounded-2xl border border-[color:var(--border)] bg-white/90 px-4 py-4 transition hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold text-[color:var(--foreground)]">
+                          {request.title}
+                        </p>
+                        <p className="mt-1 text-sm text-[color:var(--muted)]">
+                          {tenant.name} · {request.theme}
+                        </p>
+                        <p className="mt-2 text-xs uppercase tracking-[0.14em] text-[color:var(--muted)]">
+                          Atualizado em {formatDate(request.updated_at)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <StatusBadge value={request.status} />
+                        <ArrowRight className="h-4 w-4 text-[color:var(--muted)]" />
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <EmptyState
+                    title="Nenhum pedido encontrado"
+                    description="Crie ou importe requests no Studio API para popular o dashboard."
+                  />
+                )}
+              </div>
+            </SurfaceCard>
+
+            <SurfaceCard>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted)]">
+                    Tenants carregados
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold">Panorama rápido</h2>
+                </div>
+                <Building2 className="h-5 w-5 text-[color:var(--muted)]" />
+              </div>
+
+              <div className="mt-6 space-y-3">
+                {tenants.length ? (
+                  tenants.slice(0, 5).map((tenant) => (
+                    <Link
+                      key={tenant.id}
+                      href={`/app/tenants/${tenant.id}`}
+                      className="flex items-center justify-between rounded-2xl border border-[color:var(--border)] bg-white/90 px-4 py-4 transition hover:-translate-y-0.5"
+                    >
+                      <div>
+                        <p className="text-sm font-semibold">{tenant.name}</p>
+                        <p className="mt-1 text-sm text-[color:var(--muted)]">
+                          {tenant.slug} · {tenant.niche}
+                        </p>
+                      </div>
+                      <Layers3 className="h-4 w-4 text-[color:var(--muted)]" />
+                    </Link>
+                  ))
+                ) : (
+                  <EmptyState
+                    title="Sem tenants cadastrados"
+                    description="A lista aparecerá aqui quando o backend tiver tenants disponíveis."
+                  />
+                )}
+              </div>
+            </SurfaceCard>
+          </div>
+        </PageShell>
+      </DashboardShell>
+    );
+  } catch (error) {
+    return (
+      <DashboardShell currentPath="/app">
+        <PageShell
+          eyebrow="Concierge MVP"
+          title="Dashboard de preview visual"
+          description="Não foi possível carregar a visão geral do Studio."
+        >
+          <ErrorState
+            title="Falha ao consultar o Studio API"
+            description={
+              error instanceof Error
+                ? error.message
+                : "Verifique NEXT_PUBLIC_STUDIO_API_URL e confirme se o backend está rodando."
+            }
+          />
+        </PageShell>
+      </DashboardShell>
+    );
+  }
 }
