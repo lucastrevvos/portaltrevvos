@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -90,13 +90,17 @@ class ContentDraftService:
             raise ConflictError(
                 "Approved drafts cannot be edited. Versioning will be supported later."
             )
-        self._validate_slides_for_request_format(content_request, payload.slides)
 
         draft.title = payload.title
         draft.caption = payload.caption
         draft.fixed_comment = payload.fixed_comment
         draft.stories_suggestion = payload.stories_suggestion
-        self._replace_slides(draft, tenant_id, payload.slides)
+        if payload.slides is not None:
+            self._validate_slides_for_request_format(
+                content_request,
+                payload.slides,
+            )
+            await self._replace_slides(draft, tenant_id, payload.slides)
         await self.session.commit()
         return await self.get_or_404(tenant_id, request_id)
 
@@ -266,12 +270,16 @@ class ContentDraftService:
         )
         return result.scalar_one_or_none()
 
-    def _replace_slides(
+    async def _replace_slides(
         self,
         draft: ContentDraft,
         tenant_id: UUID,
         slides: list[CarouselSlideCreate],
     ) -> None:
+        await self.session.execute(
+            delete(CarouselSlide).where(CarouselSlide.content_draft_id == draft.id)
+        )
+        await self.session.flush()
         draft.slides = self._build_slides(tenant_id, slides)
 
     def _build_slides(

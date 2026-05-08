@@ -6,9 +6,11 @@ import { useState } from "react";
 import {
   StudioApiError,
   VISUAL_TEMPLATE_CATEGORY_OPTIONS,
+  VisualTemplate,
   VisualTemplatePayload,
   createVisualTemplate,
   defaultTechnicalEditorialTemplate,
+  updateVisualTemplate,
 } from "../lib/studio-api";
 import {
   CheckboxField,
@@ -21,10 +23,41 @@ import {
 
 type TemplateErrors = Partial<Record<keyof VisualTemplatePayload, string>>;
 
-export function VisualTemplateForm({ tenantId }: { tenantId: string }) {
+function buildInitialValues(existing: VisualTemplate | null): VisualTemplatePayload {
+  if (!existing) {
+    return defaultTechnicalEditorialTemplate();
+  }
+
+  return {
+    name: existing.name,
+    description: existing.description,
+    category: existing.category,
+    layout_rules: existing.layout_rules,
+    css_theme: {
+      background: String(existing.css_theme.background ?? ""),
+      primary: String(existing.css_theme.primary ?? ""),
+      secondary: String(existing.css_theme.secondary ?? ""),
+      accent: String(existing.css_theme.accent ?? ""),
+      titleFont: String(existing.css_theme.titleFont ?? ""),
+      bodyFont: String(existing.css_theme.bodyFont ?? ""),
+    },
+    default_aspect_ratio: existing.default_aspect_ratio,
+    width: existing.width,
+    height: existing.height,
+    is_active: existing.is_active,
+  };
+}
+
+export function VisualTemplateForm({
+  tenantId,
+  existing,
+}: {
+  tenantId: string;
+  existing?: VisualTemplate | null;
+}) {
   const router = useRouter();
   const [values, setValues] = useState<VisualTemplatePayload>(
-    defaultTechnicalEditorialTemplate(),
+    buildInitialValues(existing ?? null),
   );
   const [errors, setErrors] = useState<TemplateErrors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -72,10 +105,16 @@ export function VisualTemplateForm({ tenantId }: { tenantId: string }) {
 
     setSubmitting(true);
     try {
-      await createVisualTemplate(tenantId, values);
+      if (existing) {
+        await updateVisualTemplate(tenantId, existing.id, values);
+      } else {
+        await createVisualTemplate(tenantId, values);
+      }
       router.push(
         `/app/tenants/${tenantId}?success=${encodeURIComponent(
-          "Template visual criado com sucesso.",
+          existing
+            ? "Template visual atualizado com sucesso."
+            : "Template visual criado com sucesso.",
         )}`,
       );
     } catch (reason) {
@@ -84,7 +123,7 @@ export function VisualTemplateForm({ tenantId }: { tenantId: string }) {
           ? reason.detail
           : reason instanceof Error
             ? reason.message
-            : "Não foi possível criar o template visual.",
+            : "Não foi possível salvar o template visual.",
       );
     } finally {
       setSubmitting(false);
@@ -99,7 +138,7 @@ export function VisualTemplateForm({ tenantId }: { tenantId: string }) {
           onClick={() => setValues(defaultTechnicalEditorialTemplate())}
           className="rounded-full border border-[color:var(--border)] bg-white px-4 py-2 text-sm font-semibold text-[color:var(--foreground)] transition hover:-translate-y-0.5"
         >
-          Criar template Técnico Editorial padrão
+          Usar Técnico Editorial padrão
         </button>
       </div>
 
@@ -222,7 +261,13 @@ export function VisualTemplateForm({ tenantId }: { tenantId: string }) {
           disabled={submitting}
           className="rounded-full bg-[color:var(--foreground)] px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {submitting ? "Criando..." : "Criar template visual"}
+          {submitting
+            ? existing
+              ? "Atualizando..."
+              : "Criando..."
+            : existing
+              ? "Atualizar template visual"
+              : "Criar template visual"}
         </button>
       </div>
     </form>

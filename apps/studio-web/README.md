@@ -2,7 +2,7 @@
 
 Dashboard web do Concierge MVP do Trevvos Studio.
 
-## Variável de ambiente
+## Variavel de ambiente
 
 Crie um `.env.local` a partir do exemplo:
 
@@ -41,16 +41,20 @@ http://localhost:3010/app
 
 ## Escopo atual
 
-- visão geral do dashboard
-- criação de tenant
-- criação e edição de onboarding
-- criação e edição de brand kit
-- criação de content request
-- criação e edição de draft textual com slides
-- submissão e aprovação textual pela UI
-- criação de visual template
-- geração de render specs
-- renderização de imagens
+- visao geral do dashboard
+- criacao de tenant
+- criacao e edicao de onboarding
+- criacao e edicao de brand kit
+- criacao de content request
+- criacao e edicao de draft textual com slides
+- submissao e aprovacao textual pela UI
+- criacao e edicao de visual template
+- listagem de templates visuais no tenant
+- timeline operacional do pedido
+- geracao de draft textual com IA
+- quality check do draft com guardrails
+- geracao de render specs
+- renderizacao de imagens
 - preview de PNGs servidos pelo `studio-api` em `/generated`
 
 ## Fluxo manual sugerido
@@ -58,19 +62,24 @@ http://localhost:3010/app
 1. criar tenant em `/app/tenants/new`
 2. preencher onboarding
 3. preencher brand kit
-4. criar template visual
+4. criar ou editar template visual
 5. criar request
-6. criar draft textual
-7. submeter e aprovar texto
-8. gerar specs
-9. renderizar imagens
-10. validar assets no grid
+6. opcionalmente gerar draft com IA no detalhe do pedido
+7. revisar ou editar o draft textual
+8. rodar quality check
+9. submeter e aprovar texto
+10. revisar a timeline operacional
+11. gerar specs
+12. renderizar imagens
+13. validar assets no grid
 
-## Limitações atuais
+## Limitacoes atuais
 
-- sem autenticação
-- sem permissões por papel
+- sem autenticacao
+- sem permissoes por papel
 - sem upload real
-- sem edição visual avançada
+- sem editor visual avancado
+- sem tela dedicada de ideias com IA nesta fase
+- sem `template padrao` persistido no backend
 - storage local apenas para modo dev/MVP
 - `distDir` do Next configurado como `.next-build`

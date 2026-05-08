@@ -2,15 +2,19 @@ import Link from "next/link";
 import { ReactNode } from "react";
 
 const STATUS_LABELS: Record<string, string> = {
-  draft: "Draft",
-  awaiting_text_approval: "Aguardando texto",
-  text_revision_requested: "Revisão textual",
+  draft: "Rascunho",
+  awaiting_text_approval: "Aguardando aprovação textual",
+  text_revision_requested: "Revisão textual solicitada",
   text_approved: "Texto aprovado",
-  visual_prompt_ready: "Specs visuais prontas",
-  in_manual_production: "Render em produção",
-  awaiting_final_approval: "Aguardando final",
-  final_revision_requested: "Revisão final",
+  visual_prompt_ready: "Especificações visuais prontas",
+  in_manual_production: "Produção visual em andamento",
+  awaiting_final_approval: "Aguardando aprovação final",
+  final_revision_requested: "Revisão final solicitada",
   delivered: "Entregue",
+  cancelled: "Cancelado",
+  awaiting_approval: "Aguardando aprovação",
+  revision_requested: "Revisão solicitada",
+  approved: "Aprovado",
   ready: "Pronto",
   rendered: "Renderizado",
   ready_for_review: "Pronto para revisão",
@@ -19,22 +23,36 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_STYLES: Record<string, string> = {
   draft: "bg-white text-[color:var(--ink-soft)] border-[color:var(--border)]",
-  awaiting_text_approval:
-    "bg-amber-50 text-amber-700 border-amber-200",
-  text_revision_requested:
-    "bg-rose-50 text-rose-700 border-rose-200",
+  awaiting_text_approval: "bg-amber-50 text-amber-700 border-amber-200",
+  text_revision_requested: "bg-rose-50 text-rose-700 border-rose-200",
   text_approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
   visual_prompt_ready: "bg-sky-50 text-sky-700 border-sky-200",
   in_manual_production: "bg-violet-50 text-violet-700 border-violet-200",
-  awaiting_final_approval:
-    "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
-  final_revision_requested:
-    "bg-orange-50 text-orange-700 border-orange-200",
+  awaiting_final_approval: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200",
+  final_revision_requested: "bg-orange-50 text-orange-700 border-orange-200",
   delivered: "bg-zinc-900 text-white border-zinc-900",
+  cancelled: "bg-zinc-200 text-zinc-700 border-zinc-300",
+  awaiting_approval: "bg-amber-50 text-amber-700 border-amber-200",
+  revision_requested: "bg-rose-50 text-rose-700 border-rose-200",
+  approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
   ready: "bg-sky-50 text-sky-700 border-sky-200",
   rendered: "bg-emerald-50 text-emerald-700 border-emerald-200",
   ready_for_review: "bg-violet-50 text-violet-700 border-violet-200",
   discarded: "bg-zinc-100 text-zinc-500 border-zinc-200",
+};
+
+const EVENT_LABELS: Record<string, string> = {
+  text_submitted: "Texto submetido",
+  text_revision_requested: "Revisão textual solicitada",
+  text_approved: "Texto aprovado",
+  status_changed: "Status alterado",
+};
+
+const EVENT_STYLES: Record<string, string> = {
+  text_submitted: "bg-sky-50 text-sky-700 border-sky-200",
+  text_revision_requested: "bg-rose-50 text-rose-700 border-rose-200",
+  text_approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  status_changed: "bg-zinc-100 text-zinc-700 border-zinc-200",
 };
 
 export const REQUEST_FLOW = [
@@ -55,6 +73,10 @@ export function formatStatus(value: string) {
   return STATUS_LABELS[value] ?? value.replaceAll("_", " ");
 }
 
+export function formatEventType(value: string) {
+  return EVENT_LABELS[value] ?? value.replaceAll("_", " ");
+}
+
 export function formatDate(value: string) {
   return new Intl.DateTimeFormat("pt-BR", {
     dateStyle: "medium",
@@ -65,6 +87,13 @@ export function formatDate(value: string) {
 export function statusTone(value: string) {
   return (
     STATUS_STYLES[value] ??
+    "bg-white text-[color:var(--ink-soft)] border-[color:var(--border)]"
+  );
+}
+
+export function eventTone(value: string) {
+  return (
+    EVENT_STYLES[value] ??
     "bg-white text-[color:var(--ink-soft)] border-[color:var(--border)]"
   );
 }
@@ -183,6 +212,19 @@ export function StatusBadge({ value }: { value: string }) {
       )}
     >
       {formatStatus(value)}
+    </span>
+  );
+}
+
+export function EventBadge({ value }: { value: string }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold",
+        eventTone(value),
+      )}
+    >
+      {formatEventType(value)}
     </span>
   );
 }

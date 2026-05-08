@@ -7,6 +7,8 @@ import {
   RefreshCcw,
 } from "lucide-react";
 
+import { AIContentActions } from "../../../../../../components/ai-content-actions";
+import { ApprovalTimeline } from "../../../../../../components/approval-timeline";
 import { DraftWorkflowActions } from "../../../../../../components/draft-workflow-actions";
 import { RequestActions } from "../../../../../../components/request-actions";
 import { DashboardShell } from "../../../../../../components/dashboard-shell";
@@ -24,6 +26,7 @@ import {
 } from "../../../../../../components/studio-ui";
 import {
   StudioApiError,
+  getApprovalEvents,
   getAssetUrl,
   getContentDraft,
   getContentRequest,
@@ -52,7 +55,7 @@ export default async function RequestDetailPage({
   const { tenantId, requestId } = params;
 
   try {
-    const [tenant, contentRequest, draft, renderSpecs, assets, templates] =
+    const [tenant, contentRequest, draft, renderSpecs, assets, templates, events] =
       await Promise.all([
         getTenant(tenantId),
         getContentRequest(tenantId, requestId),
@@ -60,6 +63,7 @@ export default async function RequestDetailPage({
         getRenderSpecs(tenantId, requestId),
         getCreativeAssets(tenantId, requestId),
         getVisualTemplates(tenantId),
+        getApprovalEvents(tenantId, requestId),
       ]);
 
     const orderedSlides = [...(draft?.slides ?? [])].sort(
@@ -76,7 +80,7 @@ export default async function RequestDetailPage({
         <PageShell
           eyebrow={`${tenant.name} · Pedido`}
           title={contentRequest.title}
-          description="Leitura operacional completa do request: texto, aprovação, template visual, render specs e assets PNG."
+          description="Leitura operacional completa do request: texto, aprovação, template visual, render specs, timeline e assets PNG."
           actions={
             <div className="flex flex-wrap gap-3">
               <Link
@@ -216,6 +220,17 @@ export default async function RequestDetailPage({
               templates={templates}
               initialTemplateId={contentRequest.visual_template_id}
               hasReadyRenderSpecs={hasReadyRenderSpecs}
+            />
+          </div>
+
+          <div className="mt-8">
+            <AIContentActions
+              tenantId={tenantId}
+              requestId={requestId}
+              requestFormat={contentRequest.format}
+              hasDraft={Boolean(draft)}
+              draftStatus={draft?.status ?? null}
+              initialSlideCount={orderedSlides.length || 5}
             />
           </div>
 
@@ -361,7 +376,27 @@ export default async function RequestDetailPage({
             </SurfaceCard>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+            <SurfaceCard>
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[color:var(--foreground)] text-white">
+                  <RefreshCcw className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted)]">
+                    Timeline operacional
+                  </p>
+                  <h2 className="mt-1 text-2xl font-semibold">
+                    Histórico do pedido
+                  </h2>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <ApprovalTimeline events={events} />
+              </div>
+            </SurfaceCard>
+
             <SurfaceCard>
               <div className="flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[color:var(--foreground)] text-white">
@@ -379,7 +414,7 @@ export default async function RequestDetailPage({
 
               <div className="mt-6">
                 {assets.length ? (
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  <div className="grid gap-4 md:grid-cols-2">
                     {assets.map((asset) => {
                       const assetUrl = getAssetUrl(asset.url);
                       return (

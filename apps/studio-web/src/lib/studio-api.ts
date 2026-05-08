@@ -193,6 +193,43 @@ export type ContentDraftPayload = {
   slides: CarouselSlidePayload[];
 };
 
+export type DraftQualityCheck = {
+  approved: boolean;
+  risk_level: "low" | "medium" | "high";
+  score: {
+    clarity: number;
+    authority: number;
+    niche_fit: number;
+    brand_voice: number;
+    conversion_potential: number;
+  };
+  warnings: string[];
+  suggested_changes: string[];
+};
+
+export type AIGenerateDraftPayload = {
+  slide_count: number;
+  overwrite?: boolean;
+  extra_instructions?: string | null;
+};
+
+export type AIGenerateDraftResponse = {
+  draft: ContentDraft;
+  quality_check: DraftQualityCheck;
+};
+
+export type AIContentIdea = {
+  title: string;
+  format: ContentFormat;
+  objective: ContentObjective;
+  rationale: string;
+  cta_suggestion: string | null;
+};
+
+export type AIContentIdeasResponse = {
+  ideas: AIContentIdea[];
+};
+
 export type RenderSpec = {
   id: string;
   tenant_id: string;
@@ -260,6 +297,20 @@ export type VisualTemplate = {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+};
+
+export type ApprovalEvent = {
+  id: string;
+  tenant_id: string;
+  content_request_id: string;
+  content_draft_id?: string | null;
+  event_type: string;
+  actor_type: string;
+  actor_name?: string | null;
+  from_status?: string | null;
+  to_status?: string | null;
+  comment?: string | null;
+  created_at: string;
 };
 
 export type VisualTemplatePayload = {
@@ -571,6 +622,54 @@ export async function updateContentDraft(
   )) as ContentDraft;
 }
 
+export async function generateAIDraft(
+  tenantId: string,
+  requestId: string,
+  payload: AIGenerateDraftPayload,
+) {
+  return (await request<AIGenerateDraftResponse>(
+    `/tenants/${tenantId}/content-requests/${requestId}/ai/generate-draft`,
+    {
+      method: "POST",
+      body: {
+        slide_count: payload.slide_count,
+        overwrite: payload.overwrite ?? false,
+        extra_instructions: cleanOptionalText(payload.extra_instructions),
+      },
+    },
+  )) as AIGenerateDraftResponse;
+}
+
+export async function checkAIDraftQuality(tenantId: string, requestId: string) {
+  return (await request<DraftQualityCheck>(
+    `/tenants/${tenantId}/content-requests/${requestId}/ai/check-draft-quality`,
+    {
+      method: "POST",
+    },
+  )) as DraftQualityCheck;
+}
+
+export async function generateAIContentIdeas(
+  tenantId: string,
+  payload: {
+    goal: ContentObjective;
+    count: number;
+    format: ContentFormat;
+    additional_context?: string | null;
+  },
+) {
+  return (await request<AIContentIdeasResponse>(
+    `/tenants/${tenantId}/ai/content-ideas`,
+    {
+      method: "POST",
+      body: {
+        ...payload,
+        additional_context: cleanOptionalText(payload.additional_context),
+      },
+    },
+  )) as AIContentIdeasResponse;
+}
+
 export async function submitContentDraft(
   tenantId: string,
   requestId: string,
@@ -608,6 +707,12 @@ export async function approveContentDraft(
 export async function getRenderSpecs(tenantId: string, requestId: string) {
   return (await request<RenderSpec[]>(
     `/tenants/${tenantId}/content-requests/${requestId}/render-specs`,
+  )) ?? [];
+}
+
+export async function getApprovalEvents(tenantId: string, requestId: string) {
+  return (await request<ApprovalEvent[]>(
+    `/tenants/${tenantId}/content-requests/${requestId}/approval-events`,
   )) ?? [];
 }
 
@@ -667,4 +772,21 @@ export async function createVisualTemplate(
       description: cleanOptionalText(payload.description),
     },
   })) as VisualTemplate;
+}
+
+export async function updateVisualTemplate(
+  tenantId: string,
+  templateId: string,
+  payload: VisualTemplatePayload,
+) {
+  return (await request<VisualTemplate>(
+    `/tenants/${tenantId}/visual-templates/${templateId}`,
+    {
+      method: "PUT",
+      body: {
+        ...payload,
+        description: cleanOptionalText(payload.description),
+      },
+    },
+  )) as VisualTemplate;
 }

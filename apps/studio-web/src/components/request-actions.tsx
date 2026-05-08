@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Loader2, RefreshCw, Sparkles, WandSparkles } from "lucide-react";
 
 import {
@@ -27,8 +28,16 @@ export function RequestActions({
   hasReadyRenderSpecs: boolean;
 }) {
   const router = useRouter();
+  const activeTemplates = useMemo(
+    () => templates.filter((template) => template.is_active),
+    [templates],
+  );
+  const resolvedInitialTemplateId =
+    initialTemplateId ??
+    (activeTemplates.length === 1 ? activeTemplates[0].id : templates[0]?.id ?? "");
+
   const [selectedTemplateId, setSelectedTemplateId] = useState(
-    initialTemplateId ?? templates[0]?.id ?? "",
+    resolvedInitialTemplateId,
   );
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -81,8 +90,8 @@ export function RequestActions({
             Operar o fluxo visual sem sair da tela
           </h2>
           <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-            Gere render specs quando o texto já estiver aprovado e dispare o render
-            quando as specs estiverem prontas.
+            Gere render specs quando o texto já estiver aprovado e dispare o
+            render quando as specs estiverem prontas.
           </p>
         </div>
 
@@ -114,7 +123,8 @@ export function RequestActions({
             )}
             {templates.map((template) => (
               <option key={template.id} value={template.id}>
-                {template.name}
+                {template.name} · {template.category}
+                {template.is_active ? " · ativo" : ""}
               </option>
             ))}
           </select>
@@ -158,9 +168,15 @@ export function RequestActions({
       </div>
 
       {!templates.length ? (
-        <p className="mt-4 rounded-2xl border border-dashed border-[color:var(--border)] bg-[color:var(--background)] px-4 py-3 text-sm text-[color:var(--muted)]">
-          Nenhum template visual cadastrado para este cliente.
-        </p>
+        <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-dashed border-[color:var(--border)] bg-[color:var(--background)] px-4 py-3 text-sm text-[color:var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+          <span>Nenhum template visual cadastrado para este cliente.</span>
+          <Link
+            href={`/app/tenants/${tenantId}/visual-templates/new`}
+            className="font-semibold text-[color:var(--foreground)]"
+          >
+            Criar template visual
+          </Link>
+        </div>
       ) : null}
 
       {feedback ? (

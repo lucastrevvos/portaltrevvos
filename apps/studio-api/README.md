@@ -47,6 +47,8 @@ Variaveis principais:
 - `STUDIO_DB_SCHEMA=studio`
 - `STUDIO_ENV=development`
 - `STUDIO_GENERATED_ASSETS_DIR=generated/studio`
+- `STUDIO_OPENAI_API_KEY=...`
+- `STUDIO_AI_MODEL=gpt-4.1-mini`
 
 ## Migrations e schema studio
 
@@ -119,6 +121,49 @@ curl http://localhost:3350/health
 ```
 
 ## Fluxo textual
+
+## AI Content Engine
+
+O Studio agora possui um motor textual de IA no backend. Ele usa:
+
+- contexto do tenant
+- onboarding estrategico
+- content request
+- regras globais de seguranca
+- regras de nicho para `nutrition`
+
+O draft gerado nunca e aprovado automaticamente. Ele vira um `ContentDraft`
+editavel e precisa passar por revisao humana antes da submissao.
+
+### Gerar ideias de conteudo
+
+```powershell
+curl -X POST http://localhost:3350/tenants/{tenant_id}/ai/content-ideas ^
+  -H "Content-Type: application/json" ^
+  -d "{\"goal\":\"authority\",\"count\":10,\"format\":\"carousel\",\"additional_context\":\"Foco em vegetarianos que treinam e tem dificuldade com proteina.\"}"
+```
+
+### Gerar draft textual com IA
+
+```powershell
+curl -X POST http://localhost:3350/tenants/{tenant_id}/content-requests/{request_id}/ai/generate-draft ^
+  -H "Content-Type: application/json" ^
+  -d "{\"slide_count\":5,\"extra_instructions\":\"Manter tom tecnico, premium e cientifico. Evitar promessas.\"}"
+```
+
+### Rodar quality check do draft
+
+```powershell
+curl -X POST http://localhost:3350/tenants/{tenant_id}/content-requests/{request_id}/ai/check-draft-quality
+```
+
+### Comportamento importante
+
+- se `STUDIO_OPENAI_API_KEY` nao estiver configurada, a API retorna erro claro
+- se onboarding nao existir, a geracao com IA e bloqueada
+- drafts aprovados nao podem ser sobrescritos por IA nesta versao
+- overwrite de draft nao aprovado exige `overwrite=true`
+- o quality check atual e deterministico e nao chama IA
 
 ### Criar draft
 

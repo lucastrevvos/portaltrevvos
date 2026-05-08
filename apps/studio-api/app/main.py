@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging
+from app.modules.ai_content.router import router as ai_content_router
 from app.modules.brand_kits.router import router as brand_kits_router
 from app.modules.content_drafts.router import router as content_drafts_router
 from app.modules.content_requests.router import router as content_requests_router
@@ -54,6 +55,7 @@ def create_app() -> FastAPI:
     app.include_router(content_drafts_router)
     app.include_router(visual_templates_router)
     app.include_router(render_specs_router)
+    app.include_router(ai_content_router)
     app.mount("/generated", StaticFiles(directory=generated_root), name="generated")
 
     return app

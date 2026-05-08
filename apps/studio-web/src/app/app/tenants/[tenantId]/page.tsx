@@ -134,8 +134,8 @@ export default async function TenantDetailPage({
                   </div>
                 ) : (
                   <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
-                    Preencha o onboarding para registrar posicionamento, público e tom
-                    de marca.
+                    Preencha o onboarding para registrar posicionamento, público e
+                    tom de marca.
                   </p>
                 )}
               </SurfaceCard>
@@ -205,14 +205,15 @@ export default async function TenantDetailPage({
                   </div>
                 ) : (
                   <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
-                    Cadastre um brand kit para informar cores, estilo e regras visuais.
+                    Cadastre um brand kit para informar cores, estilo e regras
+                    visuais.
                   </p>
                 )}
               </SurfaceCard>
             </div>
           </div>
 
-          <div className="mt-8 grid gap-4 xl:grid-cols-[0.8fr_1.2fr]">
+          <div className="mt-8 grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
             <SurfaceCard>
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
@@ -228,12 +229,14 @@ export default async function TenantDetailPage({
                     </h2>
                   </div>
                 </div>
-                <Link
-                  href={`/app/tenants/${tenant.id}/visual-templates/new`}
-                  className="text-sm font-semibold text-[color:var(--foreground)]"
-                >
-                  Novo template visual
-                </Link>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href={`/app/tenants/${tenant.id}/visual-templates/new`}
+                    className="text-sm font-semibold text-[color:var(--foreground)]"
+                  >
+                    Novo template visual
+                  </Link>
+                </div>
               </div>
 
               <div className="mt-5 space-y-3">
@@ -243,23 +246,54 @@ export default async function TenantDetailPage({
                       key={template.id}
                       className="rounded-2xl border border-[color:var(--border)] bg-white/90 p-4"
                     >
-                      <div className="flex items-center justify-between gap-3">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
                           <p className="text-sm font-semibold">{template.name}</p>
                           <p className="mt-1 text-sm text-[color:var(--muted)]">
-                            {template.category}
+                            {template.category} · {template.width}×{template.height}
                           </p>
                         </div>
-                        <StatusBadge value={template.is_active ? "ready" : "discarded"} />
+                        <div className="flex items-center gap-3">
+                          <StatusBadge value={template.is_active ? "ready" : "discarded"} />
+                          {template.tenant_id ? (
+                            <Link
+                              href={`/app/tenants/${tenant.id}/visual-templates/${template.id}`}
+                              className="text-sm font-semibold text-[color:var(--foreground)]"
+                            >
+                              Editar
+                            </Link>
+                          ) : null}
+                        </div>
                       </div>
                       <p className="mt-3 text-sm leading-6 text-[color:var(--ink-soft)]">
                         {template.description || template.layout_rules}
                       </p>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {[
+                          template.css_theme.background,
+                          template.css_theme.primary,
+                          template.css_theme.secondary,
+                          template.css_theme.accent,
+                        ]
+                          .filter(Boolean)
+                          .map((color) => (
+                            <span
+                              key={String(color)}
+                              className="flex items-center gap-2 rounded-full border border-[color:var(--border)] bg-[color:var(--background)] px-3 py-1 text-xs font-semibold"
+                            >
+                              <span
+                                className="h-3 w-3 rounded-full border border-black/5"
+                                style={{ backgroundColor: String(color) }}
+                              />
+                              {String(color)}
+                            </span>
+                          ))}
+                      </div>
                     </div>
                   ))
                 ) : (
                   <EmptyState
-                    title="Nenhum template visual"
+                    title="Nenhum template visual cadastrado."
                     description="Crie ao menos um template para gerar render specs pela interface."
                   />
                 )}

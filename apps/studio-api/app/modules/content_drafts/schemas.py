@@ -48,7 +48,7 @@ class ContentDraftCreate(ContentDraftBase):
 
 
 class ContentDraftUpdate(ContentDraftBase):
-    pass
+    slides: list[CarouselSlideCreate] | None = None
 
 
 class ContentDraftResponse(BaseModel):
