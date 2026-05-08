@@ -88,7 +88,10 @@ class HtmlCssRenderer:
             fallback_reason = f"{type(exc).__name__}: {exc!r}"
             failure_traceback = traceback.format_exc()
             logger.exception(
-                "Studio renderer Playwright failure for tenant=%s request_id=%s slide=%s",
+                (
+                    "Studio renderer Playwright failure for tenant=%s "
+                    "request_id=%s slide=%s"
+                ),
                 tenant_slug,
                 request_id,
                 spec.slide_number,

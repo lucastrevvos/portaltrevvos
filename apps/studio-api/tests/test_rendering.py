@@ -205,5 +205,8 @@ def test_renderer_raises_and_logs_real_reason_when_playwright_fails_in_developme
     assert "playwright_attempted=true" in debug_log
     assert "playwright_success=false" in debug_log
     assert "fallback_used=false" in debug_log
-    assert "fallback_reason=RuntimeError: RuntimeError('browser launch failed')" in debug_log
+    assert (
+        "fallback_reason=RuntimeError: RuntimeError('browser launch failed')"
+        in debug_log
+    )
     assert "failure_traceback_start" in debug_log

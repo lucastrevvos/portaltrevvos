@@ -1,4 +1,8 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging
@@ -14,12 +18,26 @@ from app.modules.visual_templates.router import router as visual_templates_route
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging()
+    project_root = Path(__file__).resolve().parents[1]
+    generated_root = project_root / "generated"
 
     app = FastAPI(
         title=settings.api_name,
         version=settings.api_version,
         docs_url="/docs",
         redoc_url="/redoc",
+    )
+
+    # Dev/MVP dashboard access from the Studio web app.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "http://localhost:3010",
+            "http://127.0.0.1:3010",
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     @app.get("/health")
@@ -36,6 +54,7 @@ def create_app() -> FastAPI:
     app.include_router(content_drafts_router)
     app.include_router(visual_templates_router)
     app.include_router(render_specs_router)
+    app.mount("/generated", StaticFiles(directory=generated_root), name="generated")
 
     return app
 
