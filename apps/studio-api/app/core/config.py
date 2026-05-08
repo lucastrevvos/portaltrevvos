@@ -1,6 +1,10 @@
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+APP_ROOT = Path(__file__).resolve().parents[2]
+ENV_FILE = APP_ROOT / ".env"
 
 
 class Settings(BaseSettings):
@@ -9,12 +13,13 @@ class Settings(BaseSettings):
     api_version: str = "0.1.0"
     api_port: int = 3350
     db_schema: str = "studio"
+    generated_assets_dir: str = "generated/studio"
     database_url: str = (
-        "postgresql+asyncpg://postgres:postgres@localhost:5432/trevvos"
+        "postgresql+asyncpg://trevvos:trevvos@localhost:5432/trevvos"
     )
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=ENV_FILE,
         env_prefix="STUDIO_",
         extra="ignore",
     )

@@ -14,10 +14,13 @@ from app.modules.brand_kits import models as brand_kit_models  # noqa: F401
 from app.modules.content_drafts import models as content_draft_models  # noqa: F401
 from app.modules.content_requests import models as content_request_models  # noqa: F401
 from app.modules.onboarding import models as onboarding_models  # noqa: F401
+from app.modules.render_specs import models as render_spec_models  # noqa: F401
 from app.modules.tenants import models as tenant_models  # noqa: F401
+from app.modules.visual_templates import models as visual_template_models  # noqa: F401
 
 config = context.config
 settings = get_settings()
+config.set_main_option("sqlalchemy.url", settings.database_url)
 target_metadata = Base.metadata
 
 if config.config_file_name is not None:
@@ -46,7 +49,6 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    connection.execute(text(_create_schema_sql(settings.db_schema)))
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
@@ -56,6 +58,7 @@ def do_run_migrations(connection: Connection) -> None:
     )
 
     with context.begin_transaction():
+        connection.execute(text(_create_schema_sql(settings.db_schema)))
         context.run_migrations()
 
 
