@@ -26,11 +26,17 @@ class HtmlCssRenderer:
         self.settings = get_settings()
         self.project_root = Path(__file__).resolve().parents[3]
         generated_base = Path(self.settings.generated_assets_dir)
+        generated_mount_base = Path(self.settings.generated_mount_dir)
         uploads_base = Path(self.settings.uploads_dir)
         self.generated_root = (
             generated_base
             if generated_base.is_absolute()
             else self.project_root / generated_base
+        )
+        self.generated_mount_root = (
+            generated_mount_base
+            if generated_mount_base.is_absolute()
+            else self.project_root / generated_mount_base
         )
         self.uploads_root = (
             uploads_base
@@ -229,7 +235,9 @@ class HtmlCssRenderer:
             if relative.parts and relative.parts[0] == "uploads":
                 candidates.append(self.uploads_root / Path(*relative.parts[1:]))
             if relative.parts and relative.parts[0] == "generated":
-                candidates.append(self.generated_root / Path(*relative.parts[1:]))
+                candidates.append(
+                    self.generated_mount_root / Path(*relative.parts[1:])
+                )
             candidates.append(self.project_root / relative)
             for local_path in candidates:
                 if local_path.exists():

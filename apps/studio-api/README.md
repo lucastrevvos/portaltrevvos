@@ -48,6 +48,7 @@ Variaveis principais:
 - `STUDIO_DB_SCHEMA=studio`
 - `STUDIO_ENV=development`
 - `STUDIO_GENERATED_ASSETS_DIR=generated/studio`
+- `STUDIO_GENERATED_MOUNT_DIR=generated`
 - `STUDIO_UPLOADS_DIR=uploads`
 - `STUDIO_OPENAI_API_KEY=...`
 - `STUDIO_AI_MODEL=gpt-4.1-mini`

@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     api_port: int = 3350
     db_schema: str = "studio"
     generated_assets_dir: str = "generated/studio"
+    generated_mount_dir: str = "generated"
     uploads_dir: str = "uploads"
     openai_api_key: str | None = None
     ai_model: str = "gpt-4.1-mini"

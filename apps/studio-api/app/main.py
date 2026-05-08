@@ -1,4 +1,5 @@
 from pathlib import Path
+import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,23 +19,38 @@ from app.modules.render_specs.router import router as render_specs_router
 from app.modules.tenants.router import router as tenants_router
 from app.modules.visual_templates.router import router as visual_templates_router
 
+logger = logging.getLogger(__name__)
+
 
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging()
     project_root = Path(__file__).resolve().parents[1]
     generated_base = Path(settings.generated_assets_dir)
+    generated_mount_base = Path(settings.generated_mount_dir)
     uploads_base = Path(settings.uploads_dir)
-    generated_root = (
+    generated_storage_root = (
         generated_base
         if generated_base.is_absolute()
         else project_root / generated_base
     )
+    generated_mount_root = (
+        generated_mount_base
+        if generated_mount_base.is_absolute()
+        else project_root / generated_mount_base
+    )
     uploads_root = (
         uploads_base if uploads_base.is_absolute() else project_root / uploads_base
     )
-    generated_root.mkdir(parents=True, exist_ok=True)
+    generated_storage_root.mkdir(parents=True, exist_ok=True)
+    generated_mount_root.mkdir(parents=True, exist_ok=True)
     uploads_root.mkdir(parents=True, exist_ok=True)
+    logger.info(
+        "Studio static directories configured: generated_mount_root=%s generated_storage_root=%s uploads_root=%s",
+        generated_mount_root,
+        generated_storage_root,
+        uploads_root,
+    )
 
     app = FastAPI(
         title=settings.api_name,
@@ -73,7 +89,11 @@ def create_app() -> FastAPI:
     app.include_router(render_specs_router)
     app.include_router(ai_content_router)
     app.include_router(ai_visual_router)
-    app.mount("/generated", StaticFiles(directory=generated_root), name="generated")
+    app.mount(
+        "/generated",
+        StaticFiles(directory=generated_mount_root),
+        name="generated",
+    )
     app.mount("/uploads", StaticFiles(directory=uploads_root), name="uploads")
 
     return app
