@@ -49,3 +49,15 @@ class ContentRequest(Base):
     )
 
     tenant = relationship("Tenant", back_populates="content_requests")
+    draft = relationship(
+        "ContentDraft",
+        back_populates="content_request",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+    approval_events = relationship(
+        "ApprovalEvent",
+        back_populates="content_request",
+        cascade="all, delete-orphan",
+        order_by="ApprovalEvent.created_at",
+    )

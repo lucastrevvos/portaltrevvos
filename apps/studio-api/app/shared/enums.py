@@ -44,3 +44,23 @@ class ContentRequestStatus(StrEnum):
     FINAL_REVISION_REQUESTED = "final_revision_requested"
     DELIVERED = "delivered"
     CANCELLED = "cancelled"
+
+
+class ContentDraftStatus(StrEnum):
+    DRAFT = "draft"
+    AWAITING_APPROVAL = "awaiting_approval"
+    REVISION_REQUESTED = "revision_requested"
+    APPROVED = "approved"
+
+
+class ApprovalEventType(StrEnum):
+    TEXT_SUBMITTED = "text_submitted"
+    TEXT_REVISION_REQUESTED = "text_revision_requested"
+    TEXT_APPROVED = "text_approved"
+    STATUS_CHANGED = "status_changed"
+
+
+class ApprovalActorType(StrEnum):
+    ADMIN = "admin"
+    CLIENT = "client"
+    SYSTEM = "system"

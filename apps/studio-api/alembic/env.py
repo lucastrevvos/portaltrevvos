@@ -11,6 +11,7 @@ from alembic import context
 from app.core.config import get_settings
 from app.core.database import Base
 from app.modules.brand_kits import models as brand_kit_models  # noqa: F401
+from app.modules.content_drafts import models as content_draft_models  # noqa: F401
 from app.modules.content_requests import models as content_request_models  # noqa: F401
 from app.modules.onboarding import models as onboarding_models  # noqa: F401
 from app.modules.tenants import models as tenant_models  # noqa: F401

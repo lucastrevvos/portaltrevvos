@@ -11,7 +11,21 @@ from app.modules.content_requests.schemas import (
     ContentRequestStatusUpdate,
 )
 from app.modules.tenants.service import TenantService
-from app.shared.errors import NotFoundError
+from app.shared.enums import ContentRequestStatus
+from app.shared.errors import ConflictError, NotFoundError
+
+MANAGED_TEXT_STATUSES = {
+    ContentRequestStatus.AWAITING_TEXT_APPROVAL,
+    ContentRequestStatus.TEXT_REVISION_REQUESTED,
+    ContentRequestStatus.TEXT_APPROVED,
+}
+VISUAL_WORKFLOW_STATUSES = {
+    ContentRequestStatus.VISUAL_PROMPT_READY,
+    ContentRequestStatus.IN_MANUAL_PRODUCTION,
+    ContentRequestStatus.AWAITING_FINAL_APPROVAL,
+    ContentRequestStatus.FINAL_REVISION_REQUESTED,
+    ContentRequestStatus.DELIVERED,
+}
 
 
 class ContentRequestService:
@@ -63,6 +77,18 @@ class ContentRequestService:
         payload: ContentRequestStatusUpdate,
     ) -> ContentRequest:
         content_request = await self.get_or_404(tenant_id, request_id)
+        if payload.status in MANAGED_TEXT_STATUSES:
+            raise ConflictError(
+                "Text workflow statuses must be changed through the content "
+                "draft approval endpoints."
+            )
+        if (
+            payload.status in VISUAL_WORKFLOW_STATUSES
+            and content_request.status != ContentRequestStatus.TEXT_APPROVED
+        ):
+            raise ConflictError(
+                "Visual workflow cannot start before the text is approved."
+            )
         content_request.status = payload.status
         await self.session.commit()
         await self.session.refresh(content_request)
