@@ -20,3 +20,11 @@ class CreateCoupleService:
             status=CoupleStatus.PENDING.value,
         )
         return await self._repository.add(couple)
+
+
+class GetCoupleByUserService:
+    def __init__(self, repository: CoupleRepository) -> None:
+        self._repository = repository
+
+    async def execute(self, user_id: str) -> Couple | None:
+        return await self._repository.get_by_user_id(user_id)

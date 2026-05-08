@@ -6,7 +6,10 @@ from fastapi.testclient import TestClient
 from sqlalchemy.exc import IntegrityError
 
 from app.api.deps import get_app_settings, get_db_session
-from app.api.v1.couples import get_create_couple_service
+from app.api.v1.couples import (
+    get_create_couple_service,
+    get_get_couple_by_user_service,
+)
 from app.core.config import Settings
 from app.domain.couples.schemas import CoupleCreate
 from app.domain.couples.status import CoupleStatus
@@ -47,8 +50,30 @@ class DuplicateCoupleService:
         raise IntegrityError("insert into couples", {}, Exception("duplicate"))
 
 
+class FakeGetCoupleByUserService:
+    def __init__(self, couple: SimpleNamespace | None) -> None:
+        self.couple = couple
+        self.received_user_id: str | None = None
+
+    async def execute(self, user_id: str) -> SimpleNamespace | None:
+        self.received_user_id = user_id
+        return self.couple
+
+
+def make_couple(user_a: str = "user-123", user_b: str = "user-456") -> SimpleNamespace:
+    return SimpleNamespace(
+        id=uuid4(),
+        partner_a_user_id=user_a,
+        partner_b_user_id=user_b,
+        status=CoupleStatus.PENDING.value,
+        created_at="2026-04-27T00:00:00Z",
+        updated_at="2026-04-27T00:00:00Z",
+    )
+
+
 def make_client(
-    service: object,
+    create_service: object,
+    get_service: object | None = None,
     session: FakeSession | None = None,
 ) -> tuple[TestClient, FakeSession]:
     app = create_app()
@@ -61,7 +86,10 @@ def make_client(
         trevvos_auth_jwt_secret=TEST_SECRET,
     )
     app.dependency_overrides[get_db_session] = override_db_session
-    app.dependency_overrides[get_create_couple_service] = lambda: service
+    app.dependency_overrides[get_create_couple_service] = lambda: create_service
+    app.dependency_overrides[get_get_couple_by_user_service] = (
+        lambda: get_service or FakeGetCoupleByUserService(None)
+    )
 
     return TestClient(app), fake_session
 
@@ -137,3 +165,57 @@ def test_post_couples_with_duplicate_pair_returns_409() -> None:
     assert response.json()["detail"] == "Couple already exists."
     assert session.committed is False
     assert session.rolled_back is True
+
+
+def test_get_my_couple_without_authorization_returns_401() -> None:
+    client, _session = make_client(
+        FakeCreateCoupleService(),
+        get_service=FakeGetCoupleByUserService(None),
+    )
+
+    with client:
+        response = client.get("/v1/couples/me")
+
+    assert response.status_code == 401
+    assert response.json()["detail"] == "Token de autenticacao ausente."
+
+
+def test_get_my_couple_without_existing_couple_returns_404() -> None:
+    get_service = FakeGetCoupleByUserService(None)
+    client, _session = make_client(
+        FakeCreateCoupleService(),
+        get_service=get_service,
+    )
+    token = make_token()
+
+    with client:
+        response = client.get(
+            "/v1/couples/me",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert response.status_code == 404
+    assert response.json()["detail"] == "No couple found for the authenticated user."
+    assert get_service.received_user_id == "user-123"
+
+
+def test_get_my_couple_with_existing_couple_returns_200() -> None:
+    get_service = FakeGetCoupleByUserService(make_couple())
+    client, _session = make_client(
+        FakeCreateCoupleService(),
+        get_service=get_service,
+    )
+    token = make_token()
+
+    with client:
+        response = client.get(
+            "/v1/couples/me",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["partner_a_user_id"] == "user-123"
+    assert body["partner_b_user_id"] == "user-456"
+    assert body["status"] == "pending"
+    assert get_service.received_user_id == "user-123"

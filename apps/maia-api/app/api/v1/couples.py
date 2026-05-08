@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_current_maia_user, get_db_session
 from app.domain.couples.repository import SqlAlchemyCoupleRepository
 from app.domain.couples.schemas import CoupleCreate, CoupleRead
-from app.domain.couples.service import CreateCoupleService
+from app.domain.couples.service import CreateCoupleService, GetCoupleByUserService
 from app.infra.auth.jwt import CurrentUser
 
 router = APIRouter(prefix="/couples", tags=["couples"])
@@ -27,9 +27,20 @@ def get_create_couple_service(
     return CreateCoupleService(repository)
 
 
+def get_get_couple_by_user_service(
+    session: DbSession,
+) -> GetCoupleByUserService:
+    repository = SqlAlchemyCoupleRepository(session)
+    return GetCoupleByUserService(repository)
+
+
 CreateCoupleDependency = Annotated[
     CreateCoupleService,
     Depends(get_create_couple_service),
+]
+GetCoupleByUserDependency = Annotated[
+    GetCoupleByUserService,
+    Depends(get_get_couple_by_user_service),
 ]
 
 
@@ -73,5 +84,20 @@ async def create_couple(
             status_code=status.HTTP_409_CONFLICT,
             detail="Couple already exists.",
         ) from exc
+
+    return CoupleRead.model_validate(couple)
+
+
+@router.get("/me", response_model=CoupleRead)
+async def get_my_couple(
+    current_user: MaiaUser,
+    service: GetCoupleByUserDependency,
+) -> CoupleRead:
+    couple = await service.execute(current_user.id)
+    if couple is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No couple found for the authenticated user.",
+        )
 
     return CoupleRead.model_validate(couple)
