@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     api_port: int = 3350
     db_schema: str = "studio"
     database_url: str = (
-        "postgresql+asyncpg://trevvos:trevvos@localhost:5432/trevvos"
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/trevvos"
     )
 
     model_config = SettingsConfigDict(

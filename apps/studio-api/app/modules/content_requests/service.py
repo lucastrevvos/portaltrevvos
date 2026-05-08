@@ -1,0 +1,69 @@
+from __future__ import annotations
+
+from uuid import UUID
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.modules.content_requests.models import ContentRequest
+from app.modules.content_requests.schemas import (
+    ContentRequestCreate,
+    ContentRequestStatusUpdate,
+)
+from app.modules.tenants.service import TenantService
+from app.shared.errors import NotFoundError
+
+
+class ContentRequestService:
+    def __init__(self, session: AsyncSession) -> None:
+        self.session = session
+        self.tenant_service = TenantService(session)
+
+    async def create(
+        self,
+        tenant_id: UUID,
+        payload: ContentRequestCreate,
+    ) -> ContentRequest:
+        await self.tenant_service.get_or_404(tenant_id)
+        content_request = ContentRequest(
+            tenant_id=tenant_id,
+            **payload.model_dump(),
+        )
+        self.session.add(content_request)
+        await self.session.commit()
+        await self.session.refresh(content_request)
+        return content_request
+
+    async def list_for_tenant(self, tenant_id: UUID) -> list[ContentRequest]:
+        await self.tenant_service.get_or_404(tenant_id)
+        result = await self.session.execute(
+            select(ContentRequest)
+            .where(ContentRequest.tenant_id == tenant_id)
+            .order_by(ContentRequest.created_at.desc())
+        )
+        return list(result.scalars().all())
+
+    async def get_or_404(self, tenant_id: UUID, request_id: UUID) -> ContentRequest:
+        await self.tenant_service.get_or_404(tenant_id)
+        result = await self.session.execute(
+            select(ContentRequest).where(
+                ContentRequest.id == request_id,
+                ContentRequest.tenant_id == tenant_id,
+            )
+        )
+        content_request = result.scalar_one_or_none()
+        if content_request is None:
+            raise NotFoundError("Content request not found.")
+        return content_request
+
+    async def update_status(
+        self,
+        tenant_id: UUID,
+        request_id: UUID,
+        payload: ContentRequestStatusUpdate,
+    ) -> ContentRequest:
+        content_request = await self.get_or_404(tenant_id, request_id)
+        content_request.status = payload.status
+        await self.session.commit()
+        await self.session.refresh(content_request)
+        return content_request
