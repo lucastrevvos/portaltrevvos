@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Palette, Shapes, UserRoundSearch } from "lucide-react";
+import {
+  ArrowRight,
+  Palette,
+  Shapes,
+  Sparkles,
+  UserRoundSearch,
+} from "lucide-react";
 
 import { DashboardShell } from "../../../../components/dashboard-shell";
 import {
@@ -13,6 +19,7 @@ import {
 } from "../../../../components/studio-ui";
 import {
   StudioApiError,
+  getBrandAssets,
   getContentRequests,
   getTenant,
   getTenantBrandKit,
@@ -39,6 +46,16 @@ export default async function TenantDetailPage({
       getContentRequests(tenantId),
       getVisualTemplates(tenantId),
     ]);
+    const brandAssets = await getBrandAssets(tenantId);
+    const logoAssets = brandAssets.filter(
+      (asset) => asset.asset_type === "logo" && asset.is_primary,
+    );
+    const photoAssets = brandAssets.filter(
+      (asset) => asset.asset_type === "profile_photo" && asset.is_primary,
+    );
+    const referenceAssets = brandAssets.filter(
+      (asset) => asset.asset_type !== "logo" && asset.asset_type !== "profile_photo",
+    );
 
     return (
       <DashboardShell currentPath="/app/tenants">
@@ -209,6 +226,67 @@ export default async function TenantDetailPage({
                     visuais.
                   </p>
                 )}
+              </SurfaceCard>
+
+              <SurfaceCard>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted)]">
+                      Brand assets
+                    </p>
+                    <h2 className="mt-1 text-xl font-semibold">
+                      Biblioteca de ativos da marca
+                    </h2>
+                  </div>
+                  <Link
+                    href={`/app/tenants/${tenant.id}/assets`}
+                    className="text-sm font-semibold text-[color:var(--foreground)]"
+                  >
+                    Gerenciar assets
+                  </Link>
+                </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <KeyValue
+                    label="Logo principal"
+                    value={logoAssets.length ? "Encontrado" : "Ausente"}
+                  />
+                  <KeyValue
+                    label="Foto principal"
+                    value={photoAssets.length ? "Encontrada" : "Ausente"}
+                  />
+                  <KeyValue
+                    label="Referências"
+                    value={String(referenceAssets.length)}
+                  />
+                </div>
+              </SurfaceCard>
+
+              <SurfaceCard>
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[color:var(--foreground)] text-white">
+                      <Sparkles className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.16em] text-[color:var(--muted)]">
+                        Radar de Conteúdo
+                      </p>
+                      <h2 className="mt-1 text-xl font-semibold">
+                        Sugestões com IA para este tenant
+                      </h2>
+                    </div>
+                  </div>
+                  <Link
+                    href={`/app/tenants/${tenant.id}/content-radar`}
+                    className="text-sm font-semibold text-[color:var(--foreground)]"
+                  >
+                    Abrir Radar
+                  </Link>
+                </div>
+                <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
+                  Receba temas estratégicos para este cliente com base no nicho,
+                  onboarding e posicionamento atual.
+                </p>
               </SurfaceCard>
             </div>
           </div>

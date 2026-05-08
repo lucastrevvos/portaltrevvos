@@ -62,7 +62,9 @@ def client(
 ) -> Generator[TestClient, None, None]:
     settings = get_settings()
     original_generated_dir = settings.generated_assets_dir
+    original_uploads_dir = settings.uploads_dir
     settings.generated_assets_dir = str(tmp_path / "generated" / "studio")
+    settings.uploads_dir = str(tmp_path / "uploads")
 
     async def override_get_db_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
@@ -72,3 +74,4 @@ def client(
         yield test_client
     app.dependency_overrides.clear()
     settings.generated_assets_dir = original_generated_dir
+    settings.uploads_dir = original_uploads_dir

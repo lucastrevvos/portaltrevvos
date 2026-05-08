@@ -17,3 +17,6 @@ __pycache__/
 .venv/
 .env
 apps/studio-api/generated/
+# Trevvos Studio local generated/uploaded assets
+apps/studio-api/generated/
+apps/studio-api/uploads/

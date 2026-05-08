@@ -39,12 +39,23 @@ export const VISUAL_TEMPLATE_CATEGORY_OPTIONS = [
   "custom",
 ] as const;
 
+export const BRAND_ASSET_TYPE_OPTIONS = [
+  "logo",
+  "profile_photo",
+  "brand_reference",
+  "post_reference",
+  "product_photo",
+  "general_asset",
+] as const;
+
 export type ServiceMode = (typeof SERVICE_MODE_OPTIONS)[number];
 export type PhotoUsagePreference = (typeof PHOTO_USAGE_OPTIONS)[number];
 export type ContentFormat = (typeof CONTENT_FORMAT_OPTIONS)[number];
 export type ContentObjective = (typeof CONTENT_OBJECTIVE_OPTIONS)[number];
 export type VisualTemplateCategory =
   (typeof VISUAL_TEMPLATE_CATEGORY_OPTIONS)[number];
+export type BrandAssetType = (typeof BRAND_ASSET_TYPE_OPTIONS)[number];
+export type RenderMode = "simple" | "ai_visual";
 
 export type Tenant = {
   id: string;
@@ -125,6 +136,35 @@ export type BrandKitPayload = {
   visual_style: string | null;
   photo_usage_preference: PhotoUsagePreference;
   layout_preference: string | null;
+};
+
+export type BrandAsset = {
+  id: string;
+  tenant_id: string;
+  asset_type: BrandAssetType;
+  label: string | null;
+  file_name: string;
+  mime_type: string;
+  storage_path: string;
+  public_url: string;
+  width: number | null;
+  height: number | null;
+  is_primary: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type BrandAssetUploadPayload = {
+  file: File;
+  type: BrandAssetType;
+  label?: string | null;
+  is_primary?: boolean;
+};
+
+export type BrandAssetUpdatePayload = {
+  label: string | null;
+  asset_type: BrandAssetType;
+  is_primary: boolean;
 };
 
 export type ContentRequest = {
@@ -228,6 +268,49 @@ export type AIContentIdea = {
 
 export type AIContentIdeasResponse = {
   ideas: AIContentIdea[];
+};
+
+export type ContentRadarSuggestion = {
+  title: string;
+  theme: string;
+  format: ContentFormat;
+  objective: ContentObjective;
+  cta: string;
+  briefing: string;
+  extra_instructions: string;
+  rationale: string;
+  content_angle: string;
+  estimated_difficulty: "easy" | "medium" | "hard";
+  risk_level: "low" | "medium" | "high";
+};
+
+export type ContentRadarSuggestionsResponse = {
+  suggestions: ContentRadarSuggestion[];
+};
+
+export type ContentRadarSuggestionsPayload = {
+  count?: number;
+  format?: ContentFormat | null;
+  objective?: ContentObjective | null;
+  additional_context?: string | null;
+  avoid_repeating_recent_themes?: boolean;
+};
+
+export type GeneratedVisualBackground = {
+  slide_number: number;
+  asset_id: string;
+  public_url: string;
+};
+
+export type GenerateVisualBackgroundsPayload = {
+  overwrite?: boolean;
+  style_mode?: "brand_aligned" | "editorial";
+  slides?: number[] | null;
+};
+
+export type GenerateVisualBackgroundsResponse = {
+  content_request_id: string;
+  generated_backgrounds: GeneratedVisualBackground[];
 };
 
 export type RenderSpec = {
@@ -356,7 +439,7 @@ export class StudioApiError extends Error {
 }
 
 type RequestOptions = {
-  method?: "GET" | "POST" | "PUT" | "PATCH";
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   allowNotFound?: boolean;
 };
@@ -435,6 +518,28 @@ async function request<T>(
     throw new StudioApiError(response.status, await parseError(response));
   }
 
+  if (response.status === 204) {
+    return null;
+  }
+
+  return (await response.json()) as T;
+}
+
+async function requestFormData<T>(
+  path: string,
+  formData: FormData,
+  options: Pick<RequestOptions, "method"> = {},
+): Promise<T> {
+  const response = await fetch(`${getBaseUrl()}${path}`, {
+    method: options.method ?? "POST",
+    body: formData,
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new StudioApiError(response.status, await parseError(response));
+  }
+
   return (await response.json()) as T;
 }
 
@@ -503,6 +608,47 @@ export async function updateOnboarding(
 export async function getTenantBrandKit(tenantId: string) {
   return await request<BrandKit>(`/tenants/${tenantId}/brand-kit`, {
     allowNotFound: true,
+  });
+}
+
+export async function getBrandAssets(tenantId: string) {
+  return (await request<BrandAsset[]>(`/tenants/${tenantId}/brand-assets`)) ?? [];
+}
+
+export async function createBrandAsset(
+  tenantId: string,
+  payload: BrandAssetUploadPayload,
+) {
+  const formData = new FormData();
+  formData.append("file", payload.file);
+  formData.append("type", payload.type);
+  if (payload.label?.trim()) {
+    formData.append("label", payload.label.trim());
+  }
+  formData.append("is_primary", payload.is_primary ? "true" : "false");
+  return await requestFormData<BrandAsset>(
+    `/tenants/${tenantId}/brand-assets`,
+    formData,
+  );
+}
+
+export async function updateBrandAsset(
+  tenantId: string,
+  assetId: string,
+  payload: BrandAssetUpdatePayload,
+) {
+  return (await request<BrandAsset>(`/tenants/${tenantId}/brand-assets/${assetId}`, {
+    method: "PUT",
+    body: {
+      ...payload,
+      label: cleanOptionalText(payload.label),
+    },
+  })) as BrandAsset;
+}
+
+export async function deleteBrandAsset(tenantId: string, assetId: string) {
+  await request<void>(`/tenants/${tenantId}/brand-assets/${assetId}`, {
+    method: "DELETE",
   });
 }
 
@@ -670,6 +816,25 @@ export async function generateAIContentIdeas(
   )) as AIContentIdeasResponse;
 }
 
+export async function generateContentRadarSuggestions(
+  tenantId: string,
+  payload: ContentRadarSuggestionsPayload,
+) {
+  return (await request<ContentRadarSuggestionsResponse>(
+    `/tenants/${tenantId}/content-radar/suggestions`,
+    {
+      method: "POST",
+      body: {
+        count: payload.count ?? 6,
+        format: payload.format ?? null,
+        objective: payload.objective ?? null,
+        additional_context: cleanOptionalText(payload.additional_context),
+        avoid_repeating_recent_themes: payload.avoid_repeating_recent_themes ?? true,
+      },
+    },
+  )) as ContentRadarSuggestionsResponse;
+}
+
 export async function submitContentDraft(
   tenantId: string,
   requestId: string,
@@ -736,6 +901,14 @@ export async function generateRenderSpecs(
 }
 
 export async function renderContentRequest(tenantId: string, requestId: string) {
+  return await renderContentRequestWithMode(tenantId, requestId, "simple");
+}
+
+export async function renderContentRequestWithMode(
+  tenantId: string,
+  requestId: string,
+  mode: RenderMode,
+) {
   return (await request<RenderExecutionResponse>(
     `/tenants/${tenantId}/content-requests/${requestId}/render`,
     {
@@ -743,10 +916,38 @@ export async function renderContentRequest(tenantId: string, requestId: string) 
       body: {
         actor_type: "admin",
         actor_name: "Admin Studio",
-        comment: "Render visual iniciado pela interface.",
+        comment:
+          mode === "ai_visual"
+            ? "Render visual com IA iniciado pela interface."
+            : "Render visual iniciado pela interface.",
+        mode,
       },
     },
   )) as RenderExecutionResponse;
+}
+
+export async function generateVisualBackgrounds(
+  tenantId: string,
+  requestId: string,
+  payload: GenerateVisualBackgroundsPayload,
+) {
+  return (await request<GenerateVisualBackgroundsResponse>(
+    `/tenants/${tenantId}/content-requests/${requestId}/ai/generate-visual-backgrounds`,
+    {
+      method: "POST",
+      body: {
+        overwrite: payload.overwrite ?? false,
+        style_mode: payload.style_mode ?? "brand_aligned",
+        slides: payload.slides ?? null,
+      },
+    },
+  )) as GenerateVisualBackgroundsResponse;
+}
+
+export async function getVisualBackgrounds(tenantId: string, requestId: string) {
+  return (await request<CreativeAsset[]>(
+    `/tenants/${tenantId}/content-requests/${requestId}/ai/visual-backgrounds`,
+  )) ?? [];
 }
 
 export async function getCreativeAssets(tenantId: string, requestId: string) {

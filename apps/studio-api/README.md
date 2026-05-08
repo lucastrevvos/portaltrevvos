@@ -11,6 +11,7 @@ O escopo atual implementa:
 - `content_drafts`
 - `carousel_slides`
 - `approval_events`
+- `brand_assets`
 - `visual_templates`
 - `render_specs`
 - `image_render_jobs`
@@ -47,8 +48,11 @@ Variaveis principais:
 - `STUDIO_DB_SCHEMA=studio`
 - `STUDIO_ENV=development`
 - `STUDIO_GENERATED_ASSETS_DIR=generated/studio`
+- `STUDIO_UPLOADS_DIR=uploads`
 - `STUDIO_OPENAI_API_KEY=...`
 - `STUDIO_AI_MODEL=gpt-4.1-mini`
+- `STUDIO_IMAGE_MODEL=gpt-image-2`
+- `STUDIO_ENABLE_AI_VISUAL=true`
 
 ## Migrations e schema studio
 
@@ -151,6 +155,23 @@ curl -X POST http://localhost:3350/tenants/{tenant_id}/content-requests/{request
   -d "{\"slide_count\":5,\"extra_instructions\":\"Manter tom tecnico, premium e cientifico. Evitar promessas.\"}"
 ```
 
+## Radar de Conteudo
+
+O backend tambem expõe o Radar de Conteudo, que gera sugestões estratégicas de
+posts a partir do tenant, onboarding, brand kit e pedidos recentes.
+
+### Gerar sugestoes
+
+```powershell
+curl -X POST http://localhost:3350/tenants/{tenant_id}/content-radar/suggestions ^
+  -H "Content-Type: application/json" ^
+  -d "{\"count\":6,\"format\":\"carousel\",\"objective\":\"authority\",\"additional_context\":\"Foco em motoristas que nao sabem calcular lucro real.\",\"avoid_repeating_recent_themes\":true}"
+```
+
+- o retorno vem em JSON estruturado
+- a saída preserva UTF-8 e acentuação
+- o frontend usa essas sugestões para criar `ContentRequest` pré-preenchido
+
 ### Rodar quality check do draft
 
 ```powershell
@@ -191,6 +212,17 @@ curl -X POST http://localhost:3350/tenants/{tenant_id}/content-requests/{request
 
 ## Fluxo visual controlado
 
+### Upload de brand assets
+
+Os assets visuais da marca ficam em `uploads/brand-assets/{tenant_slug}/{asset_type}/`.
+O backend expoe esse diretorio em `/uploads` no modo dev/MVP.
+
+### Listar brand assets
+
+```powershell
+curl http://localhost:3350/tenants/{tenant_id}/brand-assets
+```
+
 ### Criar template visual
 
 ```powershell
@@ -215,6 +247,28 @@ curl -X POST http://localhost:3350/tenants/{tenant_id}/content-requests/{request
   -d "{\"comment\":\"Render visual iniciado.\"}"
 ```
 
+Modo `simple` preserva a composicao completa do template.
+
+### Gerar fundos de IA visual
+
+```powershell
+curl -X POST http://localhost:3350/tenants/{tenant_id}/content-requests/{request_id}/ai/generate-visual-backgrounds ^
+  -H "Content-Type: application/json" ^
+  -d "{\"overwrite\":false,\"style_mode\":\"brand_aligned\",\"slides\":[1,2]}"
+```
+
+### Renderizar com IA visual
+
+```powershell
+curl -X POST http://localhost:3350/tenants/{tenant_id}/content-requests/{request_id}/render ^
+  -H "Content-Type: application/json" ^
+  -d "{\"mode\":\"ai_visual\",\"comment\":\"Render visual com IA.\"}"
+```
+
+No modo `ai_visual`, o PNG final usa o fundo da IA como base principal e o
+renderer aplica apenas camada editorial, overlay de leitura, logo real, CTA e
+contador. Notas internas e caixas de direcao visual nao sao exportadas.
+
 ### Listar assets gerados
 
 ```powershell
@@ -225,6 +279,8 @@ curl http://localhost:3350/tenants/{tenant_id}/content-requests/{request_id}/cre
 
 - caminho padrao local: `apps/studio-api/generated/studio/{tenant_slug}/{content_request_id}/`
 - URL registrada no banco: `/generated/studio/{tenant_slug}/{content_request_id}/{file_name}`
+- brand assets ficam em `apps/studio-api/uploads/brand-assets/{tenant_slug}/...`
+- backgrounds de IA visual ficam em `apps/studio-api/uploads/ai-visual/{tenant_slug}/...`
 
 ## Texto e UTF-8
 

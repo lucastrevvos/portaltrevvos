@@ -10,6 +10,7 @@ from app.shared.enums import (
     CreativeAssetStatus,
     CreativeAssetType,
     ImageRenderJobStatus,
+    RenderMode,
     RenderSpecStatus,
     RenderType,
 )
@@ -27,6 +28,7 @@ class RenderWorkflowActionPayload(BaseModel):
     actor_type: ApprovalActorType = ApprovalActorType.ADMIN
     actor_name: str | None = Field(default=None, max_length=255)
     comment: str | None = None
+    mode: RenderMode = RenderMode.SIMPLE
 
 
 class RenderSpecResponse(BaseModel):

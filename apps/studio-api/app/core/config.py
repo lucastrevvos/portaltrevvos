@@ -14,8 +14,11 @@ class Settings(BaseSettings):
     api_port: int = 3350
     db_schema: str = "studio"
     generated_assets_dir: str = "generated/studio"
+    uploads_dir: str = "uploads"
     openai_api_key: str | None = None
     ai_model: str = "gpt-4.1-mini"
+    image_model: str = "gpt-image-2"
+    enable_ai_visual: bool = True
     database_url: str = (
         "postgresql+asyncpg://trevvos:trevvos@localhost:5432/trevvos"
     )

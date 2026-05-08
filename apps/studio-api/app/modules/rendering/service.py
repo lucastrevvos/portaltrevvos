@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import binascii
 import logging
+import mimetypes
 import struct
 import traceback
 import zlib
@@ -23,7 +25,18 @@ class HtmlCssRenderer:
     def __init__(self) -> None:
         self.settings = get_settings()
         self.project_root = Path(__file__).resolve().parents[3]
-        self.generated_root = self.project_root / self.settings.generated_assets_dir
+        generated_base = Path(self.settings.generated_assets_dir)
+        uploads_base = Path(self.settings.uploads_dir)
+        self.generated_root = (
+            generated_base
+            if generated_base.is_absolute()
+            else self.project_root / generated_base
+        )
+        self.uploads_root = (
+            uploads_base
+            if uploads_base.is_absolute()
+            else self.project_root / uploads_base
+        )
         self.raise_on_playwright_failure = self.settings.env in {
             "development",
             "test",
@@ -39,6 +52,9 @@ class HtmlCssRenderer:
         request_id: str,
         spec: RenderSpec,
         template: VisualTemplate,
+        background_asset_url: str | None = None,
+        logo_asset_url: str | None = None,
+        render_mode: str = "simple",
     ) -> tuple[Path, str]:
         output_dir = self.generated_root / tenant_slug / request_id
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -46,7 +62,14 @@ class HtmlCssRenderer:
         file_name = self._build_file_name(tenant_slug, request_slug, spec)
         output_path = output_dir / file_name
         public_url = f"/generated/studio/{tenant_slug}/{request_id}/{file_name}"
-        context = self._build_context(tenant_name, spec, template)
+        context = self._build_context(
+            tenant_name,
+            spec,
+            template,
+            background_asset_url=background_asset_url,
+            logo_asset_url=logo_asset_url,
+            render_mode=render_mode,
+        )
         html = render_html(context)
         debug_html_path = output_dir / self._build_debug_html_name(spec)
         debug_log_path = output_dir / self._build_debug_log_name(spec)
@@ -152,6 +175,10 @@ class HtmlCssRenderer:
         tenant_name: str,
         spec: RenderSpec,
         template: VisualTemplate,
+        *,
+        background_asset_url: str | None = None,
+        logo_asset_url: str | None = None,
+        render_mode: str = "simple",
     ) -> dict[str, object]:
         theme = template.css_theme or {}
         slide_label = "Post"
@@ -168,11 +195,15 @@ class HtmlCssRenderer:
             "cta": spec.cta,
             "visual_notes": spec.visual_notes,
             "brand_name": tenant_name,
-            "brand_logo_url": spec.brand_logo_url,
+            "brand_logo_url": self._resolve_asset_url(
+                logo_asset_url or spec.brand_logo_url
+            ),
+            "background_asset_url": self._resolve_asset_url(background_asset_url),
             "brand_visual_style": spec.brand_visual_style,
             "template_name": template.name,
             "layout_rules": template.layout_rules,
             "slide_label": slide_label,
+            "render_mode": render_mode,
             "background": theme.get(
                 "background",
                 spec.brand_secondary_color or "#F7F2EA",
@@ -186,6 +217,26 @@ class HtmlCssRenderer:
             "title_font": theme.get("titleFont", "Georgia"),
             "body_font": theme.get("bodyFont", "Arial"),
         }
+
+    def _resolve_asset_url(self, value: str | None) -> str | None:
+        if not value:
+            return None
+        if value.startswith("http://") or value.startswith("https://"):
+            return value
+        if value.startswith("/"):
+            relative = Path(value.lstrip("/"))
+            candidates = []
+            if relative.parts and relative.parts[0] == "uploads":
+                candidates.append(self.uploads_root / Path(*relative.parts[1:]))
+            if relative.parts and relative.parts[0] == "generated":
+                candidates.append(self.generated_root / Path(*relative.parts[1:]))
+            candidates.append(self.project_root / relative)
+            for local_path in candidates:
+                if local_path.exists():
+                    mime_type = mimetypes.guess_type(local_path.name)[0] or "image/png"
+                    encoded = base64.b64encode(local_path.read_bytes()).decode("ascii")
+                    return f"data:{mime_type};base64,{encoded}"
+        return value
 
     def _build_debug_html_name(self, spec: RenderSpec) -> str:
         if spec.slide_number is not None:

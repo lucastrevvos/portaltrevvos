@@ -39,6 +39,12 @@ class Tenant(Base):
         cascade="all, delete-orphan",
         uselist=False,
     )
+    brand_assets = relationship(
+        "BrandAsset",
+        back_populates="tenant",
+        cascade="all, delete-orphan",
+        order_by="BrandAsset.created_at",
+    )
     content_requests = relationship(
         "ContentRequest",
         back_populates="tenant",

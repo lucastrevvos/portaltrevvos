@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { AIContentActions } from "../../../../../../components/ai-content-actions";
+import { AIVisualActions } from "../../../../../../components/ai-visual-actions";
 import { ApprovalTimeline } from "../../../../../../components/approval-timeline";
 import { DraftWorkflowActions } from "../../../../../../components/draft-workflow-actions";
 import { RequestActions } from "../../../../../../components/request-actions";
@@ -27,6 +28,7 @@ import {
 import {
   StudioApiError,
   getApprovalEvents,
+  getBrandAssets,
   getAssetUrl,
   getContentDraft,
   getContentRequest,
@@ -65,6 +67,7 @@ export default async function RequestDetailPage({
         getVisualTemplates(tenantId),
         getApprovalEvents(tenantId, requestId),
       ]);
+    const brandAssets = await getBrandAssets(tenantId);
 
     const orderedSlides = [...(draft?.slides ?? [])].sort(
       (left, right) => left.slide_number - right.slide_number,
@@ -74,6 +77,12 @@ export default async function RequestDetailPage({
     );
     const hasReadyRenderSpecs = orderedSpecs.some((spec) => spec.status === "ready");
     const canEditDraft = draft && draft.status !== "approved";
+    const readySlideNumbers = orderedSpecs
+      .filter((spec) => spec.status === "ready" && spec.slide_number !== null)
+      .map((spec) => spec.slide_number as number);
+    const backgroundAssets = assets.filter(
+      (asset) => asset.asset_type === "generated_background",
+    );
 
     return (
       <DashboardShell currentPath="/app/tenants">
@@ -231,6 +240,18 @@ export default async function RequestDetailPage({
               hasDraft={Boolean(draft)}
               draftStatus={draft?.status ?? null}
               initialSlideCount={orderedSlides.length || 5}
+            />
+          </div>
+
+          <div className="mt-8">
+            <AIVisualActions
+              tenantId={tenantId}
+              requestId={requestId}
+              requestStatus={contentRequest.status}
+              hasReadyRenderSpecs={hasReadyRenderSpecs}
+              readySlideNumbers={readySlideNumbers}
+              brandAssets={brandAssets}
+              backgroundAssets={backgroundAssets}
             />
           </div>
 

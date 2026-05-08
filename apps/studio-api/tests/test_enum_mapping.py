@@ -97,6 +97,7 @@ def test_sqlalchemy_enums_use_lowercase_values() -> None:
         "reference",
         "logo",
         "photo",
+        "generated_background",
     ]
     assert CreativeAsset.__table__.c.status.type.enums == [
         "draft",

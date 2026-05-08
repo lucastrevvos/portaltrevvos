@@ -103,6 +103,7 @@ class CreativeAssetType(StrEnum):
     REFERENCE = "reference"
     LOGO = "logo"
     PHOTO = "photo"
+    GENERATED_BACKGROUND = "generated_background"
 
 
 class CreativeAssetStatus(StrEnum):
@@ -111,3 +112,17 @@ class CreativeAssetStatus(StrEnum):
     APPROVED = "approved"
     REJECTED = "rejected"
     DISCARDED = "discarded"
+
+
+class RenderMode(StrEnum):
+    SIMPLE = "simple"
+    AI_VISUAL = "ai_visual"
+
+
+class BrandAssetType(StrEnum):
+    LOGO = "logo"
+    PROFILE_PHOTO = "profile_photo"
+    BRAND_REFERENCE = "brand_reference"
+    POST_REFERENCE = "post_reference"
+    PRODUCT_PHOTO = "product_photo"
+    GENERAL_ASSET = "general_asset"

@@ -55,6 +55,15 @@ const EVENT_STYLES: Record<string, string> = {
   status_changed: "bg-zinc-100 text-zinc-700 border-zinc-200",
 };
 
+const BRAND_ASSET_LABELS: Record<string, string> = {
+  logo: "Logo",
+  profile_photo: "Foto principal",
+  brand_reference: "Referência da marca",
+  post_reference: "Referência de post",
+  product_photo: "Foto de produto",
+  general_asset: "Asset geral",
+};
+
 export const REQUEST_FLOW = [
   "draft",
   "awaiting_text_approval",
@@ -75,6 +84,10 @@ export function formatStatus(value: string) {
 
 export function formatEventType(value: string) {
   return EVENT_LABELS[value] ?? value.replaceAll("_", " ");
+}
+
+export function formatBrandAssetType(value: string) {
+  return BRAND_ASSET_LABELS[value] ?? value.replaceAll("_", " ");
 }
 
 export function formatDate(value: string) {

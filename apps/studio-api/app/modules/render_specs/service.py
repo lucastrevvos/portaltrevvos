@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
+from app.modules.brand_assets.service import BrandAssetService
 from app.modules.brand_kits.models import BrandKit
 from app.modules.content_drafts.models import ApprovalEvent, ContentDraft
 from app.modules.content_requests.models import ContentRequest
@@ -24,12 +25,14 @@ from app.modules.visual_templates.service import VisualTemplateService
 from app.shared.enums import (
     ApprovalActorType,
     ApprovalEventType,
+    BrandAssetType,
     ContentDraftStatus,
     ContentFormat,
     ContentRequestStatus,
     CreativeAssetStatus,
     CreativeAssetType,
     ImageRenderJobStatus,
+    RenderMode,
     RenderSpecStatus,
     RenderType,
 )
@@ -42,6 +45,7 @@ class RenderSpecService:
         self.session = session
         self.content_request_service = ContentRequestService(session)
         self.visual_template_service = VisualTemplateService(session)
+        self.brand_asset_service = BrandAssetService(session)
         self.renderer = HtmlCssRenderer()
 
     async def generate(
@@ -77,6 +81,19 @@ class RenderSpecService:
         for spec in active_specs:
             spec.status = RenderSpecStatus.DISCARDED
 
+        primary_logo = await self.brand_asset_service.get_primary(
+            tenant_id,
+            BrandAssetType.LOGO,
+        )
+        logo_url = (
+            primary_logo.public_url
+            if primary_logo is not None
+            else (
+                content_request.tenant.brand_kit.logo_url
+                if content_request.tenant.brand_kit
+                else None
+            )
+        )
         specs = self._build_specs(
             tenant=content_request.tenant,
             content_request=content_request,
@@ -84,6 +101,7 @@ class RenderSpecService:
             template=template,
             brand_kit=content_request.tenant.brand_kit,
             onboarding_profile=content_request.tenant.onboarding_profile,
+            logo_url=logo_url,
         )
         for spec in specs:
             self.session.add(spec)
@@ -150,6 +168,27 @@ class RenderSpecService:
 
         template_map = await self._get_templates_for_specs(tenant_id, ready_specs)
         request_slug = slugify(content_request.theme or content_request.title)
+        primary_logo = await self.brand_asset_service.get_primary(
+            tenant_id,
+            BrandAssetType.LOGO,
+        )
+        background_assets = await self._get_background_assets_for_specs(
+            tenant_id,
+            request_id,
+            ready_specs,
+        )
+        if payload.mode == RenderMode.AI_VISUAL:
+            missing_slides = [
+                spec.slide_number
+                for spec in ready_specs
+                if spec.id not in background_assets
+            ]
+            if missing_slides:
+                raise BadRequestError(
+                    "AI visual render requested but some slide backgrounds "
+                    "are missing. "
+                    "Generate visual backgrounds before rendering with ai_visual."
+                )
         previous_status = content_request.status
 
         for spec in ready_specs:
@@ -172,6 +211,22 @@ class RenderSpecService:
                     request_id=str(content_request.id),
                     spec=spec,
                     template=template,
+                    background_asset_url=(
+                        background_assets[spec.id].url
+                        if payload.mode == RenderMode.AI_VISUAL
+                        and spec.id in background_assets
+                        else None
+                    ),
+                    logo_asset_url=(
+                        primary_logo.public_url
+                        if primary_logo is not None
+                        else (
+                            content_request.tenant.brand_kit.logo_url
+                            if content_request.tenant.brand_kit
+                            else None
+                        )
+                    ),
+                    render_mode=payload.mode.value,
                 )
                 job.status = ImageRenderJobStatus.COMPLETED
                 job.output_path = str(output_path)
@@ -284,6 +339,31 @@ class RenderSpecService:
         ]
         return {template.id: template for template in templates}
 
+    async def _get_background_assets_for_specs(
+        self,
+        tenant_id: UUID,
+        request_id: UUID,
+        specs: list[RenderSpec],
+    ) -> dict[UUID, CreativeAsset]:
+        spec_ids = [spec.id for spec in specs]
+        if not spec_ids:
+            return {}
+        result = await self.session.execute(
+            select(CreativeAsset)
+            .where(
+                CreativeAsset.tenant_id == tenant_id,
+                CreativeAsset.content_request_id == request_id,
+                CreativeAsset.asset_type == CreativeAssetType.GENERATED_BACKGROUND,
+                CreativeAsset.render_spec_id.in_(spec_ids),
+            )
+            .order_by(CreativeAsset.created_at.asc(), CreativeAsset.id.asc())
+        )
+        backgrounds: dict[UUID, CreativeAsset] = {}
+        for asset in result.scalars().all():
+            if asset.render_spec_id is not None:
+                backgrounds[asset.render_spec_id] = asset
+        return backgrounds
+
     def _build_specs(
         self,
         *,
@@ -293,6 +373,7 @@ class RenderSpecService:
         template: VisualTemplate,
         brand_kit: BrandKit | None,
         onboarding_profile: OnboardingProfile | None,
+        logo_url: str | None,
     ) -> list[RenderSpec]:
         total_slides = len(draft.slides)
         if content_request.format == ContentFormat.CAROUSEL:
@@ -315,7 +396,7 @@ class RenderSpecService:
                     body=slide.body,
                     cta=content_request.cta,
                     visual_notes=slide.visual_notes,
-                    brand_logo_url=brand_kit.logo_url if brand_kit else None,
+                    brand_logo_url=logo_url,
                     brand_primary_color=brand_kit.primary_color if brand_kit else None,
                     brand_secondary_color=(
                         brand_kit.secondary_color if brand_kit else None
@@ -344,7 +425,7 @@ class RenderSpecService:
                 body=draft.caption or draft.stories_suggestion,
                 cta=content_request.cta,
                 visual_notes=draft.fixed_comment,
-                brand_logo_url=brand_kit.logo_url if brand_kit else None,
+                brand_logo_url=logo_url,
                 brand_primary_color=brand_kit.primary_color if brand_kit else None,
                 brand_secondary_color=brand_kit.secondary_color if brand_kit else None,
                 brand_accent_color=brand_kit.accent_color if brand_kit else None,
