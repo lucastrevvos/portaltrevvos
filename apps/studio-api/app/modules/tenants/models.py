@@ -44,3 +44,7 @@ class Tenant(Base):
         back_populates="tenant",
         cascade="all, delete-orphan",
     )
+    visual_templates = relationship(
+        "VisualTemplate",
+        back_populates="tenant",
+    )

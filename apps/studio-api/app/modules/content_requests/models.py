@@ -3,10 +3,10 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, Enum, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database import STUDIO_SCHEMA, Base
+from app.core.database import STUDIO_SCHEMA, Base, studio_enum
 from app.shared.enums import ContentFormat, ContentObjective, ContentRequestStatus
 
 
@@ -20,19 +20,21 @@ class ContentRequest(Base):
     )
     title: Mapped[str] = mapped_column(String(255))
     format: Mapped[ContentFormat] = mapped_column(
-        Enum(ContentFormat, name="content_format_enum", schema=STUDIO_SCHEMA)
+        studio_enum(ContentFormat, name="content_format_enum")
     )
     objective: Mapped[ContentObjective] = mapped_column(
-        Enum(ContentObjective, name="content_objective_enum", schema=STUDIO_SCHEMA)
+        studio_enum(ContentObjective, name="content_objective_enum")
     )
     cta: Mapped[str | None] = mapped_column(String(255), nullable=True)
     theme: Mapped[str] = mapped_column(String(255))
-    visual_template_id: Mapped[UUID | None] = mapped_column(nullable=True)
+    visual_template_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey(f"{STUDIO_SCHEMA}.visual_templates.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     status: Mapped[ContentRequestStatus] = mapped_column(
-        Enum(
+        studio_enum(
             ContentRequestStatus,
             name="content_request_status_enum",
-            schema=STUDIO_SCHEMA,
         ),
         default=ContentRequestStatus.DRAFT,
         server_default=ContentRequestStatus.DRAFT.value,
@@ -60,4 +62,16 @@ class ContentRequest(Base):
         back_populates="content_request",
         cascade="all, delete-orphan",
         order_by="ApprovalEvent.created_at",
+    )
+    render_specs = relationship(
+        "RenderSpec",
+        back_populates="content_request",
+        cascade="all, delete-orphan",
+        order_by="RenderSpec.slide_number",
+    )
+    creative_assets = relationship(
+        "CreativeAsset",
+        back_populates="content_request",
+        cascade="all, delete-orphan",
+        order_by="CreativeAsset.created_at",
     )

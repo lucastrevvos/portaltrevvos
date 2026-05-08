@@ -3,10 +3,10 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, Enum, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database import STUDIO_SCHEMA, Base
+from app.core.database import STUDIO_SCHEMA, Base, studio_enum
 from app.shared.enums import ServiceMode
 
 
@@ -24,7 +24,7 @@ class OnboardingProfile(Base):
     whatsapp_number: Mapped[str | None] = mapped_column(String(50), nullable=True)
     city: Mapped[str | None] = mapped_column(String(255), nullable=True)
     service_mode: Mapped[ServiceMode] = mapped_column(
-        Enum(ServiceMode, name="service_mode_enum", schema=STUDIO_SCHEMA)
+        studio_enum(ServiceMode, name="service_mode_enum")
     )
     target_audience: Mapped[str] = mapped_column(Text)
     audience_pain_points: Mapped[str] = mapped_column(Text)

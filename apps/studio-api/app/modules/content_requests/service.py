@@ -19,6 +19,10 @@ MANAGED_TEXT_STATUSES = {
     ContentRequestStatus.TEXT_REVISION_REQUESTED,
     ContentRequestStatus.TEXT_APPROVED,
 }
+MANAGED_VISUAL_STATUSES = {
+    ContentRequestStatus.VISUAL_PROMPT_READY,
+    ContentRequestStatus.IN_MANUAL_PRODUCTION,
+}
 VISUAL_WORKFLOW_STATUSES = {
     ContentRequestStatus.VISUAL_PROMPT_READY,
     ContentRequestStatus.IN_MANUAL_PRODUCTION,
@@ -77,10 +81,10 @@ class ContentRequestService:
         payload: ContentRequestStatusUpdate,
     ) -> ContentRequest:
         content_request = await self.get_or_404(tenant_id, request_id)
-        if payload.status in MANAGED_TEXT_STATUSES:
+        if payload.status in MANAGED_TEXT_STATUSES | MANAGED_VISUAL_STATUSES:
             raise ConflictError(
-                "Text workflow statuses must be changed through the content "
-                "draft approval endpoints."
+                "Workflow-managed statuses must be changed through dedicated "
+                "workflow endpoints."
             )
         if (
             payload.status in VISUAL_WORKFLOW_STATUSES

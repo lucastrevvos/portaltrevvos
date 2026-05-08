@@ -6,7 +6,9 @@ from app.modules.brand_kits.router import router as brand_kits_router
 from app.modules.content_drafts.router import router as content_drafts_router
 from app.modules.content_requests.router import router as content_requests_router
 from app.modules.onboarding.router import router as onboarding_router
+from app.modules.render_specs.router import router as render_specs_router
 from app.modules.tenants.router import router as tenants_router
+from app.modules.visual_templates.router import router as visual_templates_router
 
 
 def create_app() -> FastAPI:
@@ -32,6 +34,8 @@ def create_app() -> FastAPI:
     app.include_router(brand_kits_router)
     app.include_router(content_requests_router)
     app.include_router(content_drafts_router)
+    app.include_router(visual_templates_router)
+    app.include_router(render_specs_router)
 
     return app
 

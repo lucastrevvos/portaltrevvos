@@ -64,3 +64,50 @@ class ApprovalActorType(StrEnum):
     ADMIN = "admin"
     CLIENT = "client"
     SYSTEM = "system"
+
+
+class VisualTemplateCategory(StrEnum):
+    INSTITUTIONAL_PREMIUM = "institutional_premium"
+    TECHNICAL_EDITORIAL = "technical_editorial"
+    HUMAN_CONNECTION = "human_connection"
+    CONVERSION_FOCUSED = "conversion_focused"
+    MINIMALIST_SCIENTIFIC = "minimalist_scientific"
+    CUSTOM = "custom"
+
+
+class RenderType(StrEnum):
+    COVER_SLIDE = "cover_slide"
+    CAROUSEL_SLIDE = "carousel_slide"
+    CLOSING_SLIDE = "closing_slide"
+    STATIC_POST = "static_post"
+    STORY = "story"
+
+
+class RenderSpecStatus(StrEnum):
+    DRAFT = "draft"
+    READY = "ready"
+    RENDERED = "rendered"
+    DISCARDED = "discarded"
+
+
+class ImageRenderJobStatus(StrEnum):
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class CreativeAssetType(StrEnum):
+    RENDERED_SLIDE = "rendered_slide"
+    FINAL_DELIVERY = "final_delivery"
+    REFERENCE = "reference"
+    LOGO = "logo"
+    PHOTO = "photo"
+
+
+class CreativeAssetStatus(StrEnum):
+    DRAFT = "draft"
+    READY_FOR_REVIEW = "ready_for_review"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    DISCARDED = "discarded"

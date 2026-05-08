@@ -5,7 +5,6 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import (
     DateTime,
-    Enum,
     ForeignKey,
     Integer,
     String,
@@ -15,7 +14,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database import STUDIO_SCHEMA, Base
+from app.core.database import STUDIO_SCHEMA, Base, studio_enum
 from app.shared.enums import (
     ApprovalActorType,
     ApprovalEventType,
@@ -40,10 +39,9 @@ class ContentDraft(Base):
     fixed_comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     stories_suggestion: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[ContentDraftStatus] = mapped_column(
-        Enum(
+        studio_enum(
             ContentDraftStatus,
             name="content_draft_status_enum",
-            schema=STUDIO_SCHEMA,
         ),
         default=ContentDraftStatus.DRAFT,
         server_default=ContentDraftStatus.DRAFT.value,
@@ -69,6 +67,12 @@ class ContentDraft(Base):
     approval_events = relationship(
         "ApprovalEvent",
         back_populates="content_draft",
+    )
+    render_specs = relationship(
+        "RenderSpec",
+        back_populates="content_draft",
+        cascade="all, delete-orphan",
+        order_by="RenderSpec.slide_number",
     )
 
 
@@ -106,6 +110,10 @@ class CarouselSlide(Base):
     )
 
     content_draft = relationship("ContentDraft", back_populates="slides")
+    render_specs = relationship(
+        "RenderSpec",
+        back_populates="carousel_slide",
+    )
 
 
 class ApprovalEvent(Base):
@@ -126,17 +134,15 @@ class ApprovalEvent(Base):
         index=True,
     )
     event_type: Mapped[ApprovalEventType] = mapped_column(
-        Enum(
+        studio_enum(
             ApprovalEventType,
             name="approval_event_type_enum",
-            schema=STUDIO_SCHEMA,
         )
     )
     actor_type: Mapped[ApprovalActorType] = mapped_column(
-        Enum(
+        studio_enum(
             ApprovalActorType,
             name="approval_actor_type_enum",
-            schema=STUDIO_SCHEMA,
         ),
         default=ApprovalActorType.SYSTEM,
         server_default=ApprovalActorType.SYSTEM.value,

@@ -3,10 +3,10 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import DateTime, Enum, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database import STUDIO_SCHEMA, Base
+from app.core.database import STUDIO_SCHEMA, Base, studio_enum
 from app.shared.enums import PhotoUsagePreference
 
 
@@ -25,10 +25,9 @@ class BrandKit(Base):
     font_preferences: Mapped[str | None] = mapped_column(Text, nullable=True)
     visual_style: Mapped[str | None] = mapped_column(Text, nullable=True)
     photo_usage_preference: Mapped[PhotoUsagePreference] = mapped_column(
-        Enum(
+        studio_enum(
             PhotoUsagePreference,
             name="photo_usage_preference_enum",
-            schema=STUDIO_SCHEMA,
         ),
         default=PhotoUsagePreference.UNKNOWN,
     )

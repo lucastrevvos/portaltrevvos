@@ -181,6 +181,13 @@ curl http://localhost:3350/tenants/{tenant_id}/content-requests/{request_id}/cre
 - caminho padrao local: `apps/studio-api/generated/studio/{tenant_slug}/{content_request_id}/`
 - URL registrada no banco: `/generated/studio/{tenant_slug}/{content_request_id}/{file_name}`
 
+## Texto e UTF-8
+
+- O conteudo textual aprovado pelo cliente preserva UTF-8 no banco e no renderer: acentos, cedilha, pontuacao e quebras de linha devem aparecer no `title`, `body`, `caption`, `fixed_comment` e `stories_suggestion`.
+- Nao use normalizacao ASCII para texto exibido no post. Isso inclui `ContentDraft`, `CarouselSlide` e `RenderSpec`.
+- A normalizacao com `slugify` existe apenas para `tenant_slug`, nomes de arquivo e paths gerados pelo renderer.
+- O renderer salva o HTML final de debug em `generated/studio/{tenant_slug}/{content_request_id}/debug-slide-XX.html`, preservando o texto original em UTF-8.
+
 ## Rodar testes
 
 ```powershell

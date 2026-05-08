@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import AsyncGenerator
+from enum import Enum as PyEnum
 
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -34,6 +36,26 @@ def create_engine(settings: Settings | None = None) -> AsyncEngine:
 
 settings = get_settings()
 STUDIO_SCHEMA = settings.db_schema
+
+
+def enum_values(enum_cls: type[PyEnum]) -> list[str]:
+    return [str(member.value) for member in enum_cls]
+
+
+def studio_enum(
+    enum_cls: type[PyEnum],
+    *,
+    name: str,
+) -> SQLAlchemyEnum:
+    return SQLAlchemyEnum(
+        enum_cls,
+        name=name,
+        schema=STUDIO_SCHEMA,
+        values_callable=enum_values,
+        validate_strings=True,
+    )
+
+
 engine = create_engine(settings)
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,
