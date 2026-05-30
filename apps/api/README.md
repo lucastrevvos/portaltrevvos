@@ -62,6 +62,10 @@ Example request:
 When AI is not configured, the endpoint returns `503` with
 `AI suggestions are not configured`.
 
+In production, the endpoint uses a conservative local rate limit of `3`
+requests per minute per IP and still needs external throttling if the app
+runs with multiple backend instances.
+
 ## Compile and run the project
 
 ```bash

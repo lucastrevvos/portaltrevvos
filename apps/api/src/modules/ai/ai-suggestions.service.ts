@@ -23,6 +23,7 @@ type SuggestionPayload = {
 
 const MAX_SUGGESTIONS = 7;
 const MIN_SUGGESTIONS = 3;
+const MAX_MODEL_RESPONSE_CHARS = 4000;
 
 @Injectable()
 export class AiSuggestionsService {
@@ -168,7 +169,10 @@ export class AiSuggestionsService {
 
   private parseSuggestions(content: string): unknown[] {
     try {
-      const parsed = JSON.parse(content) as SuggestionPayload | unknown[];
+      const sanitized = this.stripCodeFences(
+        content.slice(0, MAX_MODEL_RESPONSE_CHARS),
+      );
+      const parsed = JSON.parse(sanitized) as SuggestionPayload | unknown[];
 
       if (Array.isArray(parsed)) {
         return parsed;
@@ -181,7 +185,7 @@ export class AiSuggestionsService {
         return parsed.suggestions;
       }
     } catch {
-      return content.split('\n');
+      return content.slice(0, MAX_MODEL_RESPONSE_CHARS).split('\n');
     }
 
     return [];
@@ -207,6 +211,13 @@ export class AiSuggestionsService {
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, 120);
+  }
+
+  private stripCodeFences(content: string) {
+    return content
+      .trim()
+      .replace(/^```(?:json)?\s*/i, '')
+      .replace(/\s*```$/i, '');
   }
 
   private toDedupKey(value: string) {
