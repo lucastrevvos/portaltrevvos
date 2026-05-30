@@ -31,6 +31,37 @@
 $ pnpm install
 ```
 
+## AI list item suggestions
+
+Endpoint:
+
+```http
+POST /ai/suggestions/list-items
+```
+
+Required backend envs:
+
+```env
+AI_SUGGESTIONS_ENABLED=false
+AI_PROVIDER=openai
+OPENAI_API_KEY=change-me
+AI_SUGGESTIONS_MODEL=change-me
+```
+
+Example request:
+
+```json
+{
+  "title": "Compras da semana",
+  "type": "shopping",
+  "existingItems": ["Arroz", "Feijao"],
+  "locale": "pt-BR"
+}
+```
+
+When AI is not configured, the endpoint returns `503` with
+`AI suggestions are not configured`.
+
 ## Compile and run the project
 
 ```bash

@@ -7,6 +7,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { UploadsModule } from './uploads/uploads.module';
 import { HealthModule } from './health/health.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
+import { AiModule } from './modules/ai/ai.module';
 import { TodoModule } from './modules/todo/todo.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { TodoModule } from './modules/todo/todo.module';
     UploadsModule,
     HealthModule,
     NewsletterModule,
+    AiModule,
     TodoModule,
   ],
 })
