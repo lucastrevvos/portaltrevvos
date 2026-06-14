@@ -1,85 +1,75 @@
 # Trevvos
 
-**Um monorepo de produtos digitais da Trevvos: portal editorial, API central, To-do colaborativo, Trevvos Studio e uma API dedicada ao produto Ma.ia.**
-
-A Trevvos não é apenas uma landing page nem um backend isolado. Este repositório reúne uma base de produto em evolução: conteúdo público, autenticação, CMS, módulos de app, APIs em NestJS e FastAPI, dashboards em Next.js e domínios separados para experimentos com IA.
-
-A proposta mais interessante do projeto está justamente nessa combinação: transformar uma marca de conteúdo e produtos em uma plataforma técnica capaz de sustentar novas frentes sem começar tudo do zero a cada ideia.
-
----
+Plataforma multi-app para conteúdo, produtos digitais e operações com IA em um monorepo moderno.
 
 ## Visão geral
 
-O repositório funciona como um **workspace multi-app**. Ele concentra aplicações web, APIs, pacotes compartilhados, documentação técnica e migrações de banco em uma estrutura única.
+Trevvos é um ecossistema de aplicações construído para reunir presença digital, publicação de conteúdo, APIs de produto e fluxos operacionais apoiados por IA em uma única base técnica.
 
-Em termos práticos, o projeto cobre quatro frentes principais:
+O repositório organiza diferentes frentes da plataforma em um monorepo: portal público, API central, dashboard e API do Trevvos Studio, API dedicada ao produto Ma.ia e pacotes compartilhados. Essa composição permite evoluir produtos relacionados com consistência técnica, mantendo responsabilidades bem definidas entre frontend, backend, domínio e contratos compartilhados.
 
-1. **Portal Trevvos** — site público em Next.js com conteúdo editorial, página de apps, SEO, feed de posts e integração com a API.
-2. **API Trevvos** — backend NestJS com autenticação, posts, categorias, tags, newsletter, upload, sugestões de IA e módulo de listas colaborativas.
-3. **Trevvos Studio** — MVP concierge para operação de conteúdo estratégico com IA, incluindo tenants, onboarding, brand kits, pedidos, drafts, assets, templates visuais e renderização.
-4. **Ma.ia API** — backend FastAPI separado, com domínio próprio e integração prevista com autenticação Trevvos.
+Como peça de portfólio, o projeto apresenta uma visão completa de produto digital: interface pública, serviços backend, modelagem de dados, autenticação, integrações externas, workflows de conteúdo e separação de domínios.
 
-O resultado é um portfólio que mostra não só telas, mas também **modelagem de produto, separação de domínios, integração entre serviços e decisões reais de arquitetura**.
+## Problema
 
----
+Marcas e produtos digitais que combinam conteúdo, aplicações próprias e recursos de IA precisam de uma base capaz de crescer sem transformar cada nova iniciativa em um sistema isolado.
 
-## O problema
+A Trevvos atende esse contexto ao oferecer uma fundação para:
 
-Projetos digitais que começam pequenos costumam enfrentar o mesmo dilema: no início, tudo cabe em uma aplicação simples; depois, surgem novos produtos, novas áreas de negócio, integrações com IA, autenticação compartilhada, dados sensíveis, painéis internos e fluxos operacionais mais complexos.
+- publicar conteúdo editorial com boa experiência de leitura;
+- centralizar autenticação, CMS e módulos de produto;
+- operar fluxos de criação de conteúdo com apoio de IA;
+- validar produtos digitais em domínios separados;
+- compartilhar contratos entre aplicações TypeScript;
+- manter uma estrutura clara para evolução de novas frentes.
 
-Sem uma base bem organizada, cada nova iniciativa vira um sistema paralelo, com regras duplicadas, autenticação desconectada e pouca previsibilidade para evoluir.
+## Solução
 
-Este repositório ataca esse problema de forma incremental: ele cria uma fundação técnica para que a Trevvos consiga publicar conteúdo, validar apps, operar produtos com IA e isolar domínios quando necessário.
+A solução foi construída como um monorepo com aplicações especializadas e responsabilidades bem distribuídas.
 
----
+- O **portal web** apresenta a marca, conteúdos editoriais e produtos da Trevvos em uma aplicação Next.js.
+- A **API principal** centraliza autenticação, CMS, newsletter, uploads e módulos de produto em NestJS com Prisma.
+- O **Trevvos Studio** combina uma API FastAPI com um dashboard Next.js para apoiar fluxos de conteúdo, brand assets, drafts, aprovações e geração visual.
+- A **Ma.ia API** mantém um backend FastAPI dedicado para um produto com domínio próprio.
+- O pacote **`@trevvos/types`** concentra tipos compartilhados para integração entre aplicações TypeScript.
 
-## A solução
+Essa organização cria uma base de plataforma: cada aplicação tem autonomia técnica, mas permanece conectada por padrões, scripts e estrutura de workspace.
 
-A solução adotada é um monorepo com aplicações especializadas, mas conectadas por uma visão comum de plataforma.
+## Funcionalidades
 
-- O **portal web** consome conteúdo publicado pela API e apresenta a marca, os posts e os produtos em validação.
-- A **API principal** centraliza autenticação, CMS e módulos de produto em NestJS com Prisma.
-- O **Trevvos Studio** usa FastAPI e Next.js para um fluxo operacional próprio, mais próximo de um SaaS/concierge MVP.
-- A **Ma.ia API** nasce separada para preservar o domínio do produto e permitir evolução independente.
-- O pacote **`@trevvos/types`** indica uma preocupação com contratos compartilhados entre aplicações TypeScript.
+### Portal Trevvos
 
-Essa divisão evita que tudo vire um único backend genérico, mas também não fragmenta o projeto em repositórios sem contexto.
+- Home pública em Next.js para apresentação da Trevvos.
+- Listagem e exibição de posts.
+- Páginas dinâmicas para conteúdo editorial.
+- Páginas institucionais e de apps/produtos.
+- Renderização de conteúdo Markdown com suporte a GFM, headings, sanitização e destaque de código.
+- Recursos de SEO como sitemap, robots e JSON-LD.
+- Integração com a API para consumo de conteúdo.
 
----
+### API principal
 
-## Principais funcionalidades identificadas no código
-
-### Portal e experiência pública
-
-- Home editorial com destaque para conteúdo, IA aplicada e produtos da Trevvos.
-- Listagem de posts publicados, hero editorial, feed incremental, categorias e tags.
-- Páginas institucionais e páginas de apps/pilotos.
-- SEO técnico com sitemap, robots, JSON-LD e páginas dinâmicas de post.
-- Renderização de conteúdo Markdown com plugins para GFM, headings, sanitização e destaque de código.
-
-### API principal Trevvos
-
-- Autenticação com registro, login, refresh token, logout e endpoint `me`.
-- Controle de usuários, papéis globais e papéis por app.
+- Autenticação com registro, login, refresh token, logout e endpoint de usuário autenticado.
+- Gestão de usuários, papéis globais e papéis por aplicação.
 - CMS para posts, categorias e tags.
 - Newsletter com assinantes e rotina agendada.
-- Uploads com integração a storage compatível com S3.
+- Uploads com storage compatível com S3.
 - Health check.
-- Módulo de sugestões de IA para itens de lista, com guarda de rate limit.
-- Módulo To-do colaborativo com guests, listas, membros, itens, convites, expiração e controle de versão dos itens.
+- Módulo de sugestões com IA para itens de lista.
+- Módulo de To-do colaborativo com guests, listas, membros, itens, convites, expiração e versionamento de itens.
 
 ### Trevvos Studio
 
-- API FastAPI com módulos por domínio.
+- API FastAPI organizada por módulos de domínio.
 - Dashboard Next.js dedicado ao Studio.
 - Cadastro de tenants.
-- Onboarding estratégico.
-- Brand kits e assets de marca.
+- Fluxo de onboarding estratégico.
+- Gestão de brand kits e assets de marca.
 - Pedidos de conteúdo.
 - Rascunhos textuais e fluxo de aprovação.
 - Radar de conteúdo com apoio de IA.
 - Templates visuais, render specs e geração/renderização de assets.
-- Integração configurável com OpenAI para conteúdo e visual.
+- Integração configurável com OpenAI para conteúdo e recursos visuais.
 - Diretórios estáticos para uploads e arquivos gerados.
 
 ### Ma.ia API
@@ -91,56 +81,53 @@ Essa divisão evita que tudo vire um único backend genérico, mas também não 
 - Configuração para validação de JWT emitido pela autenticação Trevvos.
 - Migrations próprias com Alembic.
 
----
-
-## Stack utilizada
+## Stack
 
 ### Monorepo e base
 
-- **pnpm workspaces**
-- **TurboRepo**
-- **TypeScript**
-- **PostgreSQL**
-- **Docker Compose** para banco local
+- pnpm workspaces
+- TurboRepo
+- TypeScript
+- PostgreSQL
+- Docker Compose
 
 ### Frontend
 
-- **Next.js 14**
-- **React 18**
-- **Tailwind CSS 4**
-- **React Hook Form**
-- **Zod**
-- **Lucide React**
-- **React Markdown + Remark/Rehype**
+- Next.js 14
+- React 18
+- Tailwind CSS 4
+- React Hook Form
+- Zod
+- Lucide React
+- React Markdown
+- Remark/Rehype
 
 ### Backend TypeScript
 
-- **NestJS 11**
-- **Prisma 6**
-- **Passport JWT**
-- **bcrypt**
-- **class-validator / class-transformer**
-- **Swagger**
-- **AWS SDK S3**
-- **node-cron**
-- **Jest**
+- NestJS 11
+- Prisma 6
+- Passport JWT
+- bcrypt
+- class-validator / class-transformer
+- Swagger
+- AWS SDK S3
+- node-cron
+- Jest
 
 ### Backend Python
 
-- **FastAPI**
-- **SQLAlchemy async**
-- **Alembic**
-- **Pydantic Settings**
-- **asyncpg**
-- **OpenAI SDK**
-- **Playwright**
-- **Pillow**
-- **pytest**
-- **Ruff**
+- FastAPI
+- SQLAlchemy async
+- Alembic
+- Pydantic Settings
+- asyncpg
+- OpenAI SDK
+- Playwright
+- Pillow
+- pytest
+- Ruff
 
----
-
-## Arquitetura / estrutura do projeto
+## Arquitetura
 
 ```txt
 .
@@ -159,45 +146,13 @@ Essa divisão evita que tudo vire um único backend genérico, mas também não 
 └── package.json
 ```
 
-A organização sugere uma estratégia de plataforma: a API central resolve necessidades compartilhadas, enquanto produtos com domínio próprio podem evoluir em aplicações separadas.
+A arquitetura segue uma separação por aplicações e domínios. O portal web concentra a experiência pública, a API principal reúne recursos compartilhados da plataforma e os produtos com necessidades específicas são mantidos em serviços próprios.
 
----
+No backend TypeScript, a API NestJS utiliza uma estrutura modular para autenticação, conteúdo, newsletter, uploads, IA e To-do colaborativo. No backend Python, as APIs FastAPI organizam domínios como Studio e Ma.ia em serviços independentes, com migrations e configurações próprias.
 
-## Decisões técnicas interessantes
+O pacote compartilhado `@trevvos/types` reforça a consistência entre aplicações TypeScript, enquanto o workspace com pnpm e TurboRepo facilita execução, manutenção e evolução coordenada do monorepo.
 
-### 1. Monorepo com domínios separados
-
-A escolha por workspaces permite compartilhar contexto, scripts e tipos, mas cada aplicação mantém sua responsabilidade. Isso aparece especialmente na separação entre `api`, `web`, `studio-api`, `studio-web` e `maia-api`.
-
-### 2. Backend principal em NestJS
-
-A API principal usa uma estrutura modular típica de NestJS. Autenticação, posts, tags, categorias, newsletter, uploads, IA e To-do aparecem como módulos separados, o que facilita manutenção e expansão.
-
-### 3. Prisma com schemas PostgreSQL isolados
-
-O schema principal usa `public` para autenticação/CMS e `trevvos_todo` para o módulo de listas colaborativas. Essa separação deixa claro que o To-do é um domínio próprio, mesmo dentro do mesmo banco.
-
-### 4. FastAPI para produtos e operações específicas
-
-Studio e Ma.ia foram criados como APIs Python independentes. Essa decisão faz sentido para produtos com forte presença de IA, workflows próprios ou necessidade de iteração rápida fora do ciclo do backend principal.
-
-### 5. Trevvos Studio modelado como fluxo operacional
-
-O Studio não se limita a “gerar conteúdo com IA”. O código e a documentação apontam para um fluxo com tenant, onboarding, brand kit, pedido, draft, aprovação, template visual, render spec e asset final. Isso demonstra visão de processo, não apenas chamada de API.
-
-### 6. Preparação para autenticação compartilhada
-
-O modelo de usuários, apps, papéis por app e JWT aponta para uma base de SSO interno. A Ma.ia API também já possui configurações para validar tokens emitidos pela autenticação Trevvos.
-
-### 7. Produto real em vez de demo isolada
-
-Há sinais de produto em produção ou validação: página de apps, app To-do publicado, piloto KM One, newsletter, conteúdo editorial, Studio e documentação de arquitetura. Isso torna o repositório uma peça de portfólio mais forte do que um CRUD isolado.
-
----
-
-## Como rodar localmente
-
-> Os comandos abaixo descrevem o fluxo provável com base nos scripts existentes. Alguns passos podem exigir ajustes conforme o ambiente local e as variáveis disponíveis.
+## Como rodar
 
 ### 1. Instale as dependências do workspace
 
@@ -213,15 +168,13 @@ docker compose up -d
 
 ### 3. Configure as variáveis de ambiente
 
-Crie os arquivos `.env` necessários a partir dos exemplos e das variáveis listadas abaixo.
-
-Para a API principal:
+Crie os arquivos `.env` necessários para cada aplicação. Para a API principal, use o exemplo versionado:
 
 ```bash
 cp apps/api/.env.example apps/api/.env
 ```
 
-### 4. Gere o Prisma Client e rode migrations
+### 4. Gere o Prisma Client e execute as migrations
 
 ```bash
 pnpm db:gen
@@ -230,13 +183,13 @@ pnpm db:migrate
 
 ### 5. Rode as aplicações TypeScript
 
-Para iniciar tudo que possui script `dev` no workspace:
+Para iniciar os apps com script `dev` no workspace:
 
 ```bash
 pnpm dev
 ```
 
-Ou rode cada app separadamente:
+Ou execute aplicações específicas:
 
 ```bash
 pnpm --filter @trevvos/api dev
@@ -262,11 +215,9 @@ uv sync
 uv run uvicorn app.main:app --reload --port 3340
 ```
 
----
+## Configuração
 
-## Variáveis de ambiente necessárias
-
-> Não inclua valores reais em repositórios públicos. Use apenas exemplos locais e secrets no ambiente de deploy.
+Não exponha valores reais em repositórios públicos. Use secrets no ambiente de deploy e valores locais apenas nos arquivos `.env` não versionados.
 
 ### API principal (`apps/api`)
 
@@ -304,8 +255,6 @@ NEXT_PUBLIC_TODO_YOUTUBE_URL=
 
 ### Studio API (`apps/studio-api`)
 
-As configurações usam prefixo `STUDIO_`.
-
 ```env
 STUDIO_ENV=
 STUDIO_API_NAME=
@@ -330,8 +279,6 @@ NEXT_PUBLIC_STUDIO_API_URL=
 
 ### Ma.ia API (`apps/maia-api`)
 
-As configurações usam prefixo `MAIA_`, com algumas chaves de autenticação Trevvos por alias explícito.
-
 ```env
 MAIA_ENV=
 MAIA_API_NAME=
@@ -344,78 +291,66 @@ TREVVOS_AUTH_JWT_SECRET=
 TREVVOS_AUTH_APP_SLUG=
 ```
 
----
+## Decisões técnicas
 
-## Status atual do projeto
+### Monorepo com workspaces
 
-O projeto parece estar em **evolução ativa**, com partes em estágios diferentes de maturidade:
+O monorepo permite manter várias aplicações relacionadas no mesmo contexto técnico, compartilhando scripts, dependências e pacotes internos sem remover a autonomia de cada produto.
 
-- **Portal e API principal:** base funcional de conteúdo, autenticação e módulos de produto.
-- **To-do colaborativo:** domínio modelado com guests, listas, itens, membros e convites.
-- **Trevvos Studio:** MVP estruturado com backend, dashboard, testes e documentação de domínio.
-- **Ma.ia API:** base inicial de produto com domínio próprio e integração planejada com autenticação Trevvos.
+### Separação por domínio
 
-Alguns pontos ainda precisam ser confirmados antes de apresentar o projeto como “pronto para produção” em todos os módulos, especialmente autenticação final entre apps, deploy completo, observabilidade e políticas de segurança por ambiente.
+A divisão entre `api`, `web`, `studio-api`, `studio-web` e `maia-api` mantém responsabilidades claras. A API principal concentra recursos de plataforma, enquanto Studio e Ma.ia evoluem como domínios próprios.
 
----
+### NestJS para a API central
+
+NestJS foi utilizado na API principal por sua estrutura modular, boa integração com TypeScript e aderência a padrões de backend como controllers, services, guards, decorators e validação de DTOs.
+
+### Prisma e PostgreSQL
+
+Prisma oferece uma camada tipada para modelagem e acesso ao banco, com migrations versionadas e integração direta com PostgreSQL.
+
+### FastAPI para produtos com workflows específicos
+
+FastAPI foi adotado nas APIs Python para domínios que se beneficiam de uma stack enxuta, com boa experiência para serviços assíncronos, IA, validação com Pydantic e organização modular.
+
+### Contratos compartilhados
+
+O pacote `@trevvos/types` centraliza tipos reutilizáveis entre aplicações TypeScript, reduzindo divergências de contrato e favorecendo consistência na integração entre frontend e backend.
+
+## Status
+
+O projeto está em evolução ativa como uma plataforma de portfólio com múltiplas aplicações funcionais e domínios bem definidos.
+
+- **Portal e API principal:** base estruturada para conteúdo, autenticação e módulos de produto.
+- **To-do colaborativo:** domínio modelado para listas, membros, guests, convites e itens versionados.
+- **Trevvos Studio:** MVP operacional com backend, dashboard e fluxos de conteúdo apoiados por IA.
+- **Ma.ia API:** backend dedicado para evolução independente do produto Ma.ia.
 
 ## Roadmap
 
-Itens sugeridos a partir do que já existe no código:
+- [ ] Publicar screenshots do portal, Studio e fluxos principais.
+- [ ] Incluir diagramas visuais da arquitetura e dos fluxos de produto.
+- [ ] Expandir a documentação de deploy por aplicação.
+- [ ] Ampliar exemplos de configuração local para todos os apps.
+- [ ] Evoluir a autenticação compartilhada entre produtos.
+- [ ] Fortalecer observabilidade com logs estruturados, métricas e tracing.
+- [ ] Expandir a cobertura de testes de integração para fluxos essenciais.
+- [ ] Refinar experiências de dashboard e onboarding no Trevvos Studio.
 
-- [ ] Documentar o fluxo completo de deploy de cada app.
-- [ ] Adicionar `.env.example` para `web`, `studio-api`, `studio-web` e `maia-api`.
-- [ ] Consolidar uma estratégia de autenticação compartilhada entre todos os produtos.
-- [ ] Melhorar observabilidade com logs estruturados, métricas e tracing.
-- [ ] Incluir screenshots reais do portal, Studio e fluxos principais.
-- [ ] Adicionar diagramas de arquitetura e sequência para os fluxos mais relevantes.
-- [ ] Definir política de permissões por app e por tenant.
-- [ ] Confirmar e documentar o status de produção de cada módulo.
-- [ ] Criar uma suíte de testes de integração cobrindo os principais fluxos de produto.
-- [ ] Revisar arquivos gerados/versionados e separar melhor o que deve ou não ir para o repositório público.
+## O que este projeto demonstra
 
----
+Este projeto evidencia competências importantes para desenvolvimento de produtos digitais modernos:
 
-## O que este projeto demonstra tecnicamente
+- organização de monorepo com múltiplas aplicações;
+- construção de frontend público com Next.js, SEO e conteúdo dinâmico;
+- desenvolvimento de backend modular com NestJS;
+- criação de APIs Python com FastAPI para domínios especializados;
+- modelagem relacional com Prisma, SQLAlchemy e migrations;
+- autenticação com JWT, refresh token e papéis por aplicação;
+- integração com storage externo compatível com S3;
+- uso de IA em fluxos de produto sem acoplar toda a plataforma a um único serviço;
+- construção de dashboard operacional para workflows de conteúdo;
+- separação clara entre plataforma, produto, domínio e interface;
+- documentação técnica orientada a arquitetura e evolução de produto.
 
-Este repositório é relevante como portfólio porque mostra decisões que aparecem em produtos reais:
-
-- desenho de monorepo com múltiplas aplicações;
-- backend modular em NestJS;
-- APIs Python com FastAPI para domínios específicos;
-- modelagem relacional com Prisma e SQLAlchemy;
-- migrations versionadas;
-- autenticação com JWT e refresh token;
-- separação de papéis globais e papéis por aplicação;
-- integração com storage externo;
-- integração com IA sem acoplar toda a plataforma a um único fluxo;
-- frontend público com SEO, conteúdo dinâmico e páginas de produto;
-- dashboard operacional para workflows internos;
-- documentação de arquitetura e domínio;
-- preocupação com evolução incremental de produto.
-
-Mais do que uma coleção de tecnologias, o projeto mostra uma capacidade importante para times de produto: **organizar complexidade sem perder velocidade de entrega**.
-
----
-
-## Prints, GIFs ou imagens sugeridas
-
-Para deixar este repositório ainda mais forte no GitHub, vale adicionar uma pasta como `docs/assets` com:
-
-- screenshot da home do portal Trevvos;
-- screenshot da página de apps;
-- screenshot do dashboard do Trevvos Studio;
-- GIF curto criando um pedido de conteúdo no Studio;
-- diagrama simples do monorepo;
-- diagrama do fluxo `tenant → request → draft → approval → render`;
-- imagem do app To-do List Trevvos em uso.
-
-Esses materiais ajudam recrutadores e tech leads a entender rapidamente que o projeto tem produto, domínio e interface — não apenas código.
-
----
-
-## Observações finais
-
-A Trevvos é uma boa peça de portfólio porque combina visão de produto com engenharia aplicada. O código mostra um ecossistema em construção: há conteúdo, apps, IA, autenticação, operações internas, módulos independentes e documentação de domínio.
-
-O ponto forte não está em fingir que tudo está finalizado. Está em mostrar uma base técnica realista, com decisões claras e espaço para evolução. Para avaliação profissional, isso comunica maturidade: entender o problema, modularizar a solução e construir uma plataforma que pode crescer sem perder o controle.
+Trevvos mostra a capacidade de transformar uma visão de produto em uma base técnica organizada, escalável e preparada para evoluir com novas aplicações.
