@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "!apps/portal"
   ],
   "scripts": {
     "db:status": "pnpm --filter @trevvos/api run prisma:status",
