@@ -10,6 +10,7 @@ import {
   MobileBlogPost,
 } from '../../../../core/models/jarvis.model';
 import { JarvisMockService } from '../../../../core/services/jarvis-mock.service';
+import { SoundService } from '../../../../core/services/sound.service';
 
 @Component({
   selector: 'app-home-page',
@@ -23,6 +24,7 @@ export class HomePageComponent {
   private chatScroll?: ElementRef<HTMLElement>;
 
   private readonly browserTitle = inject(Title);
+  private readonly soundService = inject(SoundService);
 
   question = '';
 
@@ -48,6 +50,8 @@ export class HomePageComponent {
 
   isAdminModalOpen = signal(false);
   selectedMessage = signal<JarvisMessage | null>(null);
+
+  readonly soundEnabled = computed(() => this.soundService.enabled());
 
   mobileTab = signal<'home' | 'agent' | 'content'>('home');
 
@@ -228,6 +232,19 @@ export class HomePageComponent {
     this.browserTitle.setTitle('Trevvos Neural Console | Trevvos Soluções em IA');
   }
 
+  isSoundEnabled(): boolean {
+    return this.soundEnabled();
+  }
+
+  toggleSound(): void {
+    this.soundService.unlock();
+    this.soundService.toggleEnabled();
+
+    if (this.soundService.enabled()) {
+      this.soundService.playClick();
+    }
+  }
+
   submitQuestion(): void {
     const question = this.question.trim();
 
@@ -235,6 +252,8 @@ export class HomePageComponent {
       return;
     }
 
+    this.soundService.unlock();
+    this.soundService.playSend();
     this.runPrompt(question);
   }
 
@@ -243,22 +262,32 @@ export class HomePageComponent {
       return;
     }
 
+    this.soundService.unlock();
+    this.soundService.playClick();
     this.runPrompt(prompt);
   }
 
   setDesktopBlogCategory(category: string): void {
+    this.soundService.unlock();
+    this.soundService.playClick();
     this.activeDesktopBlogCategory.set(category);
   }
 
   openDesktopBlogPost(post: DesktopBlogPost): void {
+    this.soundService.unlock();
+    this.soundService.playModalOpen();
     this.selectedDesktopBlogPost.set(post);
   }
 
   closeDesktopBlogPost(): void {
+    this.soundService.unlock();
+    this.soundService.playModalClose();
     this.selectedDesktopBlogPost.set(null);
   }
 
   askAboutDesktopPost(post: DesktopBlogPost): void {
+    this.soundService.unlock();
+    this.soundService.playClick();
     this.selectedDesktopBlogPost.set(null);
     this.activeModule.set('agent');
     this.runPrompt(`Me fale sobre o artigo: ${post.title}`);
@@ -269,6 +298,8 @@ export class HomePageComponent {
       return;
     }
 
+    this.soundService.unlock();
+    this.soundService.playTab();
     this.activeModule.set(module);
 
     if (module === 'blog') {
@@ -303,22 +334,32 @@ export class HomePageComponent {
   }
 
   openMessageDetails(message: JarvisMessage): void {
+    this.soundService.unlock();
+    this.soundService.playModalOpen();
     this.selectedMessage.set(message);
   }
 
   closeMessageDetails(): void {
+    this.soundService.unlock();
+    this.soundService.playModalClose();
     this.selectedMessage.set(null);
   }
 
   setMobileTab(tab: 'home' | 'agent' | 'content'): void {
+    this.soundService.unlock();
+    this.soundService.playTab();
     this.mobileTab.set(tab);
   }
 
   setMobileBlogCategory(cat: string): void {
+    this.soundService.unlock();
+    this.soundService.playClick();
     this.activeMobileBlogCategory.set(cat);
   }
 
   goToAgent(prompt?: string): void {
+    this.soundService.unlock();
+    this.soundService.playTab();
     this.mobileTab.set('agent');
     if (prompt) {
       this.usePrompt(prompt);
@@ -326,12 +367,16 @@ export class HomePageComponent {
   }
 
   closeAdminModal(): void {
+    this.soundService.unlock();
+    this.soundService.playModalClose();
     this.isAdminModalOpen.set(false);
     this.currentAck.set('');
     this.state.set('idle');
   }
 
   resetSession(): void {
+    this.soundService.unlock();
+    this.soundService.playClick();
     this.activeModule.set('agent');
     this.currentAck.set('');
     this.isAdminModalOpen.set(false);
@@ -375,6 +420,7 @@ export class HomePageComponent {
         this.isAdminModalOpen.set(true);
         this.currentAck.set('');
         this.state.set('admin-auth');
+        this.soundService.playAdmin();
 
         this.addMessage({
           role: 'jarvis',
@@ -414,6 +460,11 @@ export class HomePageComponent {
     };
 
     this.messages.update((messages) => [...messages, newMessage]);
+
+    if (newMessage.role === 'jarvis' && newMessage.mode !== 'admin') {
+      this.soundService.playReceive();
+    }
+
     this.scrollChatToBottom();
   }
 

@@ -916,6 +916,32 @@
   background: rgba(127, 119, 221, 0.12);
 }
 
+/* SOUND */
+
+.sound-toggle-btn {
+  width: 100%;
+  border: 0.5px solid rgba(127, 119, 221, 0.2);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(127, 119, 221, 0.05);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+
+.sound-toggle-btn:hover,
+.sound-toggle-btn.sound-active {
+  border-color: rgba(127, 119, 221, 0.35);
+  color: #afa9ec;
+  background: rgba(127, 119, 221, 0.12);
+}
+
+.topbar-sound-btn {
+  display: none;
+}
+
 /* SYSTEM WINDOWS */
 
 .system-overlay {
@@ -1664,6 +1690,36 @@
     letter-spacing: 0.2px;
     text-decoration: none;
     white-space: nowrap;
+  }
+
+  .mobile-topbar-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .topbar-sound-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 213, 255, 0.22);
+    border-radius: 999px;
+    padding: 6px 9px;
+    color: rgba(0, 213, 255, 0.82);
+    background: rgba(0, 213, 255, 0.05);
+    cursor: pointer;
+    font: inherit;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .topbar-sound-btn.sound-active {
+    border-color: rgba(71, 209, 60, 0.35);
+    color: #47d13c;
+    background: rgba(71, 209, 60, 0.07);
   }
 
   /* ── Mobile home ── */

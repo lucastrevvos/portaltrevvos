@@ -20,9 +20,21 @@
       </div>
     </div>
 
-    <a class="m-action-chip" [href]="humanWhatsAppUrl" target="_blank" rel="noopener noreferrer">
-      Falar com humano
-    </a>
+    <div class="mobile-topbar-actions">
+      <button
+        type="button"
+        class="topbar-sound-btn"
+        [class.sound-active]="isSoundEnabled()"
+        (click)="toggleSound()"
+        [title]="isSoundEnabled() ? 'Som ON' : 'Som OFF'"
+      >
+        {{ isSoundEnabled() ? '♪ ON' : '♪ OFF' }}
+      </button>
+
+      <a class="m-action-chip" [href]="humanWhatsAppUrl" target="_blank" rel="noopener noreferrer">
+        Falar com humano
+      </a>
+    </div>
   </header>
 
   <header class="topbar">
@@ -859,6 +871,19 @@
           <span>Ambiente</span>
           <span class="rval">Mock</span>
         </div>
+      </div>
+
+      <div class="rblock">
+        <div class="rtitle">Som</div>
+
+        <button
+          type="button"
+          class="sound-toggle-btn"
+          [class.sound-active]="isSoundEnabled()"
+          (click)="toggleSound()"
+        >
+          {{ isSoundEnabled() ? 'Som ON' : 'Som OFF' }}
+        </button>
       </div>
 
       <button type="button" class="reset-button" (click)="resetSession()">Resetar sessão</button>
