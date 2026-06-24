@@ -59,15 +59,15 @@ export class HomePageComponent {
   mobileTab = signal<'home' | 'agent' | 'content'>('home');
 
   mobileTopbarTitle = computed(() => {
-    if (this.mobileTab() === 'agent') return 'Assistente Trevvos';
-    if (this.mobileTab() === 'content') return 'Conteúdo';
-    return 'Trevvos';
+    if (this.mobileTab() === 'agent') return this.languageService.t('mobile.title.agent');
+    if (this.mobileTab() === 'content') return this.languageService.t('mobile.title.content');
+    return this.languageService.t('mobile.title.home');
   });
 
   mobileTopbarSubtitle = computed(() => {
-    if (this.mobileTab() === 'agent') return 'Seu parceiro de IA';
-    if (this.mobileTab() === 'content') return 'Insights que geram valor';
-    return 'Soluções em IA';
+    if (this.mobileTab() === 'agent') return this.languageService.t('mobile.subtitle.agent');
+    if (this.mobileTab() === 'content') return this.languageService.t('mobile.subtitle.content');
+    return this.languageService.t('mobile.subtitle.home');
   });
 
   readonly mobileBlogCategories = ['Todos', 'IA', 'Automação', 'Dados', 'Negócios', 'KM One', 'Engenharia'];

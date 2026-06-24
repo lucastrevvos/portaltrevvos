@@ -83,6 +83,44 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'admin.user': 'Usuário',
     'admin.password': 'Senha',
     'admin.authenticate': 'Autenticar',
+
+    // Mobile topbar title/subtitle
+    'mobile.title.home': 'Trevvos',
+    'mobile.title.agent': 'Assistente Trevvos',
+    'mobile.title.content': 'Conteúdo',
+    'mobile.subtitle.home': 'Soluções em IA',
+    'mobile.subtitle.agent': 'Seu parceiro de IA',
+    'mobile.subtitle.content': 'Insights que geram valor',
+
+    // Bottom nav
+    'mobile.nav.home': 'Home',
+    'mobile.nav.agent': 'Assistente',
+    'mobile.nav.content': 'Conteúdo',
+
+    // Mobile home
+    'mobile.home.eyebrow': 'IA • DADOS • AUTOMAÇÃO',
+    'mobile.home.headlinePrefix': 'Soluções em IA que impulsionam',
+    'mobile.home.headlineHighlight': 'resultados reais',
+    'mobile.home.description': 'Tecnologia, conhecimento e pessoas trabalhando juntos para transformar desafios em evolução.',
+    'mobile.home.cta': 'Falar com a IA',
+    'mobile.home.products': 'Nossos produtos',
+    'mobile.home.purposeTitle': 'Inovação com propósito',
+    'mobile.home.purposeDescription': 'Combinamos IA, dados e experiência humana para criar soluções escaláveis, úteis e centradas em pessoas.',
+    'mobile.home.community': 'Comunidade',
+
+    // Mobile product descriptions
+    'mobile.product.forge.desc': 'IA local-first para análise de código, planejamento, testes, diffs e documentação técnica.',
+    'mobile.product.kmOne.desc': 'Inteligência para motoristas de app analisarem corridas, metas, combustível e lucro.',
+    'mobile.product.flow.desc': 'Todo list com IA que sugere itens e permite listas compartilhadas sem login.',
+    'mobile.product.podcast.desc': 'Conversas sobre IA, tecnologia, produtos digitais e bastidores da Trevvos.',
+
+    // Mobile community
+    'mobile.community.testersTitle': 'Grupo de testadores',
+    'mobile.community.testersText': 'Seja um dos primeiros a testar o KM One antes do lançamento.',
+    'mobile.community.testersAction': 'Entrar no grupo',
+    'mobile.community.humanTitle': 'Falar com humano',
+    'mobile.community.humanText': 'Prefere conversar direto? Chame a Trevvos no WhatsApp.',
+    'mobile.community.humanAction': 'Abrir WhatsApp',
   },
   en: {
     // Language toggle
@@ -164,5 +202,43 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'admin.user': 'User',
     'admin.password': 'Password',
     'admin.authenticate': 'Authenticate',
+
+    // Mobile topbar title/subtitle
+    'mobile.title.home': 'Trevvos',
+    'mobile.title.agent': 'Trevvos Assistant',
+    'mobile.title.content': 'Content',
+    'mobile.subtitle.home': 'AI Solutions',
+    'mobile.subtitle.agent': 'Your AI partner',
+    'mobile.subtitle.content': 'Insights that create value',
+
+    // Bottom nav
+    'mobile.nav.home': 'Home',
+    'mobile.nav.agent': 'Assistant',
+    'mobile.nav.content': 'Content',
+
+    // Mobile home
+    'mobile.home.eyebrow': 'AI • DATA • AUTOMATION',
+    'mobile.home.headlinePrefix': 'AI solutions that drive',
+    'mobile.home.headlineHighlight': 'real results',
+    'mobile.home.description': 'Technology, knowledge, and people working together to turn challenges into progress.',
+    'mobile.home.cta': 'Talk to AI',
+    'mobile.home.products': 'Our products',
+    'mobile.home.purposeTitle': 'Innovation with purpose',
+    'mobile.home.purposeDescription': 'We combine AI, data, and human experience to create scalable, useful, people-centered solutions.',
+    'mobile.home.community': 'Community',
+
+    // Mobile product descriptions
+    'mobile.product.forge.desc': 'Local-first AI for code analysis, planning, tests, diffs, and technical documentation.',
+    'mobile.product.kmOne.desc': 'Intelligence for app drivers to analyze rides, goals, fuel, and profit.',
+    'mobile.product.flow.desc': 'AI-powered todo list that suggests items and supports shared lists without login.',
+    'mobile.product.podcast.desc': 'Conversations about AI, technology, digital products, and Trevvos behind the scenes.',
+
+    // Mobile community
+    'mobile.community.testersTitle': 'Testers group',
+    'mobile.community.testersText': 'Be one of the first to test KM One before launch.',
+    'mobile.community.testersAction': 'Join the group',
+    'mobile.community.humanTitle': 'Talk to human',
+    'mobile.community.humanText': 'Prefer to talk directly? Message Trevvos on WhatsApp.',
+    'mobile.community.humanAction': 'Open WhatsApp',
   },
 };

@@ -217,20 +217,17 @@
     <section class="mobile-home" [class.mobile-tab-hidden]="mobileTab() !== 'home'">
       <!-- Hero -->
       <div class="mh-hero">
-        <span class="mh-eyebrow">IA • DADOS • AUTOMAÇÃO</span>
+        <span class="mh-eyebrow">{{ 'mobile.home.eyebrow' | t }}</span>
 
         <h1 class="mh-headline">
-          Soluções em IA que impulsionam
-          <span class="mh-highlight">resultados reais</span>
+          {{ 'mobile.home.headlinePrefix' | t }}
+          <span class="mh-highlight">{{ 'mobile.home.headlineHighlight' | t }}</span>
         </h1>
 
-        <p class="mh-desc">
-          Tecnologia, conhecimento e pessoas trabalhando juntos para transformar desafios em
-          evolução.
-        </p>
+        <p class="mh-desc">{{ 'mobile.home.description' | t }}</p>
 
         <button class="mh-cta" type="button" (click)="goToAgent()">
-          <span>Falar com a IA</span>
+          <span>{{ 'mobile.home.cta' | t }}</span>
           <svg
             width="16"
             height="16"
@@ -249,7 +246,7 @@
       </div>
 
       <!-- Product grid 2x2 -->
-      <div class="mh-section-label">Nossos produtos</div>
+      <div class="mh-section-label">{{ 'mobile.home.products' | t }}</div>
 
       <div class="mh-product-grid">
         <button class="mh-product-card" type="button" (click)="goToAgent('Trevvos Forge')">
@@ -270,10 +267,7 @@
             </svg>
           </div>
           <span class="mh-product-title">Trevvos Forge</span>
-          <span class="mh-product-desc"
-            >IA local-first para análise de código, planejamento, testes, diffs e documentação
-            técnica.</span
-          >
+          <span class="mh-product-desc">{{ 'mobile.product.forge.desc' | t }}</span>
         </button>
 
         <button class="mh-product-card" type="button" (click)="goToAgent('KM One')">
@@ -297,10 +291,7 @@
             </svg>
           </div>
           <span class="mh-product-title">KM One</span>
-          <span class="mh-product-desc"
-            >Inteligência para motoristas de app analisarem corridas, metas, combustível e
-            lucro.</span
-          >
+          <span class="mh-product-desc">{{ 'mobile.product.kmOne.desc' | t }}</span>
         </button>
 
         <button class="mh-product-card" type="button" (click)="goToAgent('Trevvos Flow')">
@@ -325,9 +316,7 @@
             </svg>
           </div>
           <span class="mh-product-title">Trevvos Flow</span>
-          <span class="mh-product-desc"
-            >Todo list com IA que sugere itens e permite listas compartilhadas sem login.</span
-          >
+          <span class="mh-product-desc">{{ 'mobile.product.flow.desc' | t }}</span>
         </button>
 
         <button class="mh-product-card" type="button" (click)="goToAgent('Podcast Trevvos')">
@@ -349,9 +338,7 @@
             </svg>
           </div>
           <span class="mh-product-title">Podcast</span>
-          <span class="mh-product-desc"
-            >Conversas sobre IA, tecnologia, produtos digitais e bastidores da Trevvos.</span
-          >
+          <span class="mh-product-desc">{{ 'mobile.product.podcast.desc' | t }}</span>
         </button>
       </div>
 
@@ -373,16 +360,13 @@
           </svg>
         </div>
         <div class="mh-purpose-text">
-          <strong class="mh-purpose-title">Inovação com propósito</strong>
-          <p class="mh-purpose-desc">
-            Combinamos IA, dados e experiência humana para criar soluções escaláveis, úteis e
-            centradas em pessoas.
-          </p>
+          <strong class="mh-purpose-title">{{ 'mobile.home.purposeTitle' | t }}</strong>
+          <p class="mh-purpose-desc">{{ 'mobile.home.purposeDescription' | t }}</p>
         </div>
       </div>
 
       <!-- Community -->
-      <div class="mh-section-label">Comunidade</div>
+      <div class="mh-section-label">{{ 'mobile.home.community' | t }}</div>
 
       <div class="mh-community-stack">
         <div class="mh-community-card">
@@ -402,18 +386,16 @@
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
               </svg>
             </div>
-            <span class="mh-community-title">Grupo de testadores</span>
+            <span class="mh-community-title">{{ 'mobile.community.testersTitle' | t }}</span>
           </div>
-          <p class="mh-community-text">
-            Seja um dos primeiros a testar o KM One antes do lançamento.
-          </p>
+          <p class="mh-community-text">{{ 'mobile.community.testersText' | t }}</p>
           <a
             class="mh-community-action"
             href="https://chat.whatsapp.com/K1cepLtEEoY6pScVRTNvg9"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Entrar no grupo
+            {{ 'mobile.community.testersAction' | t }}
           </a>
         </div>
 
@@ -436,16 +418,16 @@
                 />
               </svg>
             </div>
-            <span class="mh-community-title">Falar com humano</span>
+            <span class="mh-community-title">{{ 'mobile.community.humanTitle' | t }}</span>
           </div>
-          <p class="mh-community-text">Prefere conversar direto? Chame a Trevvos no WhatsApp.</p>
+          <p class="mh-community-text">{{ 'mobile.community.humanText' | t }}</p>
           <a
             class="mh-community-action"
             [href]="humanWhatsAppUrl"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Abrir WhatsApp
+            {{ 'mobile.community.humanAction' | t }}
           </a>
         </div>
       </div>
@@ -929,7 +911,7 @@
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
         <polyline points="9 22 9 12 15 12 15 22" />
       </svg>
-      <span>Home</span>
+      <span>{{ 'mobile.nav.home' | t }}</span>
     </button>
 
     <button
@@ -953,7 +935,7 @@
         <circle cx="9" cy="15" r="1" fill="currentColor" stroke="none" />
         <circle cx="15" cy="15" r="1" fill="currentColor" stroke="none" />
       </svg>
-      <span>Assistente</span>
+      <span>{{ 'mobile.nav.agent' | t }}</span>
     </button>
 
     <button
@@ -977,7 +959,7 @@
         <line x1="7" y1="12" x2="17" y2="12" />
         <line x1="7" y1="16" x2="12" y2="16" />
       </svg>
-      <span>Conteúdo</span>
+      <span>{{ 'mobile.nav.content' | t }}</span>
     </button>
   </nav>
 
