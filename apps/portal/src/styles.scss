@@ -1,0 +1,49 @@
+:root {
+  --bg-main: #05070d;
+  --bg-panel: rgba(12, 18, 32, 0.72);
+  --bg-panel-strong: rgba(10, 16, 30, 0.92);
+
+  --primary: #41dfff;
+  --primary-soft: rgba(65, 223, 255, 0.18);
+
+  --secondary: #8b5cf6;
+  --secondary-soft: rgba(139, 92, 246, 0.18);
+
+  --success: #2ef2a0;
+  --warning: #f5b84b;
+  --danger: #ff4d6d;
+
+  --text-main: #eef7ff;
+  --text-muted: #8fa3b8;
+
+  --border-soft: rgba(143, 163, 184, 0.18);
+  --border-glow: rgba(65, 223, 255, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}

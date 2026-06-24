@@ -1,0 +1,538 @@
+<main class="portal-shell">
+  <div class="grid-bg"></div>
+  <div class="glow-orb"></div>
+  <div class="scan"></div>
+
+  <span class="corner tl"></span>
+  <span class="corner tr"></span>
+  <span class="corner bl"></span>
+  <span class="corner br"></span>
+
+  <header class="topbar">
+    <div class="logo-wrap">
+      <div class="logo-image-frame">
+        <img src="assets/images/trevvos-logo.png" alt="Trevvos Soluções em IA" />
+      </div>
+
+      <div class="brand">
+        <div class="brand-name">Trevvos</div>
+        <div class="brand-tag">Soluções em IA</div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <span class="badge b-green">Sistema online</span>
+      <span class="badge b-purple">IA mockada</span>
+
+      <a class="badge b-link" [href]="humanWhatsAppUrl" target="_blank" rel="noopener noreferrer">
+        Falar com um humano ↗
+      </a>
+    </div>
+  </header>
+
+  <section class="body">
+    <aside class="leftnav">
+      <div class="nav-section">Explorar</div>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'agent'"
+        (click)="setModule('agent')"
+      >
+        <span>◉</span>
+        Falar com a IA
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'apps'"
+        (click)="setModule('apps')"
+      >
+        <span>▦</span>
+        Nossos apps
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'systems'"
+        (click)="setModule('systems')"
+      >
+        <span>▣</span>
+        Sistemas
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'forge'"
+        (click)="setModule('forge')"
+      >
+        <span>⌘</span>
+        Trevvos Forge
+        <span class="new-badge">super</span>
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'flow'"
+        (click)="setModule('flow')"
+      >
+        <span>☑</span>
+        Trevvos Flow
+        <span class="new-badge">play</span>
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'kmOne'"
+        (click)="setModule('kmOne')"
+      >
+        <span>▣</span>
+        KM One
+        <span class="new-badge">testes</span>
+      </button>
+
+      <div class="divider"></div>
+
+      <div class="nav-section">Comunidade</div>
+
+      <a
+        class="navbtn"
+        href="https://chat.whatsapp.com/K1cepLtEEoY6pScVRTNvg9"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>💬</span>
+        Grupo de testadores
+      </a>
+
+      <a
+        class="navbtn"
+        href="https://open.spotify.com/show/7xvDpbP6wuoZi8coSgTFkY"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>▶</span>
+        Podcast
+      </a>
+
+      <div class="divider"></div>
+
+      <div class="nav-section">Ações</div>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'automation'"
+        (click)="setModule('automation')"
+      >
+        <span>↔</span>
+        Automações
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'blog'"
+        (click)="setModule('blog')"
+      >
+        <span>✦</span>
+        Blog Neural
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'creator'"
+        (click)="setModule('creator')"
+      >
+        <span>◉</span>
+        Criador
+      </button>
+
+      <button
+        type="button"
+        class="navbtn"
+        [class.active]="activeModule() === 'contact'"
+        (click)="setModule('contact')"
+      >
+        <span>✉</span>
+        Contato humano
+      </button>
+    </aside>
+
+    <section class="center">
+      <section class="hero">
+        <div class="hero-top">
+          <div class="agent-orb" [class.agent-orb-active]="isBusy()">
+            <span>✦</span>
+            <div class="orb-dot"></div>
+          </div>
+
+          <div class="hero-text">
+            <div class="hero-greeting">{{ activeModuleInfo().label }}</div>
+
+            <div class="hero-msg">
+              {{ isBusy() ? currentAck() : activeModuleInfo().description }}
+            </div>
+          </div>
+        </div>
+
+        @if (activeModuleInfo().suggestions.length > 0) {
+          <div class="sugg-label">O que você quer fazer hoje?</div>
+
+          <div class="sugg-grid">
+            @for (suggestion of activeModuleInfo().suggestions; track suggestion.prompt) {
+              <button type="button" class="sugg-card" (click)="usePrompt(suggestion.prompt)">
+                <span class="sugg-icon">{{ suggestion.icon }}</span>
+                <span class="sugg-card-title">{{ suggestion.title }}</span>
+                <span class="sugg-card-sub">{{ suggestion.subtitle }}</span>
+              </button>
+            }
+          </div>
+        }
+      </section>
+
+      <section class="chat-scroll" #chatScroll>
+        @for (message of messages(); track message.id) {
+          <article class="msg" [class.user]="message.role === 'user'">
+            <div
+              class="mavatar"
+              [class.ai]="message.role === 'jarvis'"
+              [class.user]="message.role === 'user'"
+            >
+              {{ message.role === 'jarvis' ? '✦' : 'U' }}
+            </div>
+
+            <div class="message-stack">
+              @if (message.role === 'jarvis') {
+                <div
+                  class="mode-tag"
+                  [class.conv]="message.mode === 'conversation'"
+                  [class.det]="message.mode === 'deterministic'"
+                  [class.admin]="message.mode === 'admin'"
+                  [class.profile]="message.mode === 'profile'"
+                >
+                  {{
+                    message.mode === 'deterministic'
+                      ? 'fluxo automático'
+                      : message.mode === 'admin'
+                        ? 'admin'
+                        : message.mode === 'profile'
+                          ? 'perfil'
+                          : 'conversa livre'
+                  }}
+                </div>
+              }
+
+              <div
+                class="mbubble"
+                [class.ai]="message.role === 'jarvis'"
+                [class.user]="message.role === 'user'"
+              >
+                @if (message.title) {
+                  <strong>{{ message.title }}</strong>
+                }
+
+                <p>{{ message.content }}</p>
+
+                @if (message.profile) {
+                  <section class="profile-card">
+                    <img
+                      class="profile-photo"
+                      [src]="message.profile.photoUrl"
+                      [alt]="message.profile.name"
+                    />
+
+                    <div class="profile-info">
+                      <h3>{{ message.profile.name }}</h3>
+                      <span>{{ message.profile.role }}</span>
+                      <p>{{ message.profile.description }}</p>
+
+                      <div class="profile-actions">
+                        @for (link of message.profile.links; track link.label) {
+                          <a
+                            [href]="link.url"
+                            [attr.download]="link.kind === 'cv' ? '' : null"
+                            [attr.target]="link.kind === 'cv' ? null : '_blank'"
+                            rel="noopener noreferrer"
+                          >
+                            {{ link.label }}
+                          </a>
+                        }
+                      </div>
+                    </div>
+                  </section>
+                }
+
+                @if (message.actions?.length) {
+                  <div class="profile-actions">
+                    @for (action of message.actions; track action.label) {
+                      <a
+                        [href]="action.url"
+                        [attr.target]="action.kind === 'download' ? null : '_blank'"
+                        [attr.download]="action.kind === 'download' ? '' : null"
+                        rel="noopener noreferrer"
+                      >
+                        {{ action.label }}
+                      </a>
+                    }
+                  </div>
+                }
+
+                @if (message.content.length > 180) {
+                  <button type="button" class="details-link" (click)="openMessageDetails(message)">
+                    Expandir resposta
+                  </button>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </section>
+
+      <form class="input-area" (ngSubmit)="submitQuestion()">
+        <div class="input-wrap">
+          <span class="input-icon">✎</span>
+
+          <input
+            type="text"
+            name="question"
+            [(ngModel)]="question"
+            placeholder="Descreva o que precisa ou escolha uma opção acima..."
+            autocomplete="off"
+            [disabled]="isBusy()"
+          />
+
+          <button
+            type="button"
+            class="mic-button"
+            aria-label="Microfone em breve"
+            title="Microfone em breve"
+            disabled
+          >
+            🎙
+          </button>
+        </div>
+
+        <button class="send-btn" type="submit" [disabled]="isBusy()" aria-label="Enviar">↑</button>
+      </form>
+    </section>
+
+    <aside class="rightpanel">
+      <div class="rblock">
+        <div class="rtitle">Trevvos</div>
+
+        <div class="rrow">
+          <span>Core</span>
+          <span class="rval green">online</span>
+        </div>
+
+        <div class="rrow">
+          <span>Modo</span>
+          <span class="rval">{{ lastModeLabel() }}</span>
+        </div>
+
+        <div class="rrow">
+          <span>Módulo</span>
+          <span class="rval">{{ activeModule() }}</span>
+        </div>
+
+        <div class="rrow mt">
+          <span>LLM Core</span>
+          <span class="status-dot-mini green">●</span>
+        </div>
+
+        <div class="mbar">
+          <div class="mbar-fill" style="width: 88%"></div>
+        </div>
+
+        <div class="rrow mt">
+          <span>Voz</span>
+          <span class="status-dot-mini amber">●</span>
+        </div>
+
+        <div class="mbar">
+          <div class="mbar-fill amber-fill" style="width: 35%"></div>
+        </div>
+      </div>
+
+      <div class="rblock">
+        <div class="rtitle">Produtos</div>
+
+        <div class="products-mini">
+          @for (product of productLinks(); track product.title) {
+            <button type="button" class="pmini" (click)="usePrompt(product.prompt)">
+              <span>{{ product.icon }}</span>
+              {{ product.title }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="rblock">
+        <div class="rtitle">Sessão</div>
+
+        <div class="rrow">
+          <span>Mensagens</span>
+          <span class="rval">{{ conversationCount() }}</span>
+        </div>
+
+        <div class="rrow">
+          <span>Ambiente</span>
+          <span class="rval">Mock</span>
+        </div>
+      </div>
+
+      <button type="button" class="reset-button" (click)="resetSession()">Resetar sessão</button>
+    </aside>
+  </section>
+
+  @if (selectedMessage()) {
+    <div class="system-overlay">
+      <section class="system-window detail-window">
+        <span class="window-corner window-corner-tl"></span>
+        <span class="window-corner window-corner-tr"></span>
+        <span class="window-corner window-corner-bl"></span>
+        <span class="window-corner window-corner-br"></span>
+
+        <header class="window-titlebar">
+          <div class="window-title-group">
+            <div class="window-orb">
+              <span>✦</span>
+            </div>
+
+            <div>
+              <span class="window-kicker">TREVVOS RESPONSE VIEWER</span>
+              <h2>{{ selectedMessage()!.title || 'Detalhes da resposta' }}</h2>
+            </div>
+          </div>
+
+          <div class="window-actions">
+            <span class="window-chip">{{ selectedMessage()!.mode }}</span>
+
+            <button
+              type="button"
+              class="window-close"
+              (click)="closeMessageDetails()"
+              aria-label="Fechar janela"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+
+        <div class="window-body">
+          <div class="detail-meta">
+            <span>Origem</span>
+            <strong>{{ selectedMessage()!.role === 'jarvis' ? 'Trevvos Core' : 'Usuário' }}</strong>
+          </div>
+
+          <div class="detail-content">
+            <p>{{ selectedMessage()!.content }}</p>
+
+            @if (selectedMessage()!.profile) {
+              <section class="profile-card modal-profile-card">
+                <img
+                  class="profile-photo"
+                  [src]="selectedMessage()!.profile!.photoUrl"
+                  [alt]="selectedMessage()!.profile!.name"
+                />
+
+                <div class="profile-info">
+                  <h3>{{ selectedMessage()!.profile!.name }}</h3>
+                  <span>{{ selectedMessage()!.profile!.role }}</span>
+                  <p>{{ selectedMessage()!.profile!.description }}</p>
+
+                  <div class="profile-actions">
+                    @for (link of selectedMessage()!.profile!.links; track link.label) {
+                      <a
+                        [href]="link.url"
+                        [attr.download]="link.kind === 'cv' ? '' : null"
+                        [attr.target]="link.kind === 'cv' ? null : '_blank'"
+                        rel="noopener noreferrer"
+                      >
+                        {{ link.label }}
+                      </a>
+                    }
+                  </div>
+                </div>
+              </section>
+            }
+
+            @if (selectedMessage()!.actions?.length) {
+              <div class="profile-actions">
+                @for (action of selectedMessage()!.actions; track action.label) {
+                  <a
+                    [href]="action.url"
+                    [attr.target]="action.kind === 'download' ? null : '_blank'"
+                    [attr.download]="action.kind === 'download' ? '' : null"
+                    rel="noopener noreferrer"
+                  >
+                    {{ action.label }}
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (isAdminModalOpen()) {
+    <div class="system-overlay">
+      <section class="system-window admin-window">
+        <span class="window-corner window-corner-tl"></span>
+        <span class="window-corner window-corner-tr"></span>
+        <span class="window-corner window-corner-bl"></span>
+        <span class="window-corner window-corner-br"></span>
+
+        <header class="window-titlebar">
+          <div class="window-title-group">
+            <div class="window-orb admin-orb">
+              <span>⚿</span>
+            </div>
+
+            <div>
+              <span class="window-kicker">TREVVOS ADMIN CORE</span>
+              <h2>Acesso restrito</h2>
+            </div>
+          </div>
+
+          <div class="window-actions">
+            <span class="window-chip warning">AUTH REQUIRED</span>
+
+            <button
+              type="button"
+              class="window-close"
+              (click)="closeAdminModal()"
+              aria-label="Fechar janela"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+
+        <form class="admin-form">
+          <label>
+            Usuário
+            <input type="text" placeholder="admin@trevvos.ai" />
+          </label>
+
+          <label>
+            Senha
+            <input type="password" placeholder="••••••••" />
+          </label>
+
+          <button type="button">Autenticar</button>
+        </form>
+      </section>
+    </div>
+  }
+</main>
