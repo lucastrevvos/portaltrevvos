@@ -8,6 +8,23 @@
   <span class="corner bl"></span>
   <span class="corner br"></span>
 
+  <header class="mobile-topbar">
+    <div class="m-logo-wrap">
+      <div class="m-logo-frame">
+        <img src="assets/images/trevvos-logo.png" alt="Trevvos" />
+      </div>
+
+      <div class="m-brand">
+        <span class="m-brand-name">{{ mobileTopbarTitle() }}</span>
+        <span class="m-brand-tag">{{ mobileTopbarSubtitle() }}</span>
+      </div>
+    </div>
+
+    <a class="m-action-chip" [href]="humanWhatsAppUrl" target="_blank" rel="noopener noreferrer">
+      Falar com humano
+    </a>
+  </header>
+
   <header class="topbar">
     <div class="logo-wrap">
       <div class="logo-image-frame">
@@ -30,7 +47,7 @@
     </div>
   </header>
 
-  <section class="body">
+  <section class="body" [class.mobile-agent-hidden]="mobileTab() !== 'agent'">
     <aside class="leftnav">
       <div class="nav-section">Explorar</div>
 
@@ -165,6 +182,324 @@
         Contato humano
       </button>
     </aside>
+
+    <!-- ── MOBILE HOME ── -->
+    <section class="mobile-home" [class.mobile-tab-hidden]="mobileTab() !== 'home'">
+      <!-- Hero -->
+      <div class="mh-hero">
+        <span class="mh-eyebrow">IA • DADOS • AUTOMAÇÃO</span>
+
+        <h1 class="mh-headline">
+          Soluções em IA que impulsionam
+          <span class="mh-highlight">resultados reais</span>
+        </h1>
+
+        <p class="mh-desc">
+          Tecnologia, conhecimento e pessoas trabalhando juntos para transformar desafios em
+          evolução.
+        </p>
+
+        <button class="mh-cta" type="button" (click)="goToAgent()">
+          <span>Falar com a IA</span>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Product grid 2x2 -->
+      <div class="mh-section-label">Nossos produtos</div>
+
+      <div class="mh-product-grid">
+        <button class="mh-product-card" type="button" (click)="goToAgent('Trevvos Forge')">
+          <div class="mh-card-icon-slot mh-icon-forge">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="16 18 22 12 16 6" />
+              <polyline points="8 6 2 12 8 18" />
+            </svg>
+          </div>
+          <span class="mh-product-title">Trevvos Forge</span>
+          <span class="mh-product-desc"
+            >IA local-first para análise de código, planejamento, testes, diffs e documentação
+            técnica.</span
+          >
+        </button>
+
+        <button class="mh-product-card" type="button" (click)="goToAgent('KM One')">
+          <div class="mh-card-icon-slot mh-icon-km">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="5" r="2" />
+              <circle cx="5" cy="19" r="2" />
+              <circle cx="19" cy="19" r="2" />
+              <line x1="12" y1="7" x2="5.5" y2="17" />
+              <line x1="12" y1="7" x2="18.5" y2="17" />
+            </svg>
+          </div>
+          <span class="mh-product-title">KM One</span>
+          <span class="mh-product-desc"
+            >Inteligência para motoristas de app analisarem corridas, metas, combustível e
+            lucro.</span
+          >
+        </button>
+
+        <button class="mh-product-card" type="button" (click)="goToAgent('Trevvos Flow')">
+          <div class="mh-card-icon-slot mh-icon-flow">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <polyline points="3 6 4 7 6 5" />
+              <polyline points="3 12 4 13 6 11" />
+              <polyline points="3 18 4 19 6 17" />
+            </svg>
+          </div>
+          <span class="mh-product-title">Trevvos Flow</span>
+          <span class="mh-product-desc"
+            >Todo list com IA que sugere itens e permite listas compartilhadas sem login.</span
+          >
+        </button>
+
+        <button class="mh-product-card" type="button" (click)="goToAgent('Podcast Trevvos')">
+          <div class="mh-card-icon-slot mh-icon-podcast">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+              <line x1="12" y1="19" x2="12" y2="22" />
+            </svg>
+          </div>
+          <span class="mh-product-title">Podcast</span>
+          <span class="mh-product-desc"
+            >Conversas sobre IA, tecnologia, produtos digitais e bastidores da Trevvos.</span
+          >
+        </button>
+      </div>
+
+      <!-- Purpose card -->
+      <div class="mh-purpose-card">
+        <div class="mh-purpose-icon-slot">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </div>
+        <div class="mh-purpose-text">
+          <strong class="mh-purpose-title">Inovação com propósito</strong>
+          <p class="mh-purpose-desc">
+            Combinamos IA, dados e experiência humana para criar soluções escaláveis, úteis e
+            centradas em pessoas.
+          </p>
+        </div>
+      </div>
+
+      <!-- Community -->
+      <div class="mh-section-label">Comunidade</div>
+
+      <div class="mh-community-stack">
+        <div class="mh-community-card">
+          <div class="mh-community-header">
+            <div class="mh-community-icon">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <span class="mh-community-title">Grupo de testadores</span>
+          </div>
+          <p class="mh-community-text">
+            Seja um dos primeiros a testar o KM One antes do lançamento.
+          </p>
+          <a
+            class="mh-community-action"
+            href="https://chat.whatsapp.com/K1cepLtEEoY6pScVRTNvg9"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Entrar no grupo
+          </a>
+        </div>
+
+        <div class="mh-community-card">
+          <div class="mh-community-header">
+            <div class="mh-community-icon">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.5a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.78h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                />
+              </svg>
+            </div>
+            <span class="mh-community-title">Falar com humano</span>
+          </div>
+          <p class="mh-community-text">Prefere conversar direto? Chame a Trevvos no WhatsApp.</p>
+          <a
+            class="mh-community-action"
+            [href]="humanWhatsAppUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Abrir WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MOBILE CONTENT ── -->
+    <section class="mobile-content" [class.mobile-tab-hidden]="mobileTab() !== 'content'">
+      <!-- Featured post -->
+      <div class="mc-featured-card">
+        <div class="mc-featured-image-slot">
+          <span class="mc-featured-badge">DESTAQUE</span>
+          <div class="mc-featured-image-glow"></div>
+        </div>
+        <div class="mc-featured-body">
+          <h2 class="mc-featured-title">{{ mobileFeaturedPost.title }}</h2>
+          <p class="mc-featured-summary">{{ mobileFeaturedPost.summary }}</p>
+          <div class="mc-featured-meta">
+            {{ mobileFeaturedPost.readingTime }} • {{ mobileFeaturedPost.category }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Category chips -->
+      <div class="mc-category-scroll">
+        @for (cat of mobileBlogCategories; track cat) {
+          <button
+            class="mc-category-chip"
+            type="button"
+            [class.mc-cat-active]="activeMobileBlogCategory() === cat"
+            (click)="setMobileBlogCategory(cat)"
+          >
+            {{ cat }}
+          </button>
+        }
+      </div>
+
+      <!-- Post list -->
+      <div class="mc-post-list">
+        @for (post of filteredMobileBlogPosts(); track post.id) {
+          <button
+            class="mc-post-card"
+            type="button"
+            (click)="goToAgent('Me fale sobre: ' + post.title)"
+          >
+            <div class="mc-post-thumb-slot"></div>
+            <div class="mc-post-info">
+              <span class="mc-post-category-tag">{{ post.category }}</span>
+              <h3 class="mc-post-title">{{ post.title }}</h3>
+              <span class="mc-post-meta">{{ post.readingTime }}</span>
+            </div>
+          </button>
+        }
+        @if (filteredMobileBlogPosts().length === 0) {
+          <p class="mc-empty-state">Nenhum post nesta categoria ainda.</p>
+        }
+      </div>
+
+      <!-- CTA -->
+      <div class="mc-blog-cta-card">
+        <div class="mc-cta-logo">
+          <img src="assets/images/trevvos-logo.png" alt="Trevvos" />
+        </div>
+        <div class="mc-cta-text">
+          <strong>Quer aprofundar este tema?</strong>
+          <p>Pergunte para a IA e receba insights personalizados.</p>
+        </div>
+        <button class="mc-cta-btn" type="button" (click)="goToAgent()">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </div>
+    </section>
 
     <section class="center">
       <section class="hero">
@@ -392,6 +727,79 @@
       <button type="button" class="reset-button" (click)="resetSession()">Resetar sessão</button>
     </aside>
   </section>
+
+  <!-- ── MOBILE BOTTOM NAV ── -->
+  <nav class="mobile-bottom-nav">
+    <button
+      class="mbn-item"
+      type="button"
+      [class.active]="mobileTab() === 'home'"
+      (click)="setMobileTab('home')"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+      <span>Home</span>
+    </button>
+
+    <button
+      class="mbn-item"
+      type="button"
+      [class.active]="mobileTab() === 'agent'"
+      (click)="setMobileTab('agent')"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="9" width="18" height="12" rx="2" />
+        <path d="M9 9V6a3 3 0 0 1 6 0v3" />
+        <circle cx="9" cy="15" r="1" fill="currentColor" stroke="none" />
+        <circle cx="15" cy="15" r="1" fill="currentColor" stroke="none" />
+      </svg>
+      <span>Assistente</span>
+    </button>
+
+    <button
+      class="mbn-item"
+      type="button"
+      [class.active]="mobileTab() === 'content'"
+      (click)="setMobileTab('content')"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+        <line x1="7" y1="8" x2="17" y2="8" />
+        <line x1="7" y1="12" x2="17" y2="12" />
+        <line x1="7" y1="16" x2="12" y2="16" />
+      </svg>
+      <span>Conteúdo</span>
+    </button>
+  </nav>
 
   @if (selectedMessage()) {
     <div class="system-overlay">

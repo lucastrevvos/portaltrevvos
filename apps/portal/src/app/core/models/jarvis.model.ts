@@ -71,6 +71,16 @@ export interface JarvisModuleInfo {
   suggestions: JarvisSuggestion[];
 }
 
+export interface MobileBlogPost {
+  id: number;
+  title: string;
+  summary: string;
+  category: string;
+  readingTime: string;
+  imageUrl?: string;
+  featured?: boolean;
+}
+
 export interface JarvisInteraction {
   type: JarvisInteractionType;
   mode: JarvisMode;

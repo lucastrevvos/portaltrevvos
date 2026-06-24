@@ -6,6 +6,7 @@ import {
   JarvisModule,
   JarvisProductLink,
   JarvisState,
+  MobileBlogPost,
 } from '../../../../core/models/jarvis.model';
 import { JarvisMockService } from '../../../../core/services/jarvis-mock.service';
 
@@ -46,6 +47,70 @@ export class HomePageComponent {
 
   isAdminModalOpen = signal(false);
   selectedMessage = signal<JarvisMessage | null>(null);
+
+  mobileTab = signal<'home' | 'agent' | 'content'>('home');
+
+  mobileTopbarTitle = computed(() => {
+    if (this.mobileTab() === 'agent') return 'Assistente Trevvos';
+    if (this.mobileTab() === 'content') return 'Conteúdo';
+    return 'Trevvos';
+  });
+
+  mobileTopbarSubtitle = computed(() => {
+    if (this.mobileTab() === 'agent') return 'Seu parceiro de IA';
+    if (this.mobileTab() === 'content') return 'Insights que geram valor';
+    return 'Soluções em IA';
+  });
+
+  readonly mobileBlogCategories = ['Todos', 'IA', 'Automação', 'Dados', 'Negócios', 'KM One', 'Engenharia'];
+
+  readonly mobileFeaturedPost: MobileBlogPost = {
+    id: 1,
+    category: 'IA Generativa',
+    readingTime: '5 min de leitura',
+    title: 'IA Generativa: como transformar dados em decisões inteligentes',
+    summary: 'Entenda as aplicações práticas e o impacto real da IA nos negócios.',
+    featured: true,
+  };
+
+  readonly mobileBlogPosts: MobileBlogPost[] = [
+    {
+      id: 2,
+      category: 'Automação',
+      readingTime: '7 min de leitura',
+      title: 'Automação inteligente: o futuro da eficiência operacional',
+      summary: 'Como fluxos automatizados com IA reduzem tarefas repetitivas e aceleram decisões.',
+    },
+    {
+      id: 3,
+      category: 'Dados',
+      readingTime: '6 min de leitura',
+      title: 'Governança de dados: o alicerce para a IA confiável',
+      summary: 'Antes de automatizar decisões, empresas precisam organizar, proteger e qualificar seus dados.',
+    },
+    {
+      id: 4,
+      category: 'KM One',
+      readingTime: '4 min de leitura',
+      title: 'KM One na prática: inteligência para motoristas de app',
+      summary: 'Como motoristas podem usar dados para avaliar corridas, metas, combustível e lucro.',
+    },
+    {
+      id: 5,
+      category: 'Engenharia',
+      readingTime: '8 min de leitura',
+      title: 'Trevvos Forge: IA aplicada ao ciclo real de desenvolvimento',
+      summary: 'Uma visão sobre análise de código, planejamento técnico, testes, diffs e documentação com LLM local.',
+    },
+  ];
+
+  activeMobileBlogCategory = signal('Todos');
+
+  filteredMobileBlogPosts = computed(() => {
+    const cat = this.activeMobileBlogCategory();
+    if (cat === 'Todos') return this.mobileBlogPosts;
+    return this.mobileBlogPosts.filter((p) => p.category === cat);
+  });
 
   activeModuleInfo = computed(() => {
     return this.jarvisMockService.getModuleInfo(this.activeModule());
@@ -137,6 +202,21 @@ export class HomePageComponent {
 
   closeMessageDetails(): void {
     this.selectedMessage.set(null);
+  }
+
+  setMobileTab(tab: 'home' | 'agent' | 'content'): void {
+    this.mobileTab.set(tab);
+  }
+
+  setMobileBlogCategory(cat: string): void {
+    this.activeMobileBlogCategory.set(cat);
+  }
+
+  goToAgent(prompt?: string): void {
+    this.mobileTab.set('agent');
+    if (prompt) {
+      this.usePrompt(prompt);
+    }
   }
 
   closeAdminModal(): void {
