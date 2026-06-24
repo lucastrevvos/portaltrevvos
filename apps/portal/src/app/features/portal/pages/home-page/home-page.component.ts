@@ -11,11 +11,13 @@ import {
 } from '../../../../core/models/jarvis.model';
 import { JarvisMockService } from '../../../../core/services/jarvis-mock.service';
 import { SoundService } from '../../../../core/services/sound.service';
+import { LanguageService } from '../../../../core/i18n/language.service';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TranslatePipe],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss',
 })
@@ -25,6 +27,7 @@ export class HomePageComponent {
 
   private readonly browserTitle = inject(Title);
   private readonly soundService = inject(SoundService);
+  readonly languageService = inject(LanguageService);
 
   question = '';
 
@@ -212,18 +215,18 @@ export class HomePageComponent {
     const lastMessage = [...this.messages()].reverse().find((message) => message.role === 'jarvis');
 
     if (lastMessage?.mode === 'deterministic') {
-      return 'Automático';
+      return this.languageService.t('mode.auto');
     }
 
     if (lastMessage?.mode === 'admin') {
-      return 'Admin';
+      return this.languageService.t('mode.admin');
     }
 
     if (lastMessage?.mode === 'profile') {
-      return 'Perfil';
+      return this.languageService.t('mode.profile');
     }
 
-    return 'Conversa';
+    return this.languageService.t('mode.conversation');
   });
 
   constructor(private readonly jarvisMockService: JarvisMockService) {
@@ -243,6 +246,12 @@ export class HomePageComponent {
     if (this.soundService.enabled()) {
       this.soundService.playClick();
     }
+  }
+
+  toggleLanguage(): void {
+    this.soundService.unlock();
+    this.soundService.playClick();
+    this.languageService.toggleLanguage();
   }
 
   submitQuestion(): void {
