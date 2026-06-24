@@ -2,6 +2,7 @@ import { Component, computed, ElementRef, signal, ViewChild, inject } from '@ang
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import {
+  DesktopBlogPost,
   JarvisMessage,
   JarvisModule,
   JarvisProductLink,
@@ -112,6 +113,87 @@ export class HomePageComponent {
     return this.mobileBlogPosts.filter((p) => p.category === cat);
   });
 
+  readonly desktopBlogCategories = ['Todos', 'IA', 'Automação', 'Engenharia', 'KM One', 'Forge', 'Produto'];
+
+  readonly desktopBlogFeaturedPost: DesktopBlogPost = {
+    id: 100,
+    category: 'IA Generativa',
+    readingTime: '5 min de leitura',
+    dateLabel: 'Destaque',
+    title: 'IA Generativa: como transformar dados em decisões inteligentes',
+    summary:
+      'Entenda como modelos generativos e engenharia de contexto estão mudando a forma como empresas tomam decisões e criam valor com seus dados.',
+    imageTone: 'blue',
+    featured: true,
+  };
+
+  readonly desktopBlogPosts: DesktopBlogPost[] = [
+    {
+      id: 101,
+      category: 'Automação',
+      readingTime: '6 min de leitura',
+      dateLabel: 'Hoje',
+      title: 'Automação inteligente: o futuro da eficiência operacional',
+      summary: 'Como a automação com IA reduz custos, erros e libera pessoas para o que realmente importa.',
+      imageTone: 'cyan',
+    },
+    {
+      id: 102,
+      category: 'Engenharia',
+      readingTime: '7 min de leitura',
+      dateLabel: 'Ontem',
+      title: 'Governança de dados: o alicerce para a IA confiável',
+      summary: 'Princípios e práticas para garantir qualidade, segurança e rastreabilidade dos dados em projetos de IA.',
+      imageTone: 'violet',
+    },
+    {
+      id: 103,
+      category: 'KM One',
+      readingTime: '5 min de leitura',
+      dateLabel: '2 dias atrás',
+      title: 'KM One na prática: inteligência para motoristas de app',
+      summary: 'Como o KM One usa dados para ajudar motoristas a analisarem corridas, metas, combustível e lucro.',
+      imageTone: 'cyan',
+    },
+    {
+      id: 104,
+      category: 'Forge',
+      readingTime: '6 min de leitura',
+      dateLabel: '3 dias atrás',
+      title: 'Trevvos Forge: IA aplicada ao ciclo real de desenvolvimento',
+      summary: 'Da análise ao deploy: como usamos IA para acelerar entregas com qualidade e foco no valor do produto.',
+      imageTone: 'pink',
+    },
+    {
+      id: 105,
+      category: 'IA',
+      readingTime: '6 min de leitura',
+      dateLabel: '5 dias atrás',
+      title: 'IA local e produtividade em engenharia',
+      summary: 'Como rodar modelos localmente aumenta produtividade sem abrir mão de segurança e privacidade.',
+      imageTone: 'green',
+    },
+    {
+      id: 106,
+      category: 'Produto',
+      readingTime: '5 min de leitura',
+      dateLabel: '1 semana atrás',
+      title: 'Como produtos com IA geram valor real',
+      summary: 'Estratégias para conectar tecnologia, experiência do usuário e métricas de negócio.',
+      imageTone: 'amber',
+    },
+  ];
+
+  activeDesktopBlogCategory = signal('Todos');
+  desktopBlogSearch = signal('');
+  selectedDesktopBlogPost = signal<DesktopBlogPost | null>(null);
+
+  filteredDesktopBlogPosts = computed(() => {
+    const active = this.activeDesktopBlogCategory();
+    if (active === 'Todos') return this.desktopBlogPosts;
+    return this.desktopBlogPosts.filter((p) => p.category === active);
+  });
+
   activeModuleInfo = computed(() => {
     return this.jarvisMockService.getModuleInfo(this.activeModule());
   });
@@ -164,12 +246,36 @@ export class HomePageComponent {
     this.runPrompt(prompt);
   }
 
+  setDesktopBlogCategory(category: string): void {
+    this.activeDesktopBlogCategory.set(category);
+  }
+
+  openDesktopBlogPost(post: DesktopBlogPost): void {
+    this.selectedDesktopBlogPost.set(post);
+  }
+
+  closeDesktopBlogPost(): void {
+    this.selectedDesktopBlogPost.set(null);
+  }
+
+  askAboutDesktopPost(post: DesktopBlogPost): void {
+    this.selectedDesktopBlogPost.set(null);
+    this.activeModule.set('agent');
+    this.runPrompt(`Me fale sobre o artigo: ${post.title}`);
+  }
+
   setModule(module: JarvisModule): void {
     if (this.isBusy()) {
       return;
     }
 
     this.activeModule.set(module);
+
+    if (module === 'blog') {
+      this.currentAck.set('');
+      this.state.set('idle');
+      return;
+    }
 
     if (module === 'admin') {
       this.runPrompt('Trevvos modo admin');

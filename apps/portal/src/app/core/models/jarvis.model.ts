@@ -81,6 +81,17 @@ export interface MobileBlogPost {
   featured?: boolean;
 }
 
+export interface DesktopBlogPost {
+  id: number;
+  title: string;
+  summary: string;
+  category: string;
+  readingTime: string;
+  dateLabel: string;
+  imageTone: 'blue' | 'green' | 'violet' | 'amber' | 'pink' | 'cyan';
+  featured?: boolean;
+}
+
 export interface JarvisInteraction {
   type: JarvisInteractionType;
   mode: JarvisMode;
