@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Trevvos.Neural.Api/Trevvos.Neural.Api.csproj" />
+    <Project Path="src/Trevvos.Neural.Application/Trevvos.Neural.Application.csproj" />
+    <Project Path="src/Trevvos.Neural.Domain/Trevvos.Neural.Domain.csproj" />
+    <Project Path="src/Trevvos.Neural.Infrastructure/Trevvos.Neural.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Trevvos.Neural.Tests/Trevvos.Neural.Tests.csproj" />
+  </Folder>
+</Solution>
