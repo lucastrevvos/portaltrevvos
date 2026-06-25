@@ -1,0 +1,30 @@
+<header class="public-header">
+  <a class="brand" routerLink="/" aria-label="KM One Connect - início">
+    <span class="brand-mark">K1</span>
+    <span>KM One <strong>Connect</strong></span>
+  </a>
+  <nav aria-label="Navegação principal">
+    <a routerLink="/" fragment="como-funciona">Como funciona</a>
+    <a routerLink="/cars" routerLinkActive="active">Carros</a>
+    <a routerLink="/" fragment="proprietarios">Para proprietários</a>
+    <a routerLink="/auth/login" routerLinkActive="active">Entrar</a>
+    <a class="button small" routerLink="/auth/register">Criar conta</a>
+  </nav>
+</header>
+
+<main>
+  <router-outlet />
+</main>
+
+<footer class="public-footer">
+  <div class="brand footer-brand">
+    <span class="brand-mark">K1</span>
+    <span>KM One <strong>Connect</strong></span>
+  </div>
+  <p>Aluguel de carros entre pessoas, com mais escolha e proximidade.</p>
+  <div class="footer-links">
+    <a routerLink="/cars">Explorar carros</a>
+    <a routerLink="/auth/register">Anunciar meu carro</a>
+    <span>© 2026 Trevvos</span>
+  </div>
+</footer>

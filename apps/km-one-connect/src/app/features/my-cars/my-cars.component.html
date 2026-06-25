@@ -1,0 +1,17 @@
+<div class="app-page-heading">
+  <div><span class="eyebrow">Área do proprietário</span><h1>Meus carros</h1><p>Gerencie anúncios, preços e disponibilidade.</p></div>
+  <button class="button" type="button">+ Anunciar novo carro</button>
+</div>
+<div class="owner-cars-grid">
+  @for (car of cars; track car.id) {
+    <article class="panel owner-car-card">
+      <div class="owner-car-visual" [class]="car.imageClass">🚙<span class="availability" [class.unavailable]="!car.available">{{ car.available ? 'Anúncio ativo' : 'Pausado' }}</span></div>
+      <div class="owner-car-content">
+        <span class="eyebrow">{{ car.brand }}</span><h2>{{ car.model }}</h2><p>{{ car.year }} · {{ car.transmission }} · {{ car.category }}</p>
+        <div class="owner-car-stats"><span><small>Diária</small><strong>{{ car.dailyPrice | currency: 'BRL' : 'symbol' : '1.0-0' }}</strong></span><span><small>Reservas</small><strong>{{ car.id === cars[0].id ? 8 : 5 }}</strong></span><span><small>Avaliação</small><strong>★ {{ car.rating }}</strong></span></div>
+        <div class="card-actions"><button class="button secondary small" type="button">Editar anúncio</button><button class="button ghost-dark small" type="button">Disponibilidade</button></div>
+      </div>
+    </article>
+  }
+  <button class="add-car-card" type="button"><span>+</span><strong>Anunciar outro carro</strong><small>Cadastre as informações e defina sua disponibilidade.</small></button>
+</div>

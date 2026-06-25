@@ -1,0 +1,20 @@
+<section class="auth-page">
+  <div class="auth-card wide">
+    <span class="eyebrow">Comece agora</span>
+    <h1>Crie sua conta gratuita</h1>
+    <p>Escolha como você quer usar o KM One Connect.</p>
+    <div class="profile-selector">
+      <button type="button" [class.active]="profileType === 'renter'" (click)="profileType = 'renter'"><span>🔑</span><strong>Quero alugar</strong><small>Encontre o carro ideal</small></button>
+      <button type="button" [class.active]="profileType === 'owner'" (click)="profileType = 'owner'"><span>🚗</span><strong>Quero anunciar</strong><small>Disponibilize seu carro</small></button>
+    </div>
+    <form class="form-stack" (ngSubmit)="$event.preventDefault()">
+      <div class="form-row fields"><label><span>Nome completo</span><input placeholder="Seu nome" /></label><label><span>Telefone</span><input placeholder="(00) 00000-0000" /></label></div>
+      <label><span>E-mail</span><input type="email" placeholder="voce@email.com" /></label>
+      <label><span>Senha</span><input type="password" placeholder="Crie uma senha segura" /></label>
+      <label class="check"><input type="checkbox" /> Li e concordo com os termos de uso e política de privacidade.</label>
+      <a class="button full center" routerLink="/app">Criar minha conta</a>
+    </form>
+    <p class="auth-switch">Já possui uma conta? <a routerLink="/auth/login">Entrar</a></p>
+    <small class="mock-notice">Cadastro demonstrativo com dados locais.</small>
+  </div>
+</section>

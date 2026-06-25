@@ -1,0 +1,60 @@
+<div class="app-page-heading">
+  <div><span class="eyebrow">Quinta-feira, 25 de junho</span><h1>Olá, Lucas 👋</h1><p>Acompanhe suas reservas e seus carros em um só lugar.</p></div>
+  <a class="button" routerLink="/cars">Encontrar um carro</a>
+</div>
+
+<section class="dashboard-banner">
+  <div><span>PRÓXIMA RESERVA</span><h2>Volkswagen T-Cross Comfortline</h2><p>📍 Batel, Curitiba · 12 a 15 de julho</p></div>
+  <div class="banner-status"><span>Confirmada</span><strong>Faltam 17 dias</strong><a routerLink="/app/my-bookings">Ver detalhes →</a></div>
+</section>
+
+<div class="section-title"><div><span class="eyebrow">Área do locatário</span><h2>Suas reservas</h2></div><a routerLink="/app/my-bookings">Ver todas →</a></div>
+<div class="dashboard-grid renter-grid">
+  <article class="panel booking-preview">
+    <div class="panel-head"><h3>Próximas reservas</h3><span class="badge green">1 confirmada</span></div>
+    @for (booking of bookings.slice(0, 2); track booking.id) {
+      <div class="list-row">
+        <span class="mini-car">🚙</span>
+        <div><strong>{{ booking.carName }}</strong><small>{{ booking.period }} · {{ booking.location }}</small></div>
+        <span class="status" [class.pending]="booking.status === 'Aguardando'">{{ booking.status }}</span>
+      </div>
+    }
+  </article>
+  <article class="panel favorites-panel">
+    <div class="panel-head"><h3>Carros favoritos</h3><span>3 salvos</span></div>
+    <div class="favorite-cars"><span class="car-blue">🚗</span><span class="car-white">🚘</span><span class="car-green">🚙</span></div>
+    <a class="text-link" routerLink="/cars">Continuar explorando →</a>
+  </article>
+</div>
+
+<div class="section-title owner-title"><div><span class="eyebrow">Área do proprietário</span><h2>Seus anúncios</h2></div><a routerLink="/app/my-cars">Gerenciar carros →</a></div>
+<div class="metric-grid">
+  @for (metric of metrics; track metric.label) {
+    <article class="metric-card" [class]="'metric-card ' + metric.tone">
+      <span>{{ metric.label }}</span><strong>{{ metric.value }}</strong><small>{{ metric.detail }}</small>
+    </article>
+  }
+</div>
+
+<div class="dashboard-grid owner-grid">
+  <article class="panel">
+    <div class="panel-head"><h3>Solicitações recentes</h3><a routerLink="/app/requests">Ver todas</a></div>
+    @for (request of requests; track request.id) {
+      <div class="request-row">
+        <span class="avatar">{{ request.renterName.slice(0, 2).toUpperCase() }}</span>
+        <div><strong>{{ request.renterName }}</strong><small>{{ request.carName }} · {{ request.period }}</small></div>
+        <strong>{{ request.total | currency: 'BRL' : 'symbol' : '1.0-0' }}</strong>
+        <div class="row-actions"><button type="button" class="round-action reject">×</button><button type="button" class="round-action accept">✓</button></div>
+      </div>
+    }
+  </article>
+  <article class="panel occupancy-panel">
+    <div class="panel-head"><h3>Ocupação em julho</h3><span class="badge purple">68%</span></div>
+    <div class="calendar-grid">
+      @for (day of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]; track day) {
+        <span [class.busy]="day > 7 && day < 16">{{ day }}</span>
+      }
+    </div>
+    <p><i class="calendar-key"></i> Dias reservados ou indisponíveis</p>
+  </article>
+</div>

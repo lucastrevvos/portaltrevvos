@@ -1,0 +1,69 @@
+<section class="section detail-page">
+  <a class="back-link" routerLink="/cars">← Voltar para carros</a>
+  <div class="detail-heading">
+    <div>
+      <span class="eyebrow">{{ car().brand }} · {{ car().category }}</span>
+      <h1>{{ car().brand }} {{ car().model }}</h1>
+      <p>📍 {{ car().neighborhood }}, {{ car().city }} · ★ {{ car().rating }} ({{ car().reviews }} avaliações)</p>
+    </div>
+    <button class="icon-button favorite-button" type="button" aria-label="Favoritar">♡</button>
+  </div>
+
+  <div class="gallery">
+    <div class="gallery-main" [class]="car().imageClass"><span>🚘</span></div>
+    <div class="gallery-side">
+      <div [class]="car().imageClass"><span>Interior</span></div>
+      <div [class]="car().imageClass"><span>Detalhes</span></div>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <div class="detail-content">
+      <div class="spec-strip">
+        <span><b>◉</b>{{ car().year }}<small>Ano</small></span>
+        <span><b>↯</b>{{ car().transmission }}<small>Câmbio</small></span>
+        <span><b>♙</b>{{ car().seats }} lugares<small>Capacidade</small></span>
+        <span><b>◆</b>{{ car().color }}<small>Cor</small></span>
+      </div>
+
+      <article class="detail-block">
+        <h2>Sobre este carro</h2>
+        <p>{{ car().description }}</p>
+      </article>
+      <article class="detail-block">
+        <h2>O que este carro oferece</h2>
+        <div class="feature-list">
+          @for (feature of car().features; track feature) { <span>✓ {{ feature }}</span> }
+        </div>
+      </article>
+      <article class="detail-block">
+        <h2>Regras do proprietário</h2>
+        <ul>
+          @for (rule of car().rules; track rule) { <li>{{ rule }}</li> }
+        </ul>
+      </article>
+      <article class="owner-profile">
+        <span class="avatar large">{{ car().owner.avatarInitials }}</span>
+        <div><small>Proprietário</small><h3>{{ car().owner.name }}</h3><p>★ {{ car().owner.rating }} · Membro desde {{ car().owner.memberSince }}</p></div>
+        <span class="verified-badge">✓ Identidade verificada</span>
+      </article>
+    </div>
+
+    <aside class="booking-card">
+      <p class="booking-price"><strong>{{ car().dailyPrice | currency: 'BRL' : 'symbol' : '1.0-0' }}</strong> / dia</p>
+      <div class="date-grid">
+        <label><span>Retirada</span><input type="date" value="2026-07-10" /></label>
+        <label><span>Devolução</span><input type="date" value="2026-07-13" /></label>
+      </div>
+      <label><span>Local de retirada</span><input value="Combinar com o proprietário" readonly /></label>
+      <div class="price-summary">
+        <span>R$ {{ car().dailyPrice }} × 3 dias <b>R$ {{ car().dailyPrice * 3 }}</b></span>
+        <span>Taxa de serviço <b>R$ 89</b></span>
+        <strong>Total estimado <b>R$ {{ car().dailyPrice * 3 + 89 }}</b></strong>
+      </div>
+      <button class="button full" type="button">Solicitar reserva</button>
+      <small class="safe-note">Você não será cobrado nesta etapa.</small>
+      <div class="calendar-note">✓ Datas selecionadas disponíveis</div>
+    </aside>
+  </div>
+</section>
