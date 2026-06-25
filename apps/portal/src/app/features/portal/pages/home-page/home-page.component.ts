@@ -70,54 +70,67 @@ export class HomePageComponent {
     return this.languageService.t('mobile.subtitle.home');
   });
 
-  readonly mobileBlogCategories = ['Todos', 'IA', 'Automação', 'Dados', 'Negócios', 'KM One', 'Engenharia'];
+  readonly mobileBlogCategories = [
+    { id: 'all', labelKey: 'mobile.category.all' },
+    { id: 'ai', labelKey: 'mobile.category.ai' },
+    { id: 'automation', labelKey: 'mobile.category.automation' },
+    { id: 'data', labelKey: 'mobile.category.data' },
+    { id: 'business', labelKey: 'mobile.category.business' },
+    { id: 'kmOne', labelKey: 'mobile.category.kmOne' },
+    { id: 'engineering', labelKey: 'mobile.category.engineering' },
+  ];
 
   readonly mobileFeaturedPost: MobileBlogPost = {
     id: 1,
-    category: 'IA Generativa',
-    readingTime: '5 min de leitura',
-    title: 'IA Generativa: como transformar dados em decisões inteligentes',
-    summary: 'Entenda as aplicações práticas e o impacto real da IA nos negócios.',
+    categoryId: 'ai',
+    categoryKey: 'mobile.category.ai',
+    titleKey: 'mobile.blog.post1.title',
+    summaryKey: 'mobile.blog.post1.summary',
+    readingTimeKey: 'mobile.blog.post1.readingTime',
     featured: true,
   };
 
   readonly mobileBlogPosts: MobileBlogPost[] = [
     {
       id: 2,
-      category: 'Automação',
-      readingTime: '7 min de leitura',
-      title: 'Automação inteligente: o futuro da eficiência operacional',
-      summary: 'Como fluxos automatizados com IA reduzem tarefas repetitivas e aceleram decisões.',
+      categoryId: 'automation',
+      categoryKey: 'mobile.category.automation',
+      titleKey: 'mobile.blog.post2.title',
+      summaryKey: 'mobile.blog.post2.summary',
+      readingTimeKey: 'mobile.blog.post2.readingTime',
     },
     {
       id: 3,
-      category: 'Dados',
-      readingTime: '6 min de leitura',
-      title: 'Governança de dados: o alicerce para a IA confiável',
-      summary: 'Antes de automatizar decisões, empresas precisam organizar, proteger e qualificar seus dados.',
+      categoryId: 'data',
+      categoryKey: 'mobile.category.data',
+      titleKey: 'mobile.blog.post3.title',
+      summaryKey: 'mobile.blog.post3.summary',
+      readingTimeKey: 'mobile.blog.post3.readingTime',
     },
     {
       id: 4,
-      category: 'KM One',
-      readingTime: '4 min de leitura',
-      title: 'KM One na prática: inteligência para motoristas de app',
-      summary: 'Como motoristas podem usar dados para avaliar corridas, metas, combustível e lucro.',
+      categoryId: 'kmOne',
+      categoryKey: 'mobile.category.kmOne',
+      titleKey: 'mobile.blog.post4.title',
+      summaryKey: 'mobile.blog.post4.summary',
+      readingTimeKey: 'mobile.blog.post4.readingTime',
     },
     {
       id: 5,
-      category: 'Engenharia',
-      readingTime: '8 min de leitura',
-      title: 'Trevvos Forge: IA aplicada ao ciclo real de desenvolvimento',
-      summary: 'Uma visão sobre análise de código, planejamento técnico, testes, diffs e documentação com LLM local.',
+      categoryId: 'engineering',
+      categoryKey: 'mobile.category.engineering',
+      titleKey: 'mobile.blog.post5.title',
+      summaryKey: 'mobile.blog.post5.summary',
+      readingTimeKey: 'mobile.blog.post5.readingTime',
     },
   ];
 
-  activeMobileBlogCategory = signal('Todos');
+  activeMobileBlogCategory = signal('all');
 
   filteredMobileBlogPosts = computed(() => {
     const cat = this.activeMobileBlogCategory();
-    if (cat === 'Todos') return this.mobileBlogPosts;
-    return this.mobileBlogPosts.filter((p) => p.category === cat);
+    if (cat === 'all') return this.mobileBlogPosts;
+    return this.mobileBlogPosts.filter((p) => p.categoryId === cat);
   });
 
   readonly desktopBlogCategories = ['Todos', 'IA', 'Automação', 'Engenharia', 'KM One', 'Forge', 'Produto'];
@@ -360,10 +373,14 @@ export class HomePageComponent {
     this.mobileTab.set(tab);
   }
 
-  setMobileBlogCategory(cat: string): void {
+  setMobileBlogCategory(categoryId: string): void {
     this.soundService.unlock();
     this.soundService.playClick();
-    this.activeMobileBlogCategory.set(cat);
+    this.activeMobileBlogCategory.set(categoryId);
+  }
+
+  askAboutMobilePost(post: MobileBlogPost): void {
+    this.goToAgent('Me fale sobre: ' + this.languageService.t(post.titleKey));
   }
 
   goToAgent(prompt?: string): void {

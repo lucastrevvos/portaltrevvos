@@ -438,28 +438,28 @@
       <!-- Featured post -->
       <div class="mc-featured-card">
         <div class="mc-featured-image-slot">
-          <span class="mc-featured-badge">DESTAQUE</span>
+          <span class="mc-featured-badge">{{ 'mobile.content.featuredBadge' | t }}</span>
           <div class="mc-featured-image-glow"></div>
         </div>
         <div class="mc-featured-body">
-          <h2 class="mc-featured-title">{{ mobileFeaturedPost.title }}</h2>
-          <p class="mc-featured-summary">{{ mobileFeaturedPost.summary }}</p>
+          <h2 class="mc-featured-title">{{ mobileFeaturedPost.titleKey | t }}</h2>
+          <p class="mc-featured-summary">{{ mobileFeaturedPost.summaryKey | t }}</p>
           <div class="mc-featured-meta">
-            {{ mobileFeaturedPost.readingTime }} • {{ mobileFeaturedPost.category }}
+            {{ mobileFeaturedPost.readingTimeKey | t }} • {{ mobileFeaturedPost.categoryKey | t }}
           </div>
         </div>
       </div>
 
       <!-- Category chips -->
       <div class="mc-category-scroll">
-        @for (cat of mobileBlogCategories; track cat) {
+        @for (cat of mobileBlogCategories; track cat.id) {
           <button
             class="mc-category-chip"
             type="button"
-            [class.mc-cat-active]="activeMobileBlogCategory() === cat"
-            (click)="setMobileBlogCategory(cat)"
+            [class.mc-cat-active]="activeMobileBlogCategory() === cat.id"
+            (click)="setMobileBlogCategory(cat.id)"
           >
-            {{ cat }}
+            {{ cat.labelKey | t }}
           </button>
         }
       </div>
@@ -470,18 +470,18 @@
           <button
             class="mc-post-card"
             type="button"
-            (click)="goToAgent('Me fale sobre: ' + post.title)"
+            (click)="askAboutMobilePost(post)"
           >
             <div class="mc-post-thumb-slot"></div>
             <div class="mc-post-info">
-              <span class="mc-post-category-tag">{{ post.category }}</span>
-              <h3 class="mc-post-title">{{ post.title }}</h3>
-              <span class="mc-post-meta">{{ post.readingTime }}</span>
+              <span class="mc-post-category-tag">{{ post.categoryKey | t }}</span>
+              <h3 class="mc-post-title">{{ post.titleKey | t }}</h3>
+              <span class="mc-post-meta">{{ post.readingTimeKey | t }}</span>
             </div>
           </button>
         }
         @if (filteredMobileBlogPosts().length === 0) {
-          <p class="mc-empty-state">Nenhum post nesta categoria ainda.</p>
+          <p class="mc-empty-state">{{ 'mobile.content.emptyState' | t }}</p>
         }
       </div>
 
@@ -491,8 +491,8 @@
           <img src="assets/images/trevvos-logo.png" alt="Trevvos" />
         </div>
         <div class="mc-cta-text">
-          <strong>Quer aprofundar este tema?</strong>
-          <p>Pergunte para a IA e receba insights personalizados.</p>
+          <strong>{{ 'mobile.content.ctaTitle' | t }}</strong>
+          <p>{{ 'mobile.content.ctaSubtitle' | t }}</p>
         </div>
         <button class="mc-cta-btn" type="button" (click)="goToAgent()">
           <svg

@@ -73,10 +73,15 @@ export interface JarvisModuleInfo {
 
 export interface MobileBlogPost {
   id: number;
-  title: string;
-  summary: string;
-  category: string;
-  readingTime: string;
+  categoryId: string;
+  categoryKey: string;
+  titleKey: string;
+  summaryKey: string;
+  readingTimeKey: string;
+  title?: string;
+  summary?: string;
+  category?: string;
+  readingTime?: string;
   imageUrl?: string;
   featured?: boolean;
 }

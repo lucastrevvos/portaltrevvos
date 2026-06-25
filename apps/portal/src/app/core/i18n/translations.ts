@@ -121,6 +121,38 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'mobile.community.humanTitle': 'Falar com humano',
     'mobile.community.humanText': 'Prefere conversar direto? Chame a Trevvos no WhatsApp.',
     'mobile.community.humanAction': 'Abrir WhatsApp',
+
+    // Mobile content / blog tab
+    'mobile.content.featuredBadge': 'DESTAQUE',
+    'mobile.content.emptyState': 'Nenhum post nesta categoria ainda.',
+    'mobile.content.ctaTitle': 'Quer aprofundar este tema?',
+    'mobile.content.ctaSubtitle': 'Pergunte para a IA e receba insights personalizados.',
+
+    // Blog category chips
+    'mobile.category.all': 'Todos',
+    'mobile.category.ai': 'IA',
+    'mobile.category.automation': 'Automação',
+    'mobile.category.data': 'Dados',
+    'mobile.category.business': 'Negócios',
+    'mobile.category.kmOne': 'KM One',
+    'mobile.category.engineering': 'Engenharia',
+
+    // Blog post content
+    'mobile.blog.post1.title': 'IA Generativa: como transformar dados em decisões inteligentes',
+    'mobile.blog.post1.summary': 'Entenda as aplicações práticas e o impacto real da IA nos negócios.',
+    'mobile.blog.post1.readingTime': '5 min de leitura',
+    'mobile.blog.post2.title': 'Automação inteligente: o futuro da eficiência operacional',
+    'mobile.blog.post2.summary': 'Como fluxos automatizados com IA reduzem tarefas repetitivas e aceleram decisões.',
+    'mobile.blog.post2.readingTime': '7 min de leitura',
+    'mobile.blog.post3.title': 'Governança de dados: o alicerce para a IA confiável',
+    'mobile.blog.post3.summary': 'Antes de automatizar decisões, empresas precisam organizar, proteger e qualificar seus dados.',
+    'mobile.blog.post3.readingTime': '6 min de leitura',
+    'mobile.blog.post4.title': 'KM One na prática: inteligência para motoristas de app',
+    'mobile.blog.post4.summary': 'Como motoristas podem usar dados para avaliar corridas, metas, combustível e lucro.',
+    'mobile.blog.post4.readingTime': '4 min de leitura',
+    'mobile.blog.post5.title': 'Trevvos Forge: IA aplicada ao ciclo real de desenvolvimento',
+    'mobile.blog.post5.summary': 'Uma visão sobre análise de código, planejamento técnico, testes, diffs e documentação com LLM local.',
+    'mobile.blog.post5.readingTime': '8 min de leitura',
   },
   en: {
     // Language toggle
@@ -240,5 +272,37 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'mobile.community.humanTitle': 'Talk to human',
     'mobile.community.humanText': 'Prefer to talk directly? Message Trevvos on WhatsApp.',
     'mobile.community.humanAction': 'Open WhatsApp',
+
+    // Mobile content / blog tab
+    'mobile.content.featuredBadge': 'FEATURED',
+    'mobile.content.emptyState': 'No posts in this category yet.',
+    'mobile.content.ctaTitle': 'Want to go deeper on this topic?',
+    'mobile.content.ctaSubtitle': 'Ask the AI and get personalized insights.',
+
+    // Blog category chips
+    'mobile.category.all': 'All',
+    'mobile.category.ai': 'AI',
+    'mobile.category.automation': 'Automation',
+    'mobile.category.data': 'Data',
+    'mobile.category.business': 'Business',
+    'mobile.category.kmOne': 'KM One',
+    'mobile.category.engineering': 'Engineering',
+
+    // Blog post content
+    'mobile.blog.post1.title': 'Generative AI: how to turn data into intelligent decisions',
+    'mobile.blog.post1.summary': 'Understand practical applications and the real impact of AI in business.',
+    'mobile.blog.post1.readingTime': '5 min read',
+    'mobile.blog.post2.title': 'Intelligent automation: the future of operational efficiency',
+    'mobile.blog.post2.summary': 'How AI-powered automated flows reduce repetitive tasks and speed up decisions.',
+    'mobile.blog.post2.readingTime': '7 min read',
+    'mobile.blog.post3.title': 'Data governance: the foundation for trustworthy AI',
+    'mobile.blog.post3.summary': 'Before automating decisions, companies need to organize, protect, and qualify their data.',
+    'mobile.blog.post3.readingTime': '6 min read',
+    'mobile.blog.post4.title': 'KM One in practice: intelligence for app drivers',
+    'mobile.blog.post4.summary': 'How drivers can use data to evaluate rides, goals, fuel, and profit.',
+    'mobile.blog.post4.readingTime': '4 min read',
+    'mobile.blog.post5.title': 'Trevvos Forge: AI applied to the real development cycle',
+    'mobile.blog.post5.summary': 'A look at code analysis, technical planning, tests, diffs, and documentation with a local LLM.',
+    'mobile.blog.post5.readingTime': '8 min read',
   },
 };
