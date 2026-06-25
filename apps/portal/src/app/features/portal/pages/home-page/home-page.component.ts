@@ -41,14 +41,15 @@ export class HomePageComponent {
       id: crypto.randomUUID(),
       role: 'jarvis',
       mode: 'conversation',
-      title: 'Agente Trevvos online',
-      content:
-        'Pode me perguntar qualquer coisa — sobre soluções, produtos, automação, IA aplicada, Trevvos Forge, Trevvos Flow, KM One ou sistemas sob medida.',
+      title: this.languageService.t('jarvis.online.title'),
+      content: this.languageService.t('jarvis.online.content'),
       createdAt: new Date(),
     },
   ]);
 
-  productLinks = signal<JarvisProductLink[]>([]);
+  readonly productLinks = computed(() =>
+    this.jarvisMockService.getProductLinks(this.languageService.currentLanguage()),
+  );
   humanWhatsAppUrl = '';
 
   isAdminModalOpen = signal(false);
@@ -229,7 +230,7 @@ export class HomePageComponent {
   });
 
   activeModuleInfo = computed(() => {
-    return this.jarvisMockService.getModuleInfo(this.activeModule());
+    return this.jarvisMockService.getModuleInfo(this.activeModule(), this.languageService.currentLanguage());
   });
 
   isBusy = computed(() => {
@@ -256,8 +257,9 @@ export class HomePageComponent {
     return this.languageService.t('mode.conversation');
   });
 
-  constructor(private readonly jarvisMockService: JarvisMockService) {
-    this.productLinks.set(this.jarvisMockService.getProductLinks());
+  private readonly jarvisMockService = inject(JarvisMockService);
+
+  constructor() {
     this.humanWhatsAppUrl = this.jarvisMockService.getHumanWhatsAppUrl();
     this.browserTitle.setTitle('Trevvos Neural Console | Trevvos Soluções em IA');
   }
@@ -359,7 +361,7 @@ export class HomePageComponent {
       return;
     }
 
-    const moduleInfo = this.jarvisMockService.getModuleInfo(module);
+    const moduleInfo = this.jarvisMockService.getModuleInfo(module, this.languageService.currentLanguage());
 
     this.addMessage({
       role: 'jarvis',
@@ -429,9 +431,8 @@ export class HomePageComponent {
         id: crypto.randomUUID(),
         role: 'jarvis',
         mode: 'conversation',
-        title: 'Agente Trevvos online',
-        content:
-          'Sessão reiniciada. Pode me perguntar sobre soluções, produtos, IA aplicada, automações, Trevvos Flow ou sistemas sob medida.',
+        title: this.languageService.t('jarvis.online.title'),
+        content: this.languageService.t('jarvis.reset.content'),
         createdAt: new Date(),
       },
     ]);
@@ -440,7 +441,7 @@ export class HomePageComponent {
   }
 
   private runPrompt(prompt: string): void {
-    const interaction = this.jarvisMockService.getInteraction(prompt);
+    const interaction = this.jarvisMockService.getInteraction(prompt, this.languageService.currentLanguage());
 
     this.question = '';
     this.currentAck.set(interaction.ack);

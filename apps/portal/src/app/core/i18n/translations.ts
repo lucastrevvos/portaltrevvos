@@ -227,6 +227,11 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'desktop.article.askAbout': 'Perguntar para IA sobre este artigo ✦',
     'desktop.article.paragraph1': 'Este artigo faz parte do Blog Neural da Trevvos, uma área dedicada a explorar aplicações práticas de IA, automação, engenharia de software e produtos digitais.',
     'desktop.article.paragraph2': 'A proposta é transformar conceitos técnicos em decisões de produto, mostrando como tecnologia, dados e experiência humana podem gerar valor real.',
+
+    // Jarvis agent messages
+    'jarvis.online.title': 'Agente Trevvos online',
+    'jarvis.online.content': 'Pode me perguntar qualquer coisa — sobre soluções, produtos, automação, IA aplicada, Trevvos Forge, Trevvos Flow, KM One ou sistemas sob medida.',
+    'jarvis.reset.content': 'Sessão reiniciada. Pode me perguntar sobre soluções, produtos, IA aplicada, automações, Trevvos Flow ou sistemas sob medida.',
   },
   en: {
     // Language toggle
@@ -452,5 +457,10 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'desktop.article.askAbout': 'Ask AI about this article ✦',
     'desktop.article.paragraph1': 'This article is part of Trevvos Neural Blog, an area dedicated to exploring practical applications of AI, automation, software engineering, and digital products.',
     'desktop.article.paragraph2': 'The goal is to turn technical concepts into product decisions, showing how technology, data, and human experience can create real value.',
+
+    // Jarvis agent messages
+    'jarvis.online.title': 'Trevvos Agent online',
+    'jarvis.online.content': 'Ask me anything — about solutions, products, automation, applied AI, Trevvos Forge, Trevvos Flow, KM One, or custom systems.',
+    'jarvis.reset.content': 'Session restarted. Ask me about solutions, products, applied AI, automations, Trevvos Flow, or custom systems.',
   },
 };
