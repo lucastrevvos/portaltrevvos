@@ -1,0 +1,40 @@
+<div class="app-layout" [class.menu-open]="menuOpen()">
+  <aside class="sidebar">
+    <a class="brand light" routerLink="/app">
+      <span class="brand-mark">K1</span>
+      <span>KM One <strong>Connect</strong></span>
+    </a>
+    <nav class="side-nav" aria-label="Área do usuário">
+      <span class="nav-label">Visão geral</span>
+      <a routerLink="/app" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">⌂ Dashboard</a>
+      <span class="nav-label">Quero alugar</span>
+      <a routerLink="/cars">⌕ Encontrar carros</a>
+      <a routerLink="/app/my-bookings" routerLinkActive="active">▣ Minhas reservas</a>
+      <span class="nav-label">Sou proprietário</span>
+      <a routerLink="/app/my-cars" routerLinkActive="active">▤ Meus carros</a>
+      <a routerLink="/app/requests" routerLinkActive="active">◎ Solicitações <b class="nav-count">2</b></a>
+      <span class="nav-label">Conta</span>
+      <a routerLink="/app/settings" routerLinkActive="active">⚙ Configurações</a>
+    </nav>
+    <div class="sidebar-help">
+      <strong>Precisa de ajuda?</strong>
+      <span>Acesse nossa central de suporte.</span>
+      <button class="button ghost small" type="button">Falar com suporte</button>
+    </div>
+  </aside>
+
+  <section class="app-main">
+    <header class="app-topbar">
+      <button class="menu-button" type="button" (click)="menuOpen.set(!menuOpen())" aria-label="Abrir menu">☰</button>
+      <div class="topbar-search">⌕ <span>Buscar reservas, carros...</span></div>
+      <div class="topbar-user">
+        <button class="icon-button" type="button" aria-label="Notificações">♢<i></i></button>
+        <span class="avatar">LA</span>
+        <span><strong>Lucas Almeida</strong><small>Conta verificada</small></span>
+      </div>
+    </header>
+    <div class="app-content" (click)="menuOpen.set(false)">
+      <router-outlet />
+    </div>
+  </section>
+</div>

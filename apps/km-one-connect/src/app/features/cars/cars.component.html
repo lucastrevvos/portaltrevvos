@@ -1,0 +1,48 @@
+<section class="page-hero compact">
+  <span class="eyebrow">Explore perto de você</span>
+  <h1>Encontre o carro ideal para seus planos</h1>
+  <p>Escolha entre veículos de proprietários locais e solicite sua reserva.</p>
+</section>
+
+<section class="section listing-section">
+  <div class="search-panel">
+    <label class="search-field">
+      <span>Onde você precisa do carro?</span>
+      <input [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Cidade, bairro ou modelo" />
+    </label>
+    <label>
+      <span>Câmbio</span>
+      <select [ngModel]="transmission()" (ngModelChange)="transmission.set($event)">
+        <option>Todos</option>
+        <option>Automático</option>
+        <option>Manual</option>
+      </select>
+    </label>
+    <label>
+      <span>Retirada</span>
+      <input type="date" value="2026-07-10" />
+    </label>
+    <label>
+      <span>Devolução</span>
+      <input type="date" value="2026-07-13" />
+    </label>
+    <button class="button" type="button">Buscar carros</button>
+  </div>
+
+  <div class="results-heading">
+    <div><strong>{{ cars().length }} carros encontrados</strong><span>Dados demonstrativos para esta primeira versão.</span></div>
+    <select aria-label="Ordenar resultados">
+      <option>Mais relevantes</option>
+      <option>Menor preço</option>
+      <option>Melhor avaliação</option>
+    </select>
+  </div>
+
+  <div class="cars-grid">
+    @for (car of cars(); track car.id) {
+      <app-car-card [car]="car" />
+    } @empty {
+      <div class="empty-state"><span>⌕</span><h2>Nenhum carro encontrado</h2><p>Tente buscar por outra cidade, bairro ou modelo.</p></div>
+    }
+  </div>
+</section>

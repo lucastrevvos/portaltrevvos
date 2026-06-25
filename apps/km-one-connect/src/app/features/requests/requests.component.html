@@ -1,0 +1,20 @@
+<div class="app-page-heading">
+  <div><span class="eyebrow">Área do proprietário</span><h1>Solicitações de aluguel</h1><p>Analise os pedidos recebidos antes de aprovar.</p></div>
+</div>
+<div class="tabs"><button class="active" type="button">Todas <span>3</span></button><button type="button">Pendentes <span>2</span></button><button type="button">Respondidas</button></div>
+<section class="requests-list">
+  @for (request of requests; track request.id) {
+    <article class="panel request-card">
+      <div class="request-person"><span class="avatar large">{{ request.renterName.slice(0, 2).toUpperCase() }}</span><div><small>Solicitação #{{ request.id }}</small><h3>{{ request.renterName }}</h3><p>★ 4,9 · Identidade verificada</p></div></div>
+      <div><small>Veículo</small><strong>{{ request.carName }}</strong></div>
+      <div><small>Período solicitado</small><strong>{{ request.period }}</strong></div>
+      <div><small>Valor estimado</small><strong>{{ request.total | currency: 'BRL' : 'symbol' : '1.0-0' }}</strong></div>
+      <span class="status" [class.neutral]="request.status === 'Aprovada'">{{ request.status }}</span>
+      @if (request.status === 'Pendente') {
+        <div class="card-actions"><button class="button ghost-dark small" type="button">Recusar</button><button class="button small" type="button">Aprovar</button></div>
+      } @else {
+        <button class="button secondary small" type="button">Ver reserva</button>
+      }
+    </article>
+  }
+</section>

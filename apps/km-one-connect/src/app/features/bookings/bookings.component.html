@@ -1,0 +1,17 @@
+<div class="app-page-heading">
+  <div><span class="eyebrow">Área do locatário</span><h1>Minhas reservas</h1><p>Acompanhe reservas futuras, solicitações e seu histórico.</p></div>
+  <a class="button" routerLink="/cars">Encontrar outro carro</a>
+</div>
+<div class="tabs"><button class="active" type="button">Todas <span>3</span></button><button type="button">Próximas</button><button type="button">Anteriores</button></div>
+<section class="panel table-panel">
+  @for (booking of bookings; track booking.id) {
+    <article class="booking-row">
+      <span class="booking-car car-silver">🚙</span>
+      <div class="booking-info"><small>Reserva #{{ booking.id }}</small><h3>{{ booking.carName }}</h3><p>📍 {{ booking.location }}</p></div>
+      <div><small>Período</small><strong>{{ booking.period }}</strong></div>
+      <div><small>Valor total</small><strong>{{ booking.total | currency: 'BRL' : 'symbol' : '1.0-0' }}</strong></div>
+      <span class="status" [class.pending]="booking.status === 'Aguardando'" [class.neutral]="booking.status === 'Concluída'">{{ booking.status }}</span>
+      <button class="button secondary small" type="button">Ver detalhes</button>
+    </article>
+  }
+</section>

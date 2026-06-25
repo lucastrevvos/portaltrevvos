@@ -1,0 +1,16 @@
+<div class="app-page-heading">
+  <div><span class="eyebrow">Sua conta</span><h1>Configurações</h1><p>Atualize seus dados e preferências da plataforma.</p></div>
+</div>
+<div class="settings-layout">
+  <nav class="panel settings-nav"><button class="active" type="button">Dados pessoais</button><button type="button">Notificações</button><button type="button">Privacidade</button><button type="button">Preferências</button></nav>
+  <section class="panel settings-content">
+    <div class="settings-heading"><div><h2>Dados pessoais</h2><p>Essas informações ajudam proprietários e locatários a reconhecer você.</p></div><span class="avatar large">LA</span></div>
+    <form class="form-stack settings-form" (ngSubmit)="$event.preventDefault()">
+      <div class="form-row fields"><label><span>Nome completo</span><input [(ngModel)]="profile.name" name="name" /></label><label><span>E-mail</span><input [(ngModel)]="profile.email" name="email" type="email" /></label></div>
+      <div class="form-row fields"><label><span>Telefone</span><input [(ngModel)]="profile.phone" name="phone" /></label><label><span>Cidade</span><input [(ngModel)]="profile.city" name="city" /></label></div>
+      <div class="preference-block"><div><strong>Receber novidades e recomendações</strong><small>Enviaremos conteúdos relevantes sobre carros e reservas.</small></div><label class="switch"><input type="checkbox" checked /><span></span></label></div>
+      <div class="preference-block"><div><strong>Alertas de solicitações</strong><small>Notificações sobre novos pedidos para seus carros.</small></div><label class="switch"><input type="checkbox" checked /><span></span></label></div>
+      <div class="settings-actions"><button class="button secondary" type="button">Cancelar</button><button class="button" type="submit">Salvar alterações</button></div>
+    </form>
+  </section>
+</div>

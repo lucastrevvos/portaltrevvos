@@ -1,0 +1,16 @@
+<section class="auth-page">
+  <div class="auth-card">
+    <span class="auth-icon">↗</span>
+    <span class="eyebrow">Que bom ter você de volta</span>
+    <h1>Entre na sua conta</h1>
+    <p>Acesse suas reservas, anúncios e solicitações.</p>
+    <form class="form-stack" (ngSubmit)="$event.preventDefault()">
+      <label><span>E-mail</span><input [(ngModel)]="email" name="email" type="email" placeholder="voce@email.com" /></label>
+      <label><span>Senha</span><input [(ngModel)]="password" name="password" type="password" placeholder="Sua senha" /></label>
+      <div class="form-row"><label class="check"><input type="checkbox" /> Lembrar de mim</label><button class="link-button" type="button">Esqueci minha senha</button></div>
+      <a class="button full center" routerLink="/app">Entrar</a>
+    </form>
+    <p class="auth-switch">Ainda não tem conta? <a routerLink="/auth/register">Cadastre-se grátis</a></p>
+    <small class="mock-notice">Ambiente demonstrativo — nenhuma autenticação real será realizada.</small>
+  </div>
+</section>

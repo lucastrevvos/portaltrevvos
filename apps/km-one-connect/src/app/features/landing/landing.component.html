@@ -1,0 +1,91 @@
+<section class="hero">
+  <div class="hero-copy">
+    <span class="pill">Seu próximo carro está mais perto do que você imagina</span>
+    <h1>Alugue um carro de <em>pessoas como você.</em></h1>
+    <p>
+      Encontre carros perto de você ou transforme o seu veículo parado em uma nova
+      fonte de renda. Simples, flexível e do seu jeito.
+    </p>
+    <div class="hero-actions">
+      <a class="button" routerLink="/cars">Encontrar um carro</a>
+      <a class="button secondary" routerLink="/auth/register">Anunciar meu carro</a>
+    </div>
+    <div class="trust-row">
+      <span><strong>4,9</strong> ★★★★★<small>Avaliação média</small></span>
+      <span><strong>+1.200</strong><small>Carros disponíveis</small></span>
+      <span><strong>+80</strong><small>Cidades atendidas</small></span>
+    </div>
+  </div>
+  <div class="hero-showcase">
+    <div class="hero-orbit orbit-one"></div>
+    <div class="hero-orbit orbit-two"></div>
+    <div class="hero-car">🚘</div>
+    <div class="floating-card location-card"><span>📍</span><strong>Carros perto de você</strong><small>Vila Mariana, São Paulo</small></div>
+    <div class="floating-card price-card"><span>A partir de</span><strong>R$ 129 <small>/ dia</small></strong></div>
+    <div class="floating-card verified-card">✓ Proprietário verificado</div>
+  </div>
+</section>
+
+<section class="section how-section" id="como-funciona">
+  <div class="section-heading centered">
+    <span class="eyebrow">Simples do início ao fim</span>
+    <h2>Como funciona</h2>
+    <p>Você escolhe o carro, combina os detalhes e aproveita o caminho.</p>
+  </div>
+  <div class="steps-grid">
+    @for (step of [
+      { icon: '⌕', number: '01', title: 'Encontre um carro', text: 'Busque por cidade, data e preferências para encontrar a opção ideal.' },
+      { icon: '▣', number: '02', title: 'Solicite a reserva', text: 'Confira os detalhes e envie sua solicitação diretamente ao proprietário.' },
+      { icon: '↔', number: '03', title: 'Combine a retirada', text: 'Alinhe o local e o horário para retirada e devolução do veículo.' },
+      { icon: '★', number: '04', title: 'Avalie a experiência', text: 'Depois da reserva, compartilhe sua experiência com a comunidade.' }
+    ]; track step.number) {
+      <article class="step-card">
+        <span class="step-number">{{ step.number }}</span>
+        <div class="step-icon">{{ step.icon }}</div>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.text }}</p>
+      </article>
+    }
+  </div>
+</section>
+
+<section class="section featured-section">
+  <div class="section-heading split">
+    <div>
+      <span class="eyebrow">Escolhas da comunidade</span>
+      <h2>Carros em destaque</h2>
+    </div>
+    <a class="text-link" routerLink="/cars">Ver todos os carros →</a>
+  </div>
+  <div class="cars-grid">
+    @for (car of featuredCars; track car.id) {
+      <app-car-card [car]="car" />
+    }
+  </div>
+</section>
+
+<section class="owner-section" id="proprietarios">
+  <div class="owner-visual">
+    <div class="owner-car">🚗</div>
+    <div class="income-card"><span>Receita estimada</span><strong>R$ 2.480</strong><small>este mês</small></div>
+  </div>
+  <div class="owner-copy">
+    <span class="eyebrow light-text">Para proprietários</span>
+    <h2>Seu carro parado pode ir muito mais longe.</h2>
+    <p>Anuncie gratuitamente, defina quando seu veículo estará disponível e mantenha o controle de cada solicitação.</p>
+    <div class="owner-benefits">
+      <span>✓ <b>Ganhe dinheiro</b> com seu carro parado</span>
+      <span>✓ <b>Defina a disponibilidade</b> conforme sua rotina</span>
+      <span>✓ <b>Controle as solicitações</b> antes de aprovar</span>
+      <span>✓ <b>Acompanhe suas reservas</b> em um só lugar</span>
+    </div>
+    <a class="button light-button" routerLink="/auth/register">Quero anunciar meu carro</a>
+  </div>
+</section>
+
+<section class="section final-cta">
+  <span class="eyebrow">Pronto para começar?</span>
+  <h2>O carro certo. Na hora certa. Perto de você.</h2>
+  <p>Faça parte de uma nova forma de usar e compartilhar veículos.</p>
+  <a class="button" routerLink="/cars">Explorar carros disponíveis</a>
+</section>
