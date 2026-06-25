@@ -521,26 +521,26 @@
             <div class="db-header-left">
               <div class="db-header-orb"><span>✦</span></div>
               <div>
-                <span class="db-kicker">BLOG NEURAL</span>
-                <p class="db-description">IA aplicada, engenharia, automação, produtos e aprendizados reais.</p>
+                <span class="db-kicker">{{ 'desktop.blog.kicker' | t }}</span>
+                <p class="db-description">{{ 'desktop.blog.description' | t }}</p>
               </div>
             </div>
           </header>
 
           <div class="db-toolbar">
             <div class="db-chip-row">
-              @for (cat of desktopBlogCategories; track cat) {
+              @for (cat of desktopBlogCategories; track cat.id) {
                 <button
                   class="db-category-chip"
                   type="button"
-                  [class.db-category-active]="activeDesktopBlogCategory() === cat"
-                  (click)="setDesktopBlogCategory(cat)"
-                >{{ cat }}</button>
+                  [class.db-category-active]="activeDesktopBlogCategory() === cat.id"
+                  (click)="setDesktopBlogCategory(cat.id)"
+                >{{ cat.labelKey | t }}</button>
               }
             </div>
             <div class="db-search">
               <span class="db-search-icon">⌕</span>
-              <input class="db-search-input" type="text" placeholder="Buscar artigos..." readonly />
+              <input class="db-search-input" type="text" [placeholder]="'desktop.blog.searchPlaceholder' | t" readonly />
             </div>
           </div>
 
@@ -552,11 +552,11 @@
                   <div class="db-visual-glow"></div>
                 </div>
                 <div class="db-featured-content">
-                  <span class="db-badge">DESTAQUE</span>
-                  <h2 class="db-featured-title">{{ desktopBlogFeaturedPost.title }}</h2>
-                  <p class="db-featured-summary">{{ desktopBlogFeaturedPost.summary }}</p>
+                  <span class="db-badge">{{ 'desktop.blog.featuredBadge' | t }}</span>
+                  <h2 class="db-featured-title">{{ desktopBlogFeaturedPost.titleKey | t }}</h2>
+                  <p class="db-featured-summary">{{ desktopBlogFeaturedPost.summaryKey | t }}</p>
                   <div class="db-meta">
-                    {{ desktopBlogFeaturedPost.readingTime }} • {{ desktopBlogFeaturedPost.category }}
+                    {{ desktopBlogFeaturedPost.readingTimeKey | t }} • {{ desktopBlogFeaturedPost.categoryKey | t }}
                   </div>
                   <div class="db-actions">
                     <button
@@ -564,14 +564,14 @@
                       type="button"
                       (click)="openDesktopBlogPost(desktopBlogFeaturedPost)"
                     >
-                      Ler no console ↗
+                      {{ 'desktop.blog.readInConsole' | t }}
                     </button>
                     <button
                       class="db-secondary-btn"
                       type="button"
                       (click)="askAboutDesktopPost(desktopBlogFeaturedPost)"
                     >
-                      Perguntar para IA ✦
+                      {{ 'desktop.blog.askAi' | t }}
                     </button>
                   </div>
                 </div>
@@ -581,34 +581,32 @@
                 @for (post of filteredDesktopBlogPosts(); track post.id) {
                   <button class="db-post-card" type="button" (click)="openDesktopBlogPost(post)">
                     <div [class]="'db-post-icon db-tone-' + post.imageTone"></div>
-                    <span class="db-post-category">{{ post.category }}</span>
-                    <h3 class="db-post-title">{{ post.title }}</h3>
-                    <p class="db-post-summary">{{ post.summary }}</p>
+                    <span class="db-post-category">{{ post.categoryKey | t }}</span>
+                    <h3 class="db-post-title">{{ post.titleKey | t }}</h3>
+                    <p class="db-post-summary">{{ post.summaryKey | t }}</p>
                     <div class="db-post-footer">
-                      <span class="db-post-time">{{ post.readingTime }}</span>
+                      <span class="db-post-time">{{ post.readingTimeKey | t }}</span>
                       <span class="db-post-arrow">→</span>
                     </div>
                   </button>
                 }
                 @if (filteredDesktopBlogPosts().length === 0) {
-                  <p class="db-empty-state">Nenhum post nesta categoria.</p>
+                  <p class="db-empty-state">{{ 'desktop.blog.emptyState' | t }}</p>
                 }
               </div>
 
               <div class="db-cta-card">
                 <div class="db-cta-orb"><span>✦</span></div>
                 <div class="db-cta-content">
-                  <strong class="db-cta-title">Quer aprofundar este tema?</strong>
-                  <p class="db-cta-desc">
-                    Pergunte para a IA e receba insights personalizados com base no conteúdo do blog.
-                  </p>
+                  <strong class="db-cta-title">{{ 'desktop.blog.ctaTitle' | t }}</strong>
+                  <p class="db-cta-desc">{{ 'desktop.blog.ctaText' | t }}</p>
                 </div>
                 <button
                   class="db-primary-btn"
                   type="button"
                   (click)="askAboutDesktopPost(desktopBlogFeaturedPost)"
                 >
-                  Perguntar para IA ✦
+                  {{ 'desktop.blog.askAi' | t }}
                 </button>
               </div>
 
@@ -617,33 +615,33 @@
             <div class="db-side">
 
               <div class="db-side-card">
-                <div class="db-side-title">Categorias</div>
-                <div class="db-category-row"><span>IA</span><span class="db-count">12</span></div>
-                <div class="db-category-row"><span>Automação</span><span class="db-count">9</span></div>
-                <div class="db-category-row"><span>Engenharia</span><span class="db-count">11</span></div>
-                <div class="db-category-row"><span>Produto</span><span class="db-count">8</span></div>
-                <div class="db-category-row"><span>KM One</span><span class="db-count">6</span></div>
-                <div class="db-category-row"><span>Trevvos Forge</span><span class="db-count">7</span></div>
-                <span class="db-side-link">Ver todas as categorias →</span>
+                <div class="db-side-title">{{ 'desktop.blog.categoriesTitle' | t }}</div>
+                <div class="db-category-row"><span>{{ 'desktop.category.ai' | t }}</span><span class="db-count">12</span></div>
+                <div class="db-category-row"><span>{{ 'desktop.category.automation' | t }}</span><span class="db-count">9</span></div>
+                <div class="db-category-row"><span>{{ 'desktop.category.engineering' | t }}</span><span class="db-count">11</span></div>
+                <div class="db-category-row"><span>{{ 'desktop.category.product' | t }}</span><span class="db-count">8</span></div>
+                <div class="db-category-row"><span>{{ 'desktop.category.kmOne' | t }}</span><span class="db-count">6</span></div>
+                <div class="db-category-row"><span>{{ 'desktop.category.forge' | t }}</span><span class="db-count">7</span></div>
+                <span class="db-side-link">{{ 'desktop.blog.viewAllCategories' | t }}</span>
               </div>
 
               <div class="db-side-card">
-                <div class="db-side-title">Últimos posts</div>
+                <div class="db-side-title">{{ 'desktop.blog.latestTitle' | t }}</div>
                 <div class="db-latest-list">
                   <div class="db-latest-item">
-                    <span class="db-latest-title">Como medir ROI em projetos de IA</span>
+                    <span class="db-latest-title">{{ 'desktop.blog.latest.roi' | t }}</span>
                     <span class="db-latest-date">2 dias atrás</span>
                   </div>
                   <div class="db-latest-item">
-                    <span class="db-latest-title">Observabilidade em sistemas inteligentes</span>
+                    <span class="db-latest-title">{{ 'desktop.blog.latest.observability' | t }}</span>
                     <span class="db-latest-date">5 dias atrás</span>
                   </div>
                   <div class="db-latest-item">
-                    <span class="db-latest-title">Boas práticas para prompts corporativos</span>
+                    <span class="db-latest-title">{{ 'desktop.blog.latest.prompts' | t }}</span>
                     <span class="db-latest-date">1 semana atrás</span>
                   </div>
                 </div>
-                <span class="db-side-link">Ver todos os posts →</span>
+                <span class="db-side-link">{{ 'desktop.blog.viewAllPosts' | t }}</span>
               </div>
 
             </div>
@@ -1121,13 +1119,13 @@
             </div>
 
             <div>
-              <span class="window-kicker">TREVVOS ARTICLE VIEWER</span>
-              <h2>{{ selectedDesktopBlogPost()!.title }}</h2>
+              <span class="window-kicker">{{ 'desktop.article.viewer' | t }}</span>
+              <h2>{{ selectedDesktopBlogPost()!.titleKey | t }}</h2>
             </div>
           </div>
 
           <div class="window-actions">
-            <span class="window-chip">{{ selectedDesktopBlogPost()!.category }}</span>
+            <span class="window-chip">{{ selectedDesktopBlogPost()!.categoryKey | t }}</span>
 
             <button
               type="button"
@@ -1147,20 +1145,14 @@
 
           <div class="db-article-body">
             <div class="detail-meta">
-              <span>{{ selectedDesktopBlogPost()!.category }}</span>
-              <strong>{{ selectedDesktopBlogPost()!.readingTime }} • {{ selectedDesktopBlogPost()!.dateLabel }}</strong>
+              <span>{{ selectedDesktopBlogPost()!.categoryKey | t }}</span>
+              <strong>{{ selectedDesktopBlogPost()!.readingTimeKey | t }} • {{ selectedDesktopBlogPost()!.dateLabelKey | t }}</strong>
             </div>
 
             <div class="detail-content">
-              <p>{{ selectedDesktopBlogPost()!.summary }}</p>
-              <p>
-                Este artigo faz parte do Blog Neural da Trevvos, uma área dedicada a explorar aplicações
-                práticas de IA, automação, engenharia de software e produtos digitais.
-              </p>
-              <p>
-                A proposta é transformar conceitos técnicos em decisões de produto, mostrando como
-                tecnologia, dados e experiência humana podem gerar valor real.
-              </p>
+              <p>{{ selectedDesktopBlogPost()!.summaryKey | t }}</p>
+              <p>{{ 'desktop.article.paragraph1' | t }}</p>
+              <p>{{ 'desktop.article.paragraph2' | t }}</p>
             </div>
 
             <div class="profile-actions">
@@ -1169,7 +1161,7 @@
                 class="db-primary-btn"
                 (click)="askAboutDesktopPost(selectedDesktopBlogPost()!)"
               >
-                Perguntar para IA sobre este artigo ✦
+                {{ 'desktop.article.askAbout' | t }}
               </button>
             </div>
           </div>

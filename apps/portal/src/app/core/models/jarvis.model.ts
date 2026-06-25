@@ -88,11 +88,17 @@ export interface MobileBlogPost {
 
 export interface DesktopBlogPost {
   id: number;
-  title: string;
-  summary: string;
-  category: string;
-  readingTime: string;
-  dateLabel: string;
+  categoryId: string;
+  categoryKey: string;
+  titleKey: string;
+  summaryKey: string;
+  readingTimeKey: string;
+  dateLabelKey: string;
+  title?: string;
+  summary?: string;
+  category?: string;
+  readingTime?: string;
+  dateLabel?: string;
   imageTone: 'blue' | 'green' | 'violet' | 'amber' | 'pink' | 'cyan';
   featured?: boolean;
 }

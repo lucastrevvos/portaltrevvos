@@ -133,16 +133,24 @@ export class HomePageComponent {
     return this.mobileBlogPosts.filter((p) => p.categoryId === cat);
   });
 
-  readonly desktopBlogCategories = ['Todos', 'IA', 'Automação', 'Engenharia', 'KM One', 'Forge', 'Produto'];
+  readonly desktopBlogCategories = [
+    { id: 'all', labelKey: 'desktop.category.all' },
+    { id: 'ai', labelKey: 'desktop.category.ai' },
+    { id: 'automation', labelKey: 'desktop.category.automation' },
+    { id: 'engineering', labelKey: 'desktop.category.engineering' },
+    { id: 'kmOne', labelKey: 'desktop.category.kmOne' },
+    { id: 'forge', labelKey: 'desktop.category.forge' },
+    { id: 'product', labelKey: 'desktop.category.product' },
+  ];
 
   readonly desktopBlogFeaturedPost: DesktopBlogPost = {
     id: 100,
-    category: 'IA Generativa',
-    readingTime: '5 min de leitura',
-    dateLabel: 'Destaque',
-    title: 'IA Generativa: como transformar dados em decisões inteligentes',
-    summary:
-      'Entenda como modelos generativos e engenharia de contexto estão mudando a forma como empresas tomam decisões e criam valor com seus dados.',
+    categoryId: 'ai',
+    categoryKey: 'desktop.blog.featured.category',
+    readingTimeKey: 'desktop.blog.featured.readingTime',
+    dateLabelKey: 'desktop.blog.featured.dateLabel',
+    titleKey: 'desktop.blog.featured.title',
+    summaryKey: 'desktop.blog.featured.summary',
     imageTone: 'blue',
     featured: true,
   };
@@ -150,68 +158,74 @@ export class HomePageComponent {
   readonly desktopBlogPosts: DesktopBlogPost[] = [
     {
       id: 101,
-      category: 'Automação',
-      readingTime: '6 min de leitura',
-      dateLabel: 'Hoje',
-      title: 'Automação inteligente: o futuro da eficiência operacional',
-      summary: 'Como a automação com IA reduz custos, erros e libera pessoas para o que realmente importa.',
+      categoryId: 'automation',
+      categoryKey: 'desktop.blog.automation.category',
+      readingTimeKey: 'desktop.blog.automation.readingTime',
+      dateLabelKey: 'desktop.blog.automation.dateLabel',
+      titleKey: 'desktop.blog.automation.title',
+      summaryKey: 'desktop.blog.automation.summary',
       imageTone: 'cyan',
     },
     {
       id: 102,
-      category: 'Engenharia',
-      readingTime: '7 min de leitura',
-      dateLabel: 'Ontem',
-      title: 'Governança de dados: o alicerce para a IA confiável',
-      summary: 'Princípios e práticas para garantir qualidade, segurança e rastreabilidade dos dados em projetos de IA.',
+      categoryId: 'engineering',
+      categoryKey: 'desktop.blog.governance.category',
+      readingTimeKey: 'desktop.blog.governance.readingTime',
+      dateLabelKey: 'desktop.blog.governance.dateLabel',
+      titleKey: 'desktop.blog.governance.title',
+      summaryKey: 'desktop.blog.governance.summary',
       imageTone: 'violet',
     },
     {
       id: 103,
-      category: 'KM One',
-      readingTime: '5 min de leitura',
-      dateLabel: '2 dias atrás',
-      title: 'KM One na prática: inteligência para motoristas de app',
-      summary: 'Como o KM One usa dados para ajudar motoristas a analisarem corridas, metas, combustível e lucro.',
+      categoryId: 'kmOne',
+      categoryKey: 'desktop.blog.kmOne.category',
+      readingTimeKey: 'desktop.blog.kmOne.readingTime',
+      dateLabelKey: 'desktop.blog.kmOne.dateLabel',
+      titleKey: 'desktop.blog.kmOne.title',
+      summaryKey: 'desktop.blog.kmOne.summary',
       imageTone: 'cyan',
     },
     {
       id: 104,
-      category: 'Forge',
-      readingTime: '6 min de leitura',
-      dateLabel: '3 dias atrás',
-      title: 'Trevvos Forge: IA aplicada ao ciclo real de desenvolvimento',
-      summary: 'Da análise ao deploy: como usamos IA para acelerar entregas com qualidade e foco no valor do produto.',
+      categoryId: 'forge',
+      categoryKey: 'desktop.blog.forge.category',
+      readingTimeKey: 'desktop.blog.forge.readingTime',
+      dateLabelKey: 'desktop.blog.forge.dateLabel',
+      titleKey: 'desktop.blog.forge.title',
+      summaryKey: 'desktop.blog.forge.summary',
       imageTone: 'pink',
     },
     {
       id: 105,
-      category: 'IA',
-      readingTime: '6 min de leitura',
-      dateLabel: '5 dias atrás',
-      title: 'IA local e produtividade em engenharia',
-      summary: 'Como rodar modelos localmente aumenta produtividade sem abrir mão de segurança e privacidade.',
+      categoryId: 'ai',
+      categoryKey: 'desktop.blog.localAi.category',
+      readingTimeKey: 'desktop.blog.localAi.readingTime',
+      dateLabelKey: 'desktop.blog.localAi.dateLabel',
+      titleKey: 'desktop.blog.localAi.title',
+      summaryKey: 'desktop.blog.localAi.summary',
       imageTone: 'green',
     },
     {
       id: 106,
-      category: 'Produto',
-      readingTime: '5 min de leitura',
-      dateLabel: '1 semana atrás',
-      title: 'Como produtos com IA geram valor real',
-      summary: 'Estratégias para conectar tecnologia, experiência do usuário e métricas de negócio.',
+      categoryId: 'product',
+      categoryKey: 'desktop.blog.product.category',
+      readingTimeKey: 'desktop.blog.product.readingTime',
+      dateLabelKey: 'desktop.blog.product.dateLabel',
+      titleKey: 'desktop.blog.product.title',
+      summaryKey: 'desktop.blog.product.summary',
       imageTone: 'amber',
     },
   ];
 
-  activeDesktopBlogCategory = signal('Todos');
+  activeDesktopBlogCategory = signal('all');
   desktopBlogSearch = signal('');
   selectedDesktopBlogPost = signal<DesktopBlogPost | null>(null);
 
   filteredDesktopBlogPosts = computed(() => {
     const active = this.activeDesktopBlogCategory();
-    if (active === 'Todos') return this.desktopBlogPosts;
-    return this.desktopBlogPosts.filter((p) => p.category === active);
+    if (active === 'all') return this.desktopBlogPosts;
+    return this.desktopBlogPosts.filter((p) => p.categoryId === active);
   });
 
   activeModuleInfo = computed(() => {
@@ -289,10 +303,10 @@ export class HomePageComponent {
     this.runPrompt(prompt);
   }
 
-  setDesktopBlogCategory(category: string): void {
+  setDesktopBlogCategory(categoryId: string): void {
     this.soundService.unlock();
     this.soundService.playClick();
-    this.activeDesktopBlogCategory.set(category);
+    this.activeDesktopBlogCategory.set(categoryId);
   }
 
   openDesktopBlogPost(post: DesktopBlogPost): void {
@@ -312,7 +326,7 @@ export class HomePageComponent {
     this.soundService.playClick();
     this.selectedDesktopBlogPost.set(null);
     this.activeModule.set('agent');
-    this.runPrompt(`Me fale sobre o artigo: ${post.title}`);
+    this.runPrompt(`Me fale sobre o artigo: ${this.languageService.t(post.titleKey)}`);
   }
 
   setModule(module: JarvisModule): void {
