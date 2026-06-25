@@ -328,7 +328,7 @@ export class HomePageComponent {
     this.soundService.playClick();
     this.selectedDesktopBlogPost.set(null);
     this.activeModule.set('agent');
-    this.runPrompt(`Me fale sobre o artigo: ${this.languageService.t(post.titleKey)}`);
+    this.runPrompt(`${this.languageService.t('jarvis.prompt.askAboutArticle')} ${this.languageService.t(post.titleKey)}`);
   }
 
   setModule(module: JarvisModule): void {
@@ -347,17 +347,17 @@ export class HomePageComponent {
     }
 
     if (module === 'admin') {
-      this.runPrompt('Trevvos modo admin');
+      this.runPrompt(this.languageService.t('jarvis.prompt.admin'));
       return;
     }
 
     if (module === 'creator') {
-      this.runPrompt('Conheça o criador Lucas Amaral');
+      this.runPrompt(this.languageService.t('jarvis.prompt.creator'));
       return;
     }
 
     if (module === 'contact') {
-      this.runPrompt('Quero falar com um humano');
+      this.runPrompt(this.languageService.t('jarvis.prompt.contact'));
       return;
     }
 
@@ -396,7 +396,7 @@ export class HomePageComponent {
   }
 
   askAboutMobilePost(post: MobileBlogPost): void {
-    this.goToAgent('Me fale sobre: ' + this.languageService.t(post.titleKey));
+    this.goToAgent(this.languageService.t('jarvis.prompt.askAbout') + ' ' + this.languageService.t(post.titleKey));
   }
 
   goToAgent(prompt?: string): void {

@@ -26,7 +26,7 @@
         class="topbar-sound-btn"
         [class.sound-active]="isSoundEnabled()"
         (click)="toggleSound()"
-        [title]="isSoundEnabled() ? 'Som ON' : 'Som OFF'"
+        [title]="isSoundEnabled() ? ('panel.soundOn' | t) : ('panel.soundOff' | t)"
       >
         {{ isSoundEnabled() ? '♪ ON' : '♪ OFF' }}
       </button>

@@ -232,6 +232,11 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'jarvis.online.title': 'Agente Trevvos online',
     'jarvis.online.content': 'Pode me perguntar qualquer coisa — sobre soluções, produtos, automação, IA aplicada, Trevvos Forge, Trevvos Flow, KM One ou sistemas sob medida.',
     'jarvis.reset.content': 'Sessão reiniciada. Pode me perguntar sobre soluções, produtos, IA aplicada, automações, Trevvos Flow ou sistemas sob medida.',
+    'jarvis.prompt.admin': 'Trevvos modo admin',
+    'jarvis.prompt.creator': 'Conheça o criador Lucas Amaral',
+    'jarvis.prompt.contact': 'Quero falar com um humano',
+    'jarvis.prompt.askAboutArticle': 'Me fale sobre o artigo:',
+    'jarvis.prompt.askAbout': 'Me fale sobre:',
   },
   en: {
     // Language toggle
@@ -462,5 +467,10 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'jarvis.online.title': 'Trevvos Agent online',
     'jarvis.online.content': 'Ask me anything — about solutions, products, automation, applied AI, Trevvos Forge, Trevvos Flow, KM One, or custom systems.',
     'jarvis.reset.content': 'Session restarted. Ask me about solutions, products, applied AI, automations, Trevvos Flow, or custom systems.',
+    'jarvis.prompt.admin': 'Trevvos admin mode',
+    'jarvis.prompt.creator': 'Meet the creator Lucas Amaral',
+    'jarvis.prompt.contact': 'Talk to a human',
+    'jarvis.prompt.askAboutArticle': 'Tell me about the article:',
+    'jarvis.prompt.askAbout': 'Tell me about:',
   },
 };
