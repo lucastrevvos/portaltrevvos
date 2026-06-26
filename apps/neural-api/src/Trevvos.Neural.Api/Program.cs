@@ -1,5 +1,6 @@
 using Microsoft.OpenApi;
 using Trevvos.Neural.Api.Modules.Health;
+using Trevvos.Neural.Api.Modules.Studio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,5 +24,6 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.MapHealthEndpoints();
+app.MapStudioEndpoints();
 
 app.Run();
