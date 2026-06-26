@@ -1,0 +1,48 @@
+.module-card header,
+.lesson-row,
+.lesson-actions {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.lessons {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.lesson-row {
+  background: #f8faf8;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.lesson-row.locked {
+  color: #7a847d;
+  opacity: 0.72;
+}
+
+.lesson-row h3 {
+  margin: 0 0 4px;
+}
+
+.lesson-row p {
+  margin: 0;
+}
+
+small,
+.lock {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .module-card header,
+  .lesson-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

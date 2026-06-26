@@ -1,0 +1,40 @@
+<section class="app-page">
+  <div>
+    <p class="eyebrow">Curso logado</p>
+    <h1>{{ course().title }}</h1>
+    <p class="lead">Aulas bloqueadas dependem dos exercicios obrigatorios aprovados pelo Forge Tutor.</p>
+  </div>
+
+  @for (module of course().modules; track module.id) {
+    <article class="card module-card">
+      <header>
+        <div>
+          <p class="eyebrow">Modulo {{ module.order }}</p>
+          <h2>{{ module.title }}</h2>
+        </div>
+        <strong>{{ moduleProgress(module.id) }}%</strong>
+      </header>
+      <div class="lessons">
+        @for (lesson of module.lessons; track lesson.id) {
+          <div class="lesson-row" [class.locked]="lesson.status === 'locked'">
+            <div>
+              <h3>{{ lesson.order }}. {{ lesson.title }}</h3>
+              <p class="muted">{{ lesson.summary }}</p>
+              @if (lesson.status === 'locked') {
+                <small>Conclua os exercicios obrigatorios da aula anterior com o Forge Tutor.</small>
+              }
+            </div>
+            <div class="lesson-actions">
+              <app-lesson-status-badge [status]="lesson.status" />
+              @if (lesson.status !== 'locked') {
+                <a class="button button-secondary" [routerLink]="['/academy/app/lessons', lesson.slug]">Abrir</a>
+              } @else {
+                <span class="lock">Cadeado</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+  }
+</section>

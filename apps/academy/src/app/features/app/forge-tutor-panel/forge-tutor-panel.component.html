@@ -1,0 +1,21 @@
+<aside class="card panel">
+  <p class="eyebrow">Forge Tutor</p>
+  <h2>Validacao mockada</h2>
+  <p class="muted">Simule como o Forge analisaria as evidencias locais e enviaria o evento done para a Academy API.</p>
+  <div class="actions">
+    <button class="button-secondary" type="button" (click)="validate()">Simular validacao do Forge</button>
+    <button class="button-ghost" type="button" (click)="reject()">Simular exercicio reprovado</button>
+    <button class="button-primary" type="button" (click)="approve()">Simular exercicio aprovado</button>
+  </div>
+  @if (lastValidation(); as validation) {
+    <div class="result" [class.approved]="validation.status === 'approved'" [class.rejected]="validation.status === 'rejected'">
+      <strong>{{ validation.status === 'approved' ? 'Aprovado pelo Forge' : 'Reprovado com dicas' }}</strong>
+      <p>{{ validation.feedback }}</p>
+      <ul>
+        @for (check of validation.checks; track check.id) {
+          <li>{{ check.status === 'passed' ? 'OK' : 'Revisar' }} - {{ check.message }}</li>
+        }
+      </ul>
+    </div>
+  }
+</aside>

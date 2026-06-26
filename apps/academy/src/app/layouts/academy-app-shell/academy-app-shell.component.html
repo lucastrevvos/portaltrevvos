@@ -1,0 +1,16 @@
+<div class="shell">
+  <aside>
+    <a class="brand" routerLink="/academy/app">Trevvos Academy</a>
+    <p>Aluno demo: {{ dashboard().studentName }}</p>
+    <nav>
+      <a routerLink="/academy/app" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+      <a routerLink="/academy/app/courses/engenharia-software-2026" routerLinkActive="active">Curso</a>
+      <a routerLink="/academy/app/forge" routerLinkActive="active">Forge Tutor</a>
+      <a routerLink="/academy/app/tokens" routerLinkActive="active">Tokens</a>
+      <a routerLink="/academy">Area publica</a>
+    </nav>
+  </aside>
+  <main>
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,42 @@
+<section class="app-page">
+  <div>
+    <p class="eyebrow">Carteira demo</p>
+    <h1>Tokens e creditos</h1>
+    <p class="lead">Tokens so sao consumidos quando o aluno usa a IA online da Trevvos. Validacoes pelo Forge Local nao debitam creditos.</p>
+  </div>
+
+  <div class="grid grid-3">
+    <article class="card stat"><span class="muted">Saldo mockado</span><strong>{{ dashboard().tokenBalance }}</strong></article>
+    <article class="card stat"><span class="muted">Forge Local</span><strong>0 tokens</strong></article>
+    <article class="card stat"><span class="muted">Trevvos IA</span><strong>por uso</strong></article>
+  </div>
+
+  <section class="grid grid-3">
+    <article class="card">
+      <h2>Recarga 1.000</h2>
+      <p class="muted">Pacote mockado para uso leve da IA online.</p>
+      <button class="button-secondary" type="button">Checkout indisponivel</button>
+    </article>
+    <article class="card">
+      <h2>Recarga 5.000</h2>
+      <p class="muted">Pacote mockado para acompanhamento frequente.</p>
+      <button class="button-secondary" type="button">Checkout indisponivel</button>
+    </article>
+    <article class="card">
+      <h2>Recarga 15.000</h2>
+      <p class="muted">Pacote mockado para uso intensivo da Trevvos IA.</p>
+      <button class="button-secondary" type="button">Checkout indisponivel</button>
+    </article>
+  </section>
+
+  <article class="card">
+    <h2>Historico mockado</h2>
+    @for (transaction of transactions(); track transaction.id) {
+      <p>
+        <strong>{{ transaction.amount > 0 ? '+' : '' }}{{ transaction.amount }}</strong>
+        {{ transaction.description }}
+        <span class="muted">{{ transaction.createdAt }}</span>
+      </p>
+    }
+  </article>
+</section>

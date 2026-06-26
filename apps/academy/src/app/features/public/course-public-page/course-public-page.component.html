@@ -1,0 +1,53 @@
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Curso em preview</p>
+    <h1 class="page-title">{{ course().title }}</h1>
+    <p class="lead">{{ course().description }}</p>
+    <div class="grid grid-3">
+      <article class="card stat"><span class="muted">Modulos</span><strong>{{ course().modules.length }}</strong></article>
+      <article class="card stat"><span class="muted">Aulas mockadas</span><strong>{{ lessonCount() }}</strong></article>
+      <article class="card stat"><span class="muted">Formato</span><strong>Texto + pratica</strong></article>
+    </div>
+  </div>
+</section>
+
+<section class="section band">
+  <div class="container grid grid-2">
+    <article>
+      <p class="eyebrow">Exercicios</p>
+      <h2>Pratica no computador do aluno</h2>
+      <p class="lead">Cada aula importante traz uma missao local. O aluno implementa, explica decisoes e pede ao Forge Tutor uma validacao baseada em evidencias.</p>
+    </article>
+    <article>
+      <p class="eyebrow">Progressao</p>
+      <h2>A liberacao vem do Forge</h2>
+      <p class="lead">A proxima aula fica bloqueada ate todos os exercicios obrigatorios da aula atual serem aprovados. O evento done sera plugado na API depois; aqui esta simulado em memoria.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Roteiro inicial</p>
+    <app-course-modules-preview [course]="course()" />
+  </div>
+</section>
+
+<section class="section band">
+  <div class="container grid grid-2">
+    <article class="card">
+      <h2>Para quem e</h2>
+      <p class="muted">Desenvolvedores que ja programam e querem ganhar maturidade para projetar, manter e evoluir sistemas reais com criterio tecnico.</p>
+    </article>
+    <article class="card">
+      <h2>Pre-requisitos</h2>
+      <p class="muted">Conhecimento basico de programacao, terminal, Git e disposicao para praticar localmente em vez de apenas assistir conteudo.</p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <a class="button button-primary" routerLink="/academy/app">Abrir dashboard demo</a>
+  </div>
+</section>

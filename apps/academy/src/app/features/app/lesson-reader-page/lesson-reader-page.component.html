@@ -1,0 +1,83 @@
+@if (lesson(); as lesson) {
+  <article class="reader">
+    <p class="eyebrow">Aula {{ lesson.order }}</p>
+    <h1>{{ lesson.title }}</h1>
+    <app-lesson-status-badge [status]="lesson.status" />
+    <p class="lead">{{ lesson.summary }}</p>
+
+    <section class="card notice">
+      <strong>Esta aula nao tem botao concluir.</strong>
+      <span>Para avancar, abra a missao Forge e aprove todos os exercicios obrigatorios.</span>
+    </section>
+
+    <section>
+      <h2>Contexto da aula</h2>
+      <p>{{ lesson.summary }}</p>
+      <h2>Objetivos de aprendizagem</h2>
+      <ul>
+        @for (objective of lesson.objectives; track objective) {
+          <li>{{ objective }}</li>
+        }
+      </ul>
+    </section>
+
+    <section>
+      <h2>Teoria principal</h2>
+      <p>{{ lesson.theory }}</p>
+      <h2>Exemplo guiado</h2>
+      <p>{{ lesson.guidedExample }}</p>
+    </section>
+
+    <section>
+      <h2>Erros comuns</h2>
+      <ul>
+        @for (mistake of lesson.commonMistakes; track mistake) {
+          <li>{{ mistake }}</li>
+        }
+      </ul>
+      <h2>Pratica local</h2>
+      <p>{{ lesson.localPractice }}</p>
+    </section>
+
+    <section class="card">
+      <h2>Missao Forge</h2>
+      <p>{{ lesson.forgeMission }}</p>
+      <h3>Criterios de aprovacao</h3>
+      <ul>
+        @for (criterion of lesson.approvalCriteria; track criterion.id) {
+          <li>{{ criterion.description }}</li>
+        }
+      </ul>
+    </section>
+
+    <section>
+      <h2>Exercicios da aula</h2>
+      <div class="grid">
+        @for (exercise of lesson.exercises; track exercise.id) {
+          <article class="card exercise-card">
+            <div>
+              <h3>{{ exercise.title }}</h3>
+              <p class="muted">{{ exercise.description }}</p>
+            </div>
+            <app-exercise-status-badge [status]="exercise.status" />
+            <a class="button button-primary" [routerLink]="['/academy/app/exercises', exercise.slug]">Abrir missao Forge</a>
+          </article>
+        } @empty {
+          <p class="muted">Exercicios desta aula serao publicados em uma etapa futura.</p>
+        }
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Checklist final</h2>
+      <ul>
+        <li>Estudei a teoria e o exemplo guiado.</li>
+        <li>Pratiquei no meu computador.</li>
+        <li>Pedi validacao do Forge Tutor.</li>
+        <li>Corrigi feedbacks sem receber resposta pronta.</li>
+      </ul>
+    </section>
+  </article>
+} @else {
+  <p>Aula nao encontrada.</p>
+}
