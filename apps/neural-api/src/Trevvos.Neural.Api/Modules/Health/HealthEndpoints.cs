@@ -25,7 +25,7 @@ public static class HealthEndpoints
             return Results.Ok(new
             {
                 status = "alive",
-                service = "trevvos-neutral-api",
+                service = "trevvos-neural-api",
                 timestamp = DateTimeOffset.UtcNow
             });
         })
@@ -37,7 +37,7 @@ public static class HealthEndpoints
             return Results.Ok(new
             {
                 status = "ready",
-                service = "trevvos-neutral-api",
+                service = "trevvos-neural-api",
                 checks = new
                 {
                     api = "ok"
