@@ -1,0 +1,56 @@
+<section class="app-page">
+  <div>
+    <p class="eyebrow">Dashboard demo</p>
+    <h1>Ola, {{ dashboard().studentName }}</h1>
+    <p class="lead">Seu progresso depende das validacoes do Forge Tutor, nao de conclusao manual.</p>
+  </div>
+
+  <div class="grid grid-3">
+    <article class="card stat"><span class="muted">Progresso geral</span><strong>{{ progressPercent() }}%</strong></article>
+    <article class="card stat"><span class="muted">Tokens</span><strong>{{ dashboard().tokenBalance }}</strong></article>
+    <article class="card stat">
+      <span class="muted">Modo de IA</span>
+      <strong>{{ dashboard().aiMode === 'local' ? 'Local' : 'Online' }}</strong>
+      <span [class]="'badge ' + (dashboard().aiMode === 'local' ? 'badge-success' : 'badge-warning')">
+        {{ dashboard().aiMode === 'local' ? 'Sem consumo de tokens' : 'Consome creditos' }}
+      </span>
+    </article>
+  </div>
+
+  <div class="grid grid-2">
+    <article class="card">
+      <p class="eyebrow">Curso atual</p>
+      <h2>{{ course().title }}</h2>
+      <p class="muted">{{ currentLesson()?.title }}</p>
+      <a class="button button-primary" [routerLink]="['/academy/app/lessons', currentLesson()?.slug]">Continuar aula</a>
+    </article>
+    <article class="card">
+      <p class="eyebrow">Proxima aula</p>
+      <h2>{{ nextLesson().title }}</h2>
+      @if (nextLesson().status === 'locked') {
+        <p class="muted">Bloqueada: conclua os exercicios obrigatorios da aula anterior com o Forge Tutor.</p>
+      } @else {
+        <p class="muted">Liberada pelo progresso atual.</p>
+      }
+    </article>
+  </div>
+
+  <div class="grid grid-2">
+    <article class="card">
+      <p class="eyebrow">Exercicios pendentes</p>
+      <h2>{{ pendingExercises().length }}</h2>
+      @for (exercise of pendingExercises(); track exercise.id) {
+        <p><a [routerLink]="['/academy/app/exercises', exercise.slug]">{{ exercise.title }}</a></p>
+      }
+    </article>
+    <article class="card">
+      <p class="eyebrow">Ultima validacao do Forge</p>
+      @if (lastValidation(); as validation) {
+        <h2>{{ validation.status === 'approved' ? 'Aprovada' : 'Reprovada' }}</h2>
+        <p class="muted">{{ validation.feedback }}</p>
+      } @else {
+        <p class="muted">Nenhuma validacao feita nesta sessao demo.</p>
+      }
+    </article>
+  </div>
+</section>

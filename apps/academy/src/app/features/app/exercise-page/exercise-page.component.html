@@ -1,0 +1,60 @@
+@if (exercise(); as exercise) {
+  <div class="exercise-layout">
+    <main class="app-page">
+      <div>
+        <p class="eyebrow">Exercicio obrigatorio</p>
+        <h1>{{ exercise.title }}</h1>
+        <app-exercise-status-badge [status]="exercise.status" />
+        <p class="lead">{{ exercise.description }}</p>
+      </div>
+
+      <section class="card">
+        <h2>Objetivo</h2>
+        <p>Produzir uma evidencia local que demonstre entendimento da aula "{{ lesson()?.title }}".</p>
+      </section>
+
+      <section class="card">
+        <h2>Instrucoes locais</h2>
+        <ul>
+          @for (instruction of exercise.instructions; track instruction) {
+            <li>{{ instruction }}</li>
+          }
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Entregavel esperado</h2>
+        <ul>
+          @for (evidence of exercise.expectedEvidence; track evidence) {
+            <li>{{ evidence }}</li>
+          }
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Rubrica de aprovacao</h2>
+        <ul>
+          @for (criterion of exercise.validationCriteria; track criterion.id) {
+            <li>{{ criterion.description }} {{ criterion.required ? '(obrigatorio)' : '' }}</li>
+          }
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Historico de tentativas</h2>
+        @for (attempt of exercise.attempts; track attempt.id) {
+          <article class="attempt">
+            <strong>{{ attempt.status === 'approved' ? 'Aprovado' : 'Reprovado' }} - {{ attempt.score }} pontos</strong>
+            <p class="muted">{{ attempt.feedback }}</p>
+            <small>{{ attempt.createdAt }} - {{ attempt.forgeSessionId }}</small>
+          </article>
+        } @empty {
+          <p class="muted">Nenhuma tentativa registrada ainda.</p>
+        }
+      </section>
+    </main>
+    <app-forge-tutor-panel [exercise]="exercise" />
+  </div>
+} @else {
+  <p>Exercicio nao encontrado.</p>
+}

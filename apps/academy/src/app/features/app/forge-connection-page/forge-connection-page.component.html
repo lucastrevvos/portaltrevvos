@@ -1,0 +1,37 @@
+<section class="app-page">
+  <div>
+    <p class="eyebrow">Forge Tutor</p>
+    <h1>Conexao mockada com o Forge Local</h1>
+    <p class="lead">Nesta primeira versao, a conexao e simulada. No produto real, o Forge local analisara o projeto do aluno e enviara eventos para a Academy API.</p>
+  </div>
+
+  <div class="grid grid-2">
+    <article class="card">
+      <span class="badge badge-success">Conectado demo</span>
+      <h2>Forge Local</h2>
+      <p class="muted">Roda no computador do aluno, nao consome tokens e e o modo preferencial para praticas do curso.</p>
+      <button class="button-primary" type="button" (click)="setMode('local')">Usar modo local</button>
+    </article>
+    <article class="card">
+      <span class="badge badge-warning">Consome creditos</span>
+      <h2>Trevvos IA online</h2>
+      <p class="muted">Usa infraestrutura Trevvos quando o aluno nao consegue rodar IA local. Cada uso debita creditos.</p>
+      <button class="button-secondary" type="button" (click)="setMode('online')">Usar modo online</button>
+    </article>
+  </div>
+
+  <article class="card">
+    <p class="eyebrow">Modo atual</p>
+    <h2>{{ dashboard().aiMode === 'local' ? 'Local' : 'Online' }}</h2>
+    <span [class]="'badge ' + (dashboard().aiMode === 'local' ? 'badge-success' : 'badge-warning')">
+      {{ dashboard().aiMode === 'local' ? 'Sem consumo de tokens' : 'Consome creditos' }}
+    </span>
+  </article>
+
+  <article class="card">
+    <h2>Logs mockados</h2>
+    @for (log of logs(); track log.id) {
+      <p><strong>{{ log.status }}</strong> - {{ log.message }} <span class="muted">{{ log.createdAt }}</span></p>
+    }
+  </article>
+</section>

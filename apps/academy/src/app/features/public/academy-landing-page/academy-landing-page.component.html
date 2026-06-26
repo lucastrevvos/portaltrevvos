@@ -1,0 +1,70 @@
+<section class="hero">
+  <div class="container">
+    <p class="eyebrow">Trevvos Academy</p>
+    <h1 class="page-title">Aprenda Engenharia de Software praticando com um Tutor IA no seu computador</h1>
+    <p class="lead">
+      A Trevvos Academy une aulas textuais profundas, pratica local e validacao inteligente com o Trevvos Forge.
+      O aluno nao avanca clicando em concluir: avanca quando o Forge valida evidencias reais de aprendizado.
+    </p>
+    <div class="actions">
+      <a class="button button-primary" routerLink="/academy/engenharia-software-2026">Ver curso</a>
+      <a class="button button-secondary" routerLink="/academy/app">Abrir dashboard demo</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Como funciona</p>
+    <h2>Estudo textual, pratica local e progressao validada</h2>
+    <div class="flow">
+      @for (step of flow; track step) {
+        <span>{{ step }}</span>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="section band">
+  <div class="container">
+    <p class="eyebrow">Diferencial Forge Tutor</p>
+    <h2>Um tutor que acompanha a pratica sem virar cola automatica</h2>
+    <p class="lead">
+      O Forge Tutor analisa o trabalho local, entrega feedback progressivo, aponta lacunas e pede novas evidencias.
+      Ele nao entrega uma resposta pronta; ele ajuda o aluno a construir a propria solucao.
+    </p>
+    <app-forge-methodology-section />
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">IA local ou online</p>
+    <h2>Local por padrao, online quando fizer sentido</h2>
+    <app-ai-mode-comparison />
+  </div>
+</section>
+
+<section class="section band">
+  <div class="container course-band">
+    <div>
+      <p class="eyebrow">Primeiro curso</p>
+      <h2>{{ course().title }}</h2>
+      <p class="lead">{{ course().description }}</p>
+      <div class="meta">
+        <span>{{ course().level }}</span>
+        <span>{{ course().format }}</span>
+        <span>{{ course().statusLabel }}</span>
+      </div>
+    </div>
+    <app-course-modules-preview [course]="course()" />
+  </div>
+</section>
+
+<section class="section">
+  <div class="container cta">
+    <h2>Experimente o fluxo Academy + Forge</h2>
+    <p class="muted">Veja a aula demo, simule uma validacao reprovada e depois aprove os exercicios para liberar a proxima aula.</p>
+    <a class="button button-primary" routerLink="/academy/app">Abrir dashboard demo</a>
+  </div>
+</section>

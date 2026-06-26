@@ -1,0 +1,23 @@
+.panel {
+  position: sticky;
+  top: 24px;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+}
+
+.result {
+  border-radius: var(--radius);
+  margin-top: 18px;
+  padding: 14px;
+}
+
+.approved {
+  background: #e3f5eb;
+}
+
+.rejected {
+  background: #fff2d8;
+}

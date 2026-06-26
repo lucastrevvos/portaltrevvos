@@ -1,0 +1,13 @@
+<div class="grid">
+  @for (module of course().modules; track module.id) {
+    <article class="card">
+      <p class="eyebrow">Modulo {{ module.order }}</p>
+      <h3>{{ module.title }}</h3>
+      <ul>
+        @for (lesson of module.lessons; track lesson.id) {
+          <li>{{ lesson.title }}</li>
+        }
+      </ul>
+    </article>
+  }
+</div>
