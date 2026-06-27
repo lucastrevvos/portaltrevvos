@@ -1,0 +1,228 @@
+<main class="forge-page">
+  <nav class="forge-nav forge-container" aria-label="Navegacao Trevvos Forge">
+    <a class="brand-lockup" href="/" aria-label="Voltar para Trevvos">
+      <span class="brand-mark">
+        <img src="assets/images/trevvos-logo.png" alt="" />
+      </span>
+      <span class="brand-text">
+        <span class="brand-parent">Trevvos</span>
+        <strong>Forge</strong>
+      </span>
+    </a>
+
+    <div class="nav-actions">
+      <a href="#como-usar">Como usar</a>
+      <a [href]="links.github" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a class="nav-cta" [href]="links.release" target="_blank" rel="noopener noreferrer">Baixar Alpha</a>
+    </div>
+  </nav>
+
+  <section class="hero-section forge-container">
+    <div class="hero-copy">
+      <div class="product-kicker">
+        <span>Alpha local-first</span>
+        <span>CLI / SDK experimental</span>
+      </div>
+
+      <p class="subbrand">TREVVOS / TREVVOS FORGE</p>
+
+      <h1>IA local para devs que querem entender, planejar e evoluir codigo com mais controle.</h1>
+
+      <p class="hero-lead">
+        Trevvos Forge e uma CLI/SDK experimental para usar modelos de IA locais no ciclo de
+        desenvolvimento: perguntar sobre codigo, analisar projetos, gerar planos e construir fluxos
+        de engenharia assistidos por IA.
+      </p>
+
+      <div class="hero-actions" aria-label="Acoes principais">
+        <a class="button primary" [href]="links.release" target="_blank" rel="noopener noreferrer">Baixar Alpha</a>
+        <a class="button secondary" [href]="links.github" target="_blank" rel="noopener noreferrer">Ver no GitHub</a>
+        <a class="button ghost" href="#como-usar">Como usar</a>
+      </div>
+    </div>
+
+    <aside class="hero-visual" aria-label="Demonstração do terminal Trevvos Forge">
+      <div class="forge-badge">
+        <img
+  src="assets/images/trevvos-logo.png"
+  alt=""
+  class="badge-logo"
+  aria-hidden="true"
+/>
+        <span>IA local. Codigo real. Controle total.</span>
+      </div>
+
+      <div class="terminal-card">
+        <div class="terminal-topbar" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <strong>trevvos-forge</strong>
+        </div>
+        <pre><code>$ trevvos ask "Explique a arquitetura deste projeto"
+[ok] Projeto analisado
+[ok] Contexto preparado
+[ok] Resposta gerada com IA local
+[ok] Controle total no seu ambiente
+
+TREVVOS FORGE _</code></pre>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section problem-section forge-container">
+    <div class="section-heading">
+      <span class="eyebrow">Por que existe</span>
+      <h2>IA para codigo e poderosa. Mas o controle importa.</h2>
+    </div>
+
+    <div class="card-grid four">
+      @for (card of problemCards; track card.title) {
+        <article class="info-card">
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.text }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="section split-section forge-container">
+    <div class="section-heading">
+      <span class="eyebrow">O que e o Forge</span>
+      <h2>Uma bancada local de IA para desenvolvimento.</h2>
+      <p>
+        O Forge nao tenta esconder o processo. Ele ajuda voce a enxergar como uma ferramenta de IA
+        para desenvolvimento pode analisar contexto, gerar planos e apoiar decisoes tecnicas.
+      </p>
+    </div>
+
+    <div class="highlight-list">
+      @for (item of forgeHighlights; track item) {
+        <div class="highlight-item">
+          <span aria-hidden="true"></span>
+          <p>{{ item }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="section usage-section forge-container" id="como-usar">
+    <div class="section-heading center-heading">
+      <span class="eyebrow">Primeiros minutos</span>
+      <h2>Como usar</h2>
+    </div>
+
+    <div class="steps">
+      @for (step of usageSteps; track step.step) {
+        <article class="step-card">
+          <span>{{ step.step }}</span>
+          <h3>{{ step.title }}</h3>
+          <code>{{ step.command }}</code>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="section commands-section forge-container">
+    <div class="section-heading">
+      <span class="eyebrow">CLI</span>
+      <h2>Comandos principais</h2>
+    </div>
+
+    <div class="command-grid">
+      @for (command of commands; track command.name) {
+        <article class="command-card">
+          <code>{{ command.name }}</code>
+          <p>{{ command.text }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="section local-section forge-container">
+    <div class="local-panel">
+      <div>
+        <span class="eyebrow">Local-first</span>
+        <h2>Local-first por padrao.</h2>
+        <p>
+          No Alpha, o Forge usa Ollama como runtime externo. O install do Forge nao baixa modelos
+          automaticamente. Voce controla quando configurar runtime, baixar modelos e rodar comandos.
+        </p>
+      </div>
+
+      <div class="pill-list">
+        @for (item of localFirst; track item) {
+          <span>{{ item }}</span>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section audience-section forge-container">
+    <div class="section-heading center-heading">
+      <span class="eyebrow">Para quem e</span>
+      <h2>Feito para quem quer construir e entender.</h2>
+    </div>
+
+    <div class="audience-grid">
+      @for (audience of audiences; track audience) {
+        <article>{{ audience }}</article>
+      }
+    </div>
+  </section>
+
+  <section class="section roadmap-section forge-container">
+    <div class="section-heading">
+      <span class="eyebrow">Roadmap</span>
+      <h2>Alpha aberto, evolucao pratica.</h2>
+    </div>
+
+    <div class="timeline">
+      <article class="timeline-column">
+        <h3>Agora no Alpha</h3>
+        <ul>
+          @for (item of alphaNow; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </article>
+
+      <article class="timeline-column next">
+        <h3>Proximos passos</h3>
+        <ul>
+          @for (item of nextSteps; track item) {
+            <li>{{ item }}</li>
+          }
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="academy-section forge-container">
+    <div>
+      <span class="eyebrow">Trevvos Academy</span>
+      <h2>Mais que uma ferramenta. Um laboratorio de aprendizado.</h2>
+      <p>
+        O Forge tambem sera usado como base pratica dentro da Trevvos Academy para estudar
+        engenharia de software, IA aplicada, LLMs locais, automacao, contexto, avaliacao e LLMOps.
+      </p>
+    </div>
+    <a class="button secondary light" [href]="links.academy">Conhecer a Trevvos Academy</a>
+  </section>
+
+  <section class="final-cta forge-container">
+    <div class="final-cta__panel">
+      <span class="eyebrow">Forge Alpha</span>
+      <h2>Teste o Forge Alpha.</h2>
+      <p>
+        Rode em um projeto real, quebre, questione, abra issue e ajude a moldar uma ferramenta
+        local-first para desenvolvimento com IA.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" [href]="links.release" target="_blank" rel="noopener noreferrer">Baixar Alpha</a>
+        <a class="button secondary" [href]="links.github" target="_blank" rel="noopener noreferrer">Ver no GitHub</a>
+        <a class="button ghost" [href]="links.feedback" target="_blank" rel="noopener noreferrer">Enviar feedback</a>
+      </div>
+    </div>
+  </section>
+</main>
