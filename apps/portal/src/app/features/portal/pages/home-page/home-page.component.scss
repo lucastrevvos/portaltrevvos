@@ -87,6 +87,191 @@
   border-bottom: 1.5px solid rgba(127, 119, 221, 0.55);
 }
 
+/* ACCESS SCREEN */
+
+.access-locked .topbar,
+.access-locked .mobile-topbar,
+.access-locked .body,
+.access-locked .mobile-bottom-nav {
+  display: none;
+}
+
+.access-screen {
+  position: relative;
+  z-index: 12;
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+}
+
+.access-panel {
+  display: flex;
+  width: min(100%, 460px);
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(127, 119, 221, 0.24);
+  border-radius: 12px;
+  padding: 28px;
+  background:
+    linear-gradient(180deg, rgba(16, 20, 34, 0.94), rgba(8, 11, 19, 0.96)),
+    rgba(7, 9, 15, 0.96);
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.42);
+}
+
+.access-logo-frame {
+  display: flex;
+  width: 78px;
+  height: 78px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(127, 119, 221, 0.34);
+  border-radius: 14px;
+  padding: 8px;
+  background: rgba(127, 119, 221, 0.08);
+}
+
+.access-logo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.access-copy {
+  width: 100%;
+  margin-top: 18px;
+  text-align: center;
+}
+
+.access-kicker {
+  margin: 0 0 8px;
+  color: #97c459;
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.access-title {
+  margin: 0;
+  color: #f1efff;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.access-typewriter {
+  display: inline-block;
+  max-width: 100%;
+  margin: 14px auto 0;
+  overflow: hidden;
+  border-right: 1px solid rgba(206, 200, 246, 0.75);
+  color: rgba(236, 240, 255, 0.72);
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  text-align: center;
+  animation:
+    access-type 2.8s steps(72, end) both,
+    access-caret 0.8s step-end infinite;
+}
+
+.access-form {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.access-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: rgba(206, 200, 246, 0.68);
+  font-size: 11px;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+}
+
+.access-field input {
+  width: 100%;
+  border: 1px solid rgba(127, 119, 221, 0.28);
+  border-radius: 8px;
+  padding: 12px 13px;
+  color: #f1efff;
+  outline: none;
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 14px;
+}
+
+.access-field input:focus {
+  border-color: rgba(151, 196, 89, 0.52);
+  box-shadow: 0 0 0 3px rgba(151, 196, 89, 0.09);
+}
+
+.access-field input[readonly] {
+  color: rgba(206, 200, 246, 0.62);
+  background: rgba(127, 119, 221, 0.06);
+}
+
+.access-enter-btn {
+  width: 100%;
+  border: 1px solid rgba(151, 196, 89, 0.42);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: #07100a;
+  background: #97c459;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+}
+
+.access-enter-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(151, 196, 89, 0.16);
+}
+
+.access-enter-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.access-disclaimer {
+  margin: 14px 0 0;
+  color: rgba(236, 240, 255, 0.46);
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.access-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.access-icon-btn {
+  border: 1px solid rgba(127, 119, 221, 0.26);
+  border-radius: 999px;
+  padding: 7px 11px;
+  color: #cec8f6;
+  background: rgba(127, 119, 221, 0.08);
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 1px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.access-icon-btn:hover,
+.access-icon-btn.sound-active {
+  border-color: rgba(151, 196, 89, 0.42);
+  background: rgba(151, 196, 89, 0.1);
+}
+
 /* TOP BAR */
 
 .topbar {
@@ -1257,6 +1442,24 @@
 
 /* ANIMATIONS */
 
+@keyframes access-type {
+  from {
+    width: 0;
+    white-space: nowrap;
+  }
+
+  to {
+    width: 100%;
+    white-space: normal;
+  }
+}
+
+@keyframes access-caret {
+  50% {
+    border-color: transparent;
+  }
+}
+
 @keyframes scan {
   0% {
     top: 0%;
@@ -1403,6 +1606,24 @@
 }
 
 @media (max-width: 620px) {
+  .access-screen {
+    align-items: start;
+    padding: 48px 18px 18px;
+  }
+
+  .access-panel {
+    padding: 22px;
+  }
+
+  .access-title {
+    font-size: 24px;
+  }
+
+  .access-typewriter {
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
   .topbar {
     padding: 12px 16px;
   }

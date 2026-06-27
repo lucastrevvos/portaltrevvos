@@ -14,6 +14,8 @@ import { SoundService } from '../../../../core/services/sound.service';
 import { LanguageService } from '../../../../core/i18n/language.service';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 
+const VISITOR_NAME_STORAGE_KEY = 'trevvos_visitor_name';
+
 @Component({
   selector: 'app-home-page',
   standalone: true,
@@ -30,9 +32,13 @@ export class HomePageComponent {
   readonly languageService = inject(LanguageService);
 
   question = '';
+  accessName = '';
+  readonly neuralKey = 'TRV-NEURAL-DEMO-2026';
 
   state = signal<JarvisState>('idle');
   currentAck = signal('');
+  visitorName = signal(this.loadVisitorName());
+  hasEnteredConsole = signal(Boolean(this.visitorName()));
 
   activeModule = signal<JarvisModule>('agent');
 
@@ -42,7 +48,7 @@ export class HomePageComponent {
       role: 'jarvis',
       mode: 'conversation',
       title: this.languageService.t('jarvis.online.title'),
-      content: this.languageService.t('jarvis.online.content'),
+      content: this.getInitialJarvisContent(),
       createdAt: new Date(),
     },
   ]);
@@ -261,6 +267,7 @@ export class HomePageComponent {
 
   constructor() {
     this.humanWhatsAppUrl = this.jarvisMockService.getHumanWhatsAppUrl();
+    this.accessName = this.visitorName();
     this.browserTitle.setTitle('Trevvos Neural Console | Trevvos Soluções em IA');
   }
 
@@ -281,6 +288,22 @@ export class HomePageComponent {
     this.soundService.unlock();
     this.soundService.playClick();
     this.languageService.toggleLanguage();
+  }
+
+  enterConsole(): void {
+    const name = this.accessName.trim();
+
+    if (!name) {
+      return;
+    }
+
+    this.soundService.unlock();
+    this.soundService.playClick();
+    this.visitorName.set(name);
+    this.hasEnteredConsole.set(true);
+    this.saveVisitorName(name);
+    this.messages.set([this.createInitialJarvisMessage()]);
+    this.scrollChatToBottom();
   }
 
   submitQuestion(): void {
@@ -427,17 +450,53 @@ export class HomePageComponent {
     this.question = '';
 
     this.messages.set([
-      {
-        id: crypto.randomUUID(),
-        role: 'jarvis',
-        mode: 'conversation',
-        title: this.languageService.t('jarvis.online.title'),
-        content: this.languageService.t('jarvis.reset.content'),
-        createdAt: new Date(),
-      },
+      this.createInitialJarvisMessage('jarvis.reset.content'),
     ]);
 
     this.scrollChatToBottom();
+  }
+
+  private createInitialJarvisMessage(contentKey = 'jarvis.online.content'): JarvisMessage {
+    return {
+      id: crypto.randomUUID(),
+      role: 'jarvis',
+      mode: 'conversation',
+      title: this.languageService.t('jarvis.online.title'),
+      content: this.getInitialJarvisContent(contentKey),
+      createdAt: new Date(),
+    };
+  }
+
+  private getInitialJarvisContent(fallbackKey = 'jarvis.online.content'): string {
+    const name = this.visitorName().trim();
+
+    if (!name) {
+      return this.languageService.t(fallbackKey);
+    }
+
+    return this.tWithParams('jarvis.welcomeWithName.content', { name });
+  }
+
+  private tWithParams(key: string, params: Record<string, string>): string {
+    return Object.entries(params).reduce((value, [paramKey, paramValue]) => {
+      return value.split(`{${paramKey}}`).join(paramValue);
+    }, this.languageService.t(key));
+  }
+
+  private loadVisitorName(): string {
+    if (typeof localStorage === 'undefined') {
+      return '';
+    }
+
+    return localStorage.getItem(VISITOR_NAME_STORAGE_KEY)?.trim() ?? '';
+  }
+
+  private saveVisitorName(name: string): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+
+    localStorage.setItem(VISITOR_NAME_STORAGE_KEY, name);
   }
 
   private runPrompt(prompt: string): void {
