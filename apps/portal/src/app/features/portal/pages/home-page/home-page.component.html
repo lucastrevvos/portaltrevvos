@@ -1,4 +1,4 @@
-<main class="portal-shell">
+<main class="portal-shell" [class.access-locked]="!hasEnteredConsole()">
   <div class="grid-bg"></div>
   <div class="glow-orb"></div>
   <div class="scan"></div>
@@ -7,6 +7,63 @@
   <span class="corner tr"></span>
   <span class="corner bl"></span>
   <span class="corner br"></span>
+
+  @if (!hasEnteredConsole()) {
+    <section class="access-screen" aria-labelledby="access-title">
+      <div class="access-panel">
+        <div class="access-logo-frame">
+          <img src="assets/images/trevvos-logo.png" alt="Trevvos" />
+        </div>
+
+        <div class="access-copy">
+          <p class="access-kicker">{{ 'access.kicker' | t }}</p>
+          <h1 id="access-title" class="access-title">Trevvos Neural Console</h1>
+          <p class="access-typewriter">{{ 'access.typewriter' | t }}</p>
+        </div>
+
+        <form class="access-form" (ngSubmit)="enterConsole()">
+          <label class="access-field">
+            <span>{{ 'access.nameLabel' | t }}</span>
+            <input
+              type="text"
+              name="visitorName"
+              [(ngModel)]="accessName"
+              [placeholder]="'access.namePlaceholder' | t"
+              autocomplete="name"
+              required
+            />
+          </label>
+
+          <label class="access-field">
+            <span>{{ 'access.keyLabel' | t }}</span>
+            <input type="text" name="neuralKey" [value]="neuralKey" readonly />
+          </label>
+
+          <button type="submit" class="access-enter-btn" [disabled]="!accessName.trim()">
+            {{ 'access.enter' | t }}
+          </button>
+        </form>
+
+        <!-- <p class="access-disclaimer">{{ 'access.disclaimer' | t }}</p> -->
+
+        <div class="access-actions">
+          <button
+            type="button"
+            class="access-icon-btn"
+            [class.sound-active]="isSoundEnabled()"
+            (click)="toggleSound()"
+            [title]="isSoundEnabled() ? ('panel.soundOn' | t) : ('panel.soundOff' | t)"
+          >
+            {{ isSoundEnabled() ? '♪ ON' : '♪ OFF' }}
+          </button>
+
+          <button type="button" class="access-icon-btn" (click)="toggleLanguage()" [title]="'language.switchTo' | t">
+            {{ 'language.current' | t }}
+          </button>
+        </div>
+      </div>
+    </section>
+  }
 
   <header class="mobile-topbar">
     <div class="m-logo-wrap">

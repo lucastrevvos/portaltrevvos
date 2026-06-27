@@ -8,6 +8,15 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     'language.current': 'PT',
     'language.switchTo': 'EN',
 
+    // Access screen
+    'access.kicker': 'Experiência interativa Trevvos',
+    'access.typewriter': 'Antes do console, informe seu nome. O agente Jarvis vai guiar uma demonstração sem senha real.',
+    'access.nameLabel': 'Nome do visitante',
+    'access.namePlaceholder': 'Digite seu nome',
+    'access.keyLabel': 'Chave Neural',
+    'access.enter': 'Entrar no console',
+    'access.disclaimer': 'Ambiente demonstrativo. Nenhuma senha real é necessária e nenhum backend será chamado.',
+
     // Topbar
     'brand.aiSolutions': 'Soluções em IA',
     'topbar.humanContact': 'Falar com um humano ↗',
@@ -231,6 +240,7 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     // Jarvis agent messages
     'jarvis.online.title': 'Agente Trevvos online',
     'jarvis.online.content': 'Pode me perguntar qualquer coisa — sobre soluções, produtos, automação, IA aplicada, Trevvos Forge, Trevvos Flow, KM One ou sistemas sob medida.',
+    'jarvis.welcomeWithName.content': 'Olá, {name}. Eu sou o Jarvis, agente demonstrativo da Trevvos. Posso te guiar pelo console, produtos, automações, IA aplicada, Trevvos Forge, Trevvos Flow, KM One ou sistemas sob medida.',
     'jarvis.reset.content': 'Sessão reiniciada. Pode me perguntar sobre soluções, produtos, IA aplicada, automações, Trevvos Flow ou sistemas sob medida.',
     'jarvis.prompt.admin': 'Trevvos modo admin',
     'jarvis.prompt.creator': 'Conheça o criador Lucas Amaral',
@@ -242,6 +252,15 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     // Language toggle
     'language.current': 'EN',
     'language.switchTo': 'PT',
+
+    // Access screen
+    'access.kicker': 'Interactive Trevvos experience',
+    'access.typewriter': 'Before the console, enter your name. Agent Jarvis will guide a demo with no real password.',
+    'access.nameLabel': 'Visitor name',
+    'access.namePlaceholder': 'Enter your name',
+    'access.keyLabel': 'Neural Key',
+    'access.enter': 'Enter console',
+    'access.disclaimer': 'Demonstration environment. No real password is needed and no backend will be called.',
 
     // Topbar
     'brand.aiSolutions': 'AI Solutions',
@@ -466,6 +485,7 @@ export const TRANSLATIONS: Record<AppLanguage, TranslationMap> = {
     // Jarvis agent messages
     'jarvis.online.title': 'Trevvos Agent online',
     'jarvis.online.content': 'Ask me anything — about solutions, products, automation, applied AI, Trevvos Forge, Trevvos Flow, KM One, or custom systems.',
+    'jarvis.welcomeWithName.content': 'Hello, {name}. I am Jarvis, Trevvos demonstrative agent. I can guide you through the console, products, automations, applied AI, Trevvos Forge, Trevvos Flow, KM One, or custom systems.',
     'jarvis.reset.content': 'Session restarted. Ask me about solutions, products, applied AI, automations, Trevvos Flow, or custom systems.',
     'jarvis.prompt.admin': 'Trevvos admin mode',
     'jarvis.prompt.creator': 'Meet the creator Lucas Amaral',
