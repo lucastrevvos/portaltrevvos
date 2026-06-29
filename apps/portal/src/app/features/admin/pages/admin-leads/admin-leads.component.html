@@ -1,0 +1,139 @@
+<main class="admin-leads-page">
+    <section class="hero-panel">
+        <div>
+            <p class="eyebrow">Trevvos Admin</p>
+            <h1>Lead Inbox</h1>
+            <p class="hero-description">
+                Leads capturados pelo portal conversacional da Trevvos.
+            </p>
+        </div>
+
+        <button type="button" class="refresh-button" (click)="loadLeads()">Atualizar</button>
+    </section>
+
+    <section class="metrics-grid">
+        <article class="metric-card">
+            <span>Total</span>
+            <strong>{{ totalLeads() }}</strong>
+        </article>
+
+        <article class="metric-card">
+            <span>Empresas</span>
+            <strong>{{ companyLeads() }}</strong>
+        </article>
+    </section>
+
+    @if (isLoading()){
+        <section class="state-panel">
+            <p>Carregando leads...</p>
+        </section>
+    } @else if (errorMessage()){
+        <section class="state-panel" state-panel--error>
+            <p>{{ errorMessage() }}</p>
+        </section>
+    } @else if (!leads().length){
+        <section class="state-panel">
+            <p>Nenhum lead capturado ainda.</p>
+            <small>
+                Crie um lead pela API ou conecte o chat do portal no próximo bloco.
+            </small>
+        </section>
+    } @else {
+        <section class="leads-grid">
+            @for (lead of leads(); track lead.id){
+                <article class="lead-card">
+                    <header class="lead-card__header">
+                        <div>
+                            <p class="lead-card__type">
+                                {{ getVisitorTypeLabel(lead.visitorType)}} .
+                                {{ getIntentLabel(lead.intent)}}
+                            </p>
+
+                            <h2>{{ getLeadTitle(lead) }}</h2>
+
+                            @if (lead.companyName) {
+                                <p class="lead-card__company">{{ lead.companyName }}</p>
+                            }
+                        </div>
+
+                        <span
+                            class="temperature-pill"
+                            [class.temperature-pill--hot]="lead.temperature === 'Hot'"
+                            [class.temperature-pill--warm]="lead.temperature === 'Warm'"
+                            [class.temperature-pill--cold]="lead.temperature === 'Cold'"
+                        >
+
+                        {{getTemperatureLabel(lead.temperature)}}
+                        </span>
+                    </header>
+
+                    <div class="lead-card__contact">
+                        @if (lead.email){
+                            <span>{{ lead.email }}</span>
+                        }
+
+                        @if (lead.phone) {
+                            <span>{{ lead.phone }}</span>
+                        }
+
+                        @if (!lead.email && !lead.phone){
+                            <span>Contato ainda não informado</span>
+                        }
+                    </div>
+
+                    @if (lead.summary) {
+                        <p class="lead-card__summary">{{ lead.summary }}</p>
+                    }
+
+                    <dl class="lead-card__details">
+                        <div>
+                            <dt>Produto recomendado</dt>
+                            <dd>{{ lead.recommendedProduct }}</dd>
+                        </div>
+
+                        <div>
+                            <dt>Próxima ação</dt>
+                            <dd>{{ lead.nextAction || 'Não definida'}}</dd>
+                        </div>
+
+                        <div>
+                            <dt>Próxima ação</dt>
+                            <dd>{{ lead.nextAction || 'Não definida' }}</dd>
+                        </div>
+
+                        <div>
+                            <dt>Origim</dt>
+                            <dd>{{ lead.source }}</dd>
+                        </div>
+                    </dl>
+
+                    @if (lead.messages.length) {
+                        <section class="lead-card__messages">
+                            <h3>Última mensagem</h3>
+                            <p>{{ lead.messages[lead.messages.length - 1].content }}</p>
+                        </section>
+                    }
+
+                    <footer class="lead-card__footer">
+                        <label>
+                            Status
+                            <select
+                                [value]="lead.status"
+                                (change)="changeStatus(lead, $any($event.target).value)"
+                            >
+                                @for (status of statuses; track status){
+                                    <option [value]="status">{{ status }}</option>
+                                }
+                            </select>
+                        </label>
+
+                        <small>
+                            Criado em {{ lead.createdAt | date: 'dd/MM/yyyy HH:mm'}}
+                        </small>
+                    </footer>
+                </article>
+            }
+        </section>
+    }
+
+</main>
