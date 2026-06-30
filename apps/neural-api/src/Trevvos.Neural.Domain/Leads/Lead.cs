@@ -71,9 +71,36 @@ public sealed class Lead
         Touch();
     }
 
+
+
     public void ChangeStatus(LeadStatus status)
     {
         Status = status;
+        Touch();
+    }
+
+    public void UpdateContact(string? name, string? email, string? phone, string? companyName)
+    {
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            Name = Normalize(name);
+        }
+
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            Email = Normalize(email);
+        }
+
+        if (!string.IsNullOrWhiteSpace(phone))
+        {
+            Phone = Normalize(phone);
+        }
+
+        if (!string.IsNullOrWhiteSpace(companyName))
+        {
+            CompanyName = Normalize(companyName);
+        }
+
         Touch();
     }
 

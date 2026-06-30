@@ -8,6 +8,13 @@ public sealed record CreateLeadRequest(
     string? InitialMessage
 );
 
+public sealed record UpdateLeadContactRequest(
+    string? Name,
+    string? Email,
+    string? Phone,
+    string? CompanyName
+);
+
 public sealed record AddLeadMessageRequest(
     string? Role,
     string Content

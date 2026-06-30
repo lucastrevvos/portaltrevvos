@@ -37,6 +37,14 @@ public static class LeadsEndpoints
                 : Results.Ok(lead);
         });
 
+        publicGroup.MapPatch("/{id:guid}/contact", async (Guid id, UpdateLeadContactRequest request, LeadsService service, CancellationToken cancellationToken) => {
+            var lead = await service.UpdateContactAsync(id, request, cancellationToken);
+
+            return lead is null
+                ? Results.NotFound()
+                : Results.Ok(lead);
+        });
+
         var adminGroup = app
             .MapGroup("/api/admin/leads")
             .WithTags("Admin Leads");

@@ -83,6 +83,26 @@ public sealed class LeadsService
         return MapToDto(lead);
     }
 
+    public async Task<LeadDto?> UpdateContactAsync(Guid id, UpdateLeadContactRequest request, CancellationToken cancellationToken)
+    {
+        var lead = await _repository.GetByIdAsync(id, cancellationToken);
+
+        if (lead is null)
+        {
+            return null;
+        }
+
+        lead.UpdateContact(
+            request.Name,
+            request.Email,
+            request.Phone,
+            request.CompanyName
+        );
+
+        await _repository.UpdateAsync(lead, cancellationToken);
+
+        return MapToDto(lead);
+    }
     public async Task<LeadDto?> ChangeStatusAsync(Guid id, ChangeLeadStatusRequest request, CancellationToken cancellationToken)
     {
         var lead = await _repository.GetByIdAsync(id, cancellationToken);

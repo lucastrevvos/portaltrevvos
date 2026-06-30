@@ -13,6 +13,7 @@ import { JarvisMockService } from '../../../../core/services/jarvis-mock.service
 import { SoundService } from '../../../../core/services/sound.service';
 import { LanguageService } from '../../../../core/i18n/language.service';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { LeadsApiService } from '../../../../core/services/leads-api.service';
 
 const VISITOR_NAME_STORAGE_KEY = 'trevvos_visitor_name';
 
@@ -264,6 +265,8 @@ export class HomePageComponent {
   });
 
   private readonly jarvisMockService = inject(JarvisMockService);
+  private readonly leadsApi = inject(LeadsApiService);
+  private readonly capturedLeadId = signal<string | null>(null);
 
   constructor() {
     this.humanWhatsAppUrl = this.jarvisMockService.getHumanWhatsAppUrl();
@@ -546,6 +549,8 @@ export class HomePageComponent {
           actions: interaction.actions,
         });
 
+        this.syncLeadFromInteraction(prompt, interaction.activeModule);
+
         this.currentAck.set('');
         this.state.set('done');
       }, 650);
@@ -581,5 +586,113 @@ export class HomePageComponent {
         behavior: 'smooth',
       });
     });
+  }
+
+  private syncLeadFromInteraction(prompt: string, activeModule: JarvisModule): void{
+    if (!this.shouldCaptureLead(prompt, activeModule)) {
+      return;
+    }
+
+    const existingLeadId = this.capturedLeadId();
+
+    if (existingLeadId) {
+      this.leadsApi.addMessage(existingLeadId, {
+        role: 'visitor',
+        content: prompt,
+      }).subscribe({
+        error: () => {
+          // Silencioso por enquanto: não vamos quebrar a experiencia do visitante por falha
+        }
+      })
+
+      return;
+    }
+
+    this.leadsApi.createLead({
+      name: this.visitorName() || this.accessName || null,
+      email: null,
+      phone: null,
+      companyName: null,
+      initialMessage: prompt
+    }).subscribe({
+      next: (lead) => {
+        this.capturedLeadId.set(lead.id);
+
+        const isEnglish = this.languageService.currentLanguage() === 'en';
+
+        this.addMessage({
+          role: 'jarvis',
+          mode: 'deterministic',
+          title: isEnglish ? 'Diagnosis saved' : 'Diagnóstico salvo',
+          content: isEnglish
+          ? 'I saved this interaction in the Trevvos panel so we can understand your interest and suggest the best next step.'
+          : 'Salvei essa interação no painel da Trevvos para entendermos seu interesse e sugerirmos o melhor próximo passo.',
+        })
+      },
+
+      error: () => {
+        const isEnglish = this.languageService.currentLanguage() === 'en';
+
+        this.addMessage({
+          role: 'jarvis',
+          mode: 'deterministic',
+          title: isEnglish ? 'Sync unavailable' : 'Sincronização indisponível',
+          content: isEnglish
+            ? 'I understood yout interest, but I could not save it in the Trevvos panel right now.'
+            : 'Eu entendi seu interesse, mas não consegui salvar no painel da Trevvos agora.'
+        })
+      }
+    })
+  }
+
+  private shouldCaptureLead(prompt: string, activeModule: JarvisModule): boolean {
+      const leadModules: JarvisModule[] = [
+      'automation',
+      'systems',
+      'forge',
+      'kmOne',
+      'contact',
+      'flow',
+    ];
+
+    if (leadModules.includes(activeModule)) {
+      return true;
+    }
+
+    const normalizedPrompt = prompt.toLocaleLowerCase();
+
+     const leadTerms = [
+    'empresa',
+    'negócio',
+    'negocio',
+    'automação',
+    'automacao',
+    'atendimento',
+    'vendas',
+    'lead',
+    'cliente',
+    'crm',
+    'sistema',
+    'sob medida',
+    'dev',
+    'desenvolvedor',
+    'github',
+    'forge',
+    'motorista',
+    'km one',
+    'uber',
+    '99',
+    'curso',
+    'aprender',
+    'ia aplicada',
+    'orçamento',
+    'orcamento',
+    'preço',
+    'preco',
+    'plano',
+    'contratar',
+  ];
+
+  return leadTerms.some((term) => normalizedPrompt.includes(term));
   }
 }

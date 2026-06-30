@@ -24,6 +24,19 @@ export interface Lead {
   messages: LeadMessage[];
 }
 
+export interface CreateLeadRequest {
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  companyName?: string | null;
+  initialMessage?: string | null;
+}
+
+export interface AddLeadMessageRequest {
+  role?: string | null;
+  content: string;
+}
+
 export type LeadStatus =
   | 'New'
   | 'Qualified'
