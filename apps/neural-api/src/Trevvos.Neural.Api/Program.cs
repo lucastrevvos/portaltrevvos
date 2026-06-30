@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ILeadRepository, InMemoryLeadRepository>();
+builder.Services.AddSingleton<ILeadRepository, FileLeadRepository>();
 builder.Services.AddSingleton<ILeadClassifier, HeuristicLeadClassifier>();
 builder.Services.AddScoped<LeadsService>();
 

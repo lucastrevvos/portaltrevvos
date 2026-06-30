@@ -30,6 +30,48 @@ public sealed class Lead
     {
     }
 
+    public static Lead Restore(
+        Guid id,
+        string? name,
+        string? email,
+        string? phone,
+        string? companyName,
+        VisitorType visitorType,
+        VisitorIntent intent,
+        LeadTemperature temperature,
+        LeadStatus status,
+        string source,
+        string? summary,
+        string? recommendedProduct,
+        string? nextAction,
+        DateTimeOffset createdAt,
+        DateTimeOffset updatedAt,
+        IEnumerable<LeadMessage> messages)
+    {
+        var lead = new Lead
+        {
+            Id = id,
+            Name = Normalize(name),
+            Email = Normalize(email),
+            Phone = Normalize(phone),
+            CompanyName = Normalize(companyName),
+            VisitorType = visitorType,
+            Intent = intent,
+            Temperature = temperature,
+            Status = status,
+            Source = string.IsNullOrWhiteSpace(source) ? "portal" : source.Trim(),
+            Summary = Normalize(summary),
+            RecommendedProduct = Normalize(recommendedProduct),
+            NextAction = Normalize(nextAction),
+            CreatedAt = createdAt,
+            UpdatedAt = updatedAt
+        };
+
+        lead._messages.AddRange(messages);
+
+        return lead;
+    }
+
     public Lead(string? name, string? email, string? phone, string? companyName, string? initialMessage)
     {
         Name = Normalize(name);

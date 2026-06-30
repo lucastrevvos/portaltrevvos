@@ -21,3 +21,7 @@ apps/studio-api/generated/
 # Trevvos Studio local generated/uploaded assets
 apps/studio-api/generated/
 apps/studio-api/uploads/
+
+# Trevvos local development data
+**/.trevvos-data/
+.trevvos-data/

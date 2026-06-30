@@ -21,4 +21,15 @@ public sealed class LeadMessage
         Role = string.IsNullOrWhiteSpace(role) ? "visitor" : role.Trim();
         Content = content.Trim();
     }
+
+    public static LeadMessage Restore(Guid id, Guid leadId, string role, string content, DateTimeOffset createdAt)
+    {
+        var message = new LeadMessage(leadId, role, content)
+        {
+            Id = id,
+            CreatedAt = createdAt
+        };
+
+        return message;
+    }
 }
