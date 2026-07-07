@@ -1,0 +1,3 @@
+api.trevvos.com.br {
+  reverse_proxy api:3333
+}

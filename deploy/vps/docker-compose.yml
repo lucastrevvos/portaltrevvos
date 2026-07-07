@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: /opt/portaltrevvos
+      dockerfile: Dockerfile.api
+    container_name: trevvos-api
+    restart: unless-stopped
+    env_file:
+      - /opt/trevvos/secrets/api.env
+    expose:
+      - "3333"
+
+  caddy:
+    image: caddy:2
+    container_name: trevvos-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /opt/trevvos/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
+volumes:
+  caddy_data:
+  caddy_config:
