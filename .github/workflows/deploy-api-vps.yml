@@ -6,13 +6,16 @@ on:
       - master
     paths:
       - "apps/api/**"
+      - "apps/portal/**"  
       - "packages/**"
       - "package.json"
       - "pnpm-lock.yaml"
       - "pnpm-workspace.yaml"
       - "Dockerfile.api"
+      - "Dockerfile.portal"
       - "deploy/vps/**"
       - ".github/workflows/deploy-api-vps.yml"
+      
 
   workflow_dispatch:
 
