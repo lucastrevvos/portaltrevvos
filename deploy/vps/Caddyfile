@@ -2,6 +2,6 @@ api.trevvos.com.br {
   reverse_proxy api:3333
 }
 
-vps.trevvos.com.br {
+trevvos.com.br, www.trevvos.com.br, vps.trevvos.com.br {
   reverse_proxy portal:4000
 }
