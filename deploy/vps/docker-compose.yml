@@ -10,6 +10,20 @@ services:
     expose:
       - "3333"
 
+  portal:
+    build:
+      context: /opt/portaltrevvos
+      dockerfile: Dockerfile.portal
+    container_name: trevvos-portal
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+    expose:
+      - "4000"
+    depends_on:
+      - api
+
   caddy:
     image: caddy:2
     container_name: trevvos-caddy
@@ -23,6 +37,7 @@ services:
       - caddy_config:/config
     depends_on:
       - api
+      - portal
 
 volumes:
   caddy_data:
