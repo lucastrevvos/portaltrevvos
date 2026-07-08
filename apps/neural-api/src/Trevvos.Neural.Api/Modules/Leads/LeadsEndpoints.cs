@@ -59,6 +59,19 @@ public static class LeadsEndpoints
             return Results.Ok(leads);
         });
 
+        adminGroup.MapGet("/{id:guid}", async (
+            Guid id,
+            LeadsService service,
+            CancellationToken cancellationToken
+        ) =>
+        {
+            var lead = await service.GetByIdAsync(id, cancellationToken);
+
+            return lead is null
+                ? Results.NotFound()
+                : Results.Ok(lead);
+        });
+
         adminGroup.MapPatch("/{id:guid}/status", async (
             Guid id,
             ChangeLeadStatusRequest request,
