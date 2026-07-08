@@ -1,4 +1,4 @@
-name: Deploy API to VPS
+name: Deploy VPS
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
       - master
     paths:
       - "apps/api/**"
-      - "apps/portal/**"  
+      - "apps/portal/**"
+      - "apps/km-one-connect/**"
       - "packages/**"
       - "package.json"
       - "pnpm-lock.yaml"
@@ -15,13 +16,16 @@ on:
       - "Dockerfile.portal"
       - "deploy/vps/**"
       - ".github/workflows/deploy-api-vps.yml"
-      
 
   workflow_dispatch:
 
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
 jobs:
   deploy:
-    name: Deploy Trevvos API
+    name: Deploy Trevvos VPS
     runs-on: ubuntu-latest
 
     steps:
@@ -34,4 +38,4 @@ jobs:
 
       - name: Deploy on VPS
         run: |
-          ssh -i ~/.ssh/vps_key "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "cd /opt/portaltrevvos && ./deploy/vps/deploy.sh"
+          ssh -i ~/.ssh/vps_key "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" "cd /opt/portaltrevvos && git pull --ff-only origin master && ./deploy/vps/deploy-all.sh"
