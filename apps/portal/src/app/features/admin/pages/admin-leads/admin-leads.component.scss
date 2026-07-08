@@ -148,6 +148,16 @@ h1 {
   color: rgba(245, 247, 251, 0.68);
 }
 
+.details-link {
+  color: #2ee59d;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.details-link:hover {
+  text-decoration: underline;
+}
+
 .lead-card__contact {
   display: flex;
   flex-wrap: wrap;

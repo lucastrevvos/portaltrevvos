@@ -3,6 +3,13 @@ import { HomePageComponent } from './features/portal/pages/home-page/home-page.c
 
 export const routes: Routes = [
   {
+  path: 'admin/leads/:id',
+  loadComponent: () =>
+    import('./features/admin/pages/admin-lead-details/admin-lead-details.component').then(
+      (m) => m.AdminLeadDetailsComponent,
+    ),
+  },
+  {
     path: 'admin/leads',
     loadComponent: () =>
       import('./features/admin/pages/admin-leads/admin-leads.component').then(

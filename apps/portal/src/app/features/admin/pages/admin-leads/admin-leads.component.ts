@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common'
 import { Component, computed, inject, signal } from '@angular/core'
 import { LeadsApiService } from '../../../../core/services/leads-api.service';
 import { Lead, LeadStatus } from '../../../../core/models/lead.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-admin-leads',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, RouterLink],
     templateUrl: './admin-leads.component.html',
     styleUrl: './admin-leads.component.scss'
 })

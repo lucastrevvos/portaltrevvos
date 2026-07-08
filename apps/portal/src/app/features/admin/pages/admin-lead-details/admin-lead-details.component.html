@@ -1,0 +1,134 @@
+<main class="lead-details-page">
+  <a class="back-link" routerLink="/admin/leads">← Voltar para leads</a>
+
+  @if (isLoading()) {
+    <section class="state-panel">
+      <p>Carregando lead...</p>
+    </section>
+  } @else if (errorMessage()) {
+    <section class="state-panel state-panel--error">
+      <p>{{ errorMessage() }}</p>
+    </section>
+  } @else if (lead(); as currentLead) {
+    <section class="hero-panel">
+      <div>
+        <p class="eyebrow">Lead capturado pelo portal</p>
+        <h1>{{ getLeadTitle(currentLead) }}</h1>
+        <p class="hero-description">
+          {{ getVisitorTypeLabel(currentLead.visitorType) }} ·
+          {{ getIntentLabel(currentLead.intent) }} ·
+          {{ getTemperatureLabel(currentLead.temperature) }}
+        </p>
+      </div>
+
+      <label class="status-control">
+        Status
+        <select
+          [value]="currentLead.status"
+          (change)="changeStatus($any($event.target).value)"
+        >
+          @for (status of statuses; track status) {
+            <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </label>
+    </section>
+
+    <section class="details-grid">
+      <article class="panel">
+        <h2>Contato</h2>
+
+        <dl>
+          <div>
+            <dt>Nome</dt>
+            <dd>{{ currentLead.name || 'Não informado' }}</dd>
+          </div>
+
+          <div>
+            <dt>E-mail</dt>
+            <dd>{{ currentLead.email || 'Não informado' }}</dd>
+          </div>
+
+          <div>
+            <dt>WhatsApp</dt>
+            <dd>{{ currentLead.phone || 'Não informado' }}</dd>
+          </div>
+
+          <div>
+            <dt>Empresa</dt>
+            <dd>{{ currentLead.companyName || 'Não informada' }}</dd>
+          </div>
+        </dl>
+      </article>
+
+      <article class="panel">
+        <h2>Diagnóstico</h2>
+
+        <dl>
+          <div>
+            <dt>Tipo</dt>
+            <dd>{{ getVisitorTypeLabel(currentLead.visitorType) }}</dd>
+          </div>
+
+          <div>
+            <dt>Intenção</dt>
+            <dd>{{ getIntentLabel(currentLead.intent) }}</dd>
+          </div>
+
+          <div>
+            <dt>Temperatura</dt>
+            <dd>{{ getTemperatureLabel(currentLead.temperature) }}</dd>
+          </div>
+
+          <div>
+            <dt>Produto recomendado</dt>
+            <dd>{{ currentLead.recommendedProduct || 'Não definido' }}</dd>
+          </div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>Resumo e próxima ação</h2>
+
+      <div class="summary-grid">
+        <article>
+          <h3>Resumo</h3>
+          <p>{{ currentLead.summary || 'Sem resumo ainda.' }}</p>
+        </article>
+
+        <article>
+          <h3>Próxima ação</h3>
+          <p>{{ currentLead.nextAction || 'Sem próxima ação definida.' }}</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Conversa</h2>
+
+      @if (sortedMessages().length) {
+        <div class="messages-timeline">
+          @for (message of sortedMessages(); track message.id) {
+            <article class="message-card" [class.message-card--jarvis]="message.role === 'jarvis'">
+              <header>
+                <strong>{{ message.role }}</strong>
+                <small>{{ message.createdAt | date: 'dd/MM/yyyy HH:mm' }}</small>
+              </header>
+
+              <p>{{ message.content }}</p>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="empty-text">Nenhuma mensagem registrada.</p>
+      }
+    </section>
+
+    <section class="meta-panel">
+      <span>Criado em {{ currentLead.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+      <span>Atualizado em {{ currentLead.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+      <span>Origem: {{ currentLead.source }}</span>
+    </section>
+  }
+</main>

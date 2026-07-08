@@ -127,6 +127,10 @@
                             </select>
                         </label>
 
+                        <a class="details-link" [routerLink]="['/admin/leads', lead.id]">
+                            Ver detalhes
+                        </a>
+
                         <small>
                             Criado em {{ lead.createdAt | date: 'dd/MM/yyyy HH:mm'}}
                         </small>
