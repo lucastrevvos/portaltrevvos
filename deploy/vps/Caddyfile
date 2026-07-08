@@ -5,3 +5,15 @@ api.trevvos.com.br {
 trevvos.com.br, www.trevvos.com.br, vps.trevvos.com.br {
   reverse_proxy portal:4000
 }
+
+kmone.trevvos.com.br {
+  root * /srv/trevvos/kmone
+  try_files {path} /index.html
+  file_server
+}
+
+kmoneconnect.trevvos.com.br {
+  root * /srv/trevvos/kmoneconnect
+  try_files {path} /index.html
+  file_server
+}

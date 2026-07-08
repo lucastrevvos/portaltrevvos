@@ -35,6 +35,7 @@ services:
       - /opt/trevvos/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+      - /srv/trevvos:/srv/trevvos:ro
     depends_on:
       - api
       - portal
