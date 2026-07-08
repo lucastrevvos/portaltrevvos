@@ -14,10 +14,17 @@ echo "==> Deploying static fronts"
 ./deploy/vps/deploy-fronts.sh
 
 echo "==> Healthcheck"
-curl -fsSI https://trevvos.com.br >/dev/null
-curl -fsSI https://www.trevvos.com.br >/dev/null
-curl -fsSI https://api.trevvos.com.br >/dev/null
-curl -fsSI https://kmone.trevvos.com.br >/dev/null
-curl -fsSI https://kmoneconnect.trevvos.com.br >/dev/null
+
+check_url() {
+  local url="$1"
+  echo "Checking $url"
+  curl -fsS --retry 5 --retry-delay 2 --max-time 20 "$url" -o /dev/null
+}
+
+check_url "https://trevvos.com.br/"
+check_url "https://www.trevvos.com.br/"
+check_url "https://api.trevvos.com.br/health"
+check_url "https://kmone.trevvos.com.br/"
+check_url "https://kmoneconnect.trevvos.com.br/"
 
 echo "==> Deploy finished"
