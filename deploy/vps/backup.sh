@@ -14,6 +14,12 @@ mkdir -p "$BACKUP_DIR/config"
 cp -a /opt/trevvos/Caddyfile "$BACKUP_DIR/config/Caddyfile" 2>/dev/null || true
 cp -a /opt/portaltrevvos/deploy/vps "$BACKUP_DIR/config/deploy-vps" 2>/dev/null || true
 
+echo "==> Backing up published static fronts"
+mkdir -p "$BACKUP_DIR/static"
+if [ -d /srv/trevvos ]; then
+  tar -czf "$BACKUP_DIR/static/srv-trevvos.tar.gz" -C /srv trevvos
+fi
+
 echo "==> Backing up Caddy docker volumes"
 mkdir -p "$BACKUP_DIR/volumes"
 
